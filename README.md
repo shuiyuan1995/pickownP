@@ -1,39 +1,48 @@
-# pickown
+# admin-iframe
+Laravel + AdminlLte + Iframe
 
-#### 项目介绍
-{**以下是码云平台说明，您可以替换为您的项目简介**
-码云是开源中国推出的基于 Git 的代码托管平台（同时支持 SVN）。专为开发者提供稳定、高效、安全的云端软件开发协作平台
-无论是个人、团队、或是企业，都能够用码云实现代码托管、项目管理、协作开发。企业项目请看 [https://gitee.com/enterprises](https://gitee.com/enterprises)}
+## 项目要求
 
-#### 软件架构
-软件架构说明
+- php >= 7.1
+- composer
+- mysql >= 5.6
 
+## 安装
 
-#### 安装教程
+1. `composer install`
+2. 复制`.env.example`文件为`.env`
+3. `php artisan key:generate`
+4. 修改`.env`中的`APP_URL`为虚拟主机中配置的域名, 并配置数据库连接
+```
+APP_URL=http://localhost
 
-1. xxxx
-2. xxxx
-3. xxxx
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=admin-iframe
+DB_USERNAME=homestead
+DB_PASSWORD=secret
+```
+5. `php artisan migrate --seed` 数据库迁移和填充
+6. 数据库迁移后, 默认的后台用户`username: admin, password: 123456`, 也可以自己后台用户`php artisan generate:admin username password`
+7. `bootstrap/cache` 和 `storage/` 两个目录需要配置**读写**权限
+8. 本地文件上传, `php artisan storage:link` 或者手动创建软连 `ln -s public/storage storage/app/public`
 
-#### 使用说明
+## TODO
 
-1. xxxx
-2. xxxx
-3. xxxx
+### [拖动排序](https://github.com/RubaXa/Sortable)
 
-#### 参与贡献
+### [select2](https://select2.org)
 
-1. Fork 本项目
-2. 新建 Feat_xxx 分支
-3. 提交代码
-4. 新建 Pull Request
+- select2默认值
 
+### [bootstrap-fileinput](http://plugins.krajee.com/file-input)
 
-#### 码云特技
+- file remove
 
-1. 使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2. 码云官方博客 [blog.gitee.com](https://blog.gitee.com)
-3. 你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解码云上的优秀开源项目
-4. [GVP](https://gitee.com/gvp) 全称是码云最有价值开源项目，是码云综合评定出的优秀开源项目
-5. 码云官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6. 码云封面人物是一档用来展示码云会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+### 单页应用
+
+### [laravel-permission](https://github.com/spatie/laravel-permission)
+
+- 权限缓存问题
+

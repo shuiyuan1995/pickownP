@@ -15,8 +15,8 @@ class CreateAdPositionsTable extends Migration
     {
         Schema::create('ad_positions', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name',255)->comment('广告位名称');
-            $table->string('type',20)->comment('广告位类型');
+            $table->string('name',255)->nullable()->comment('广告位名称');
+            $table->string('type',20)->nullable()->comment('广告位类型');
             $table->timestamps();
         });
     }

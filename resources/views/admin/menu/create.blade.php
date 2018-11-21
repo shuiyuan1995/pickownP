@@ -29,6 +29,12 @@
                 </div>
             </div>
             <div class="form-group">
+                <label for="inputUrl" class="control-label col-md-2">排序值</label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control" name="sort" id="inputUrl" value="0">
+                </div>
+            </div>
+            <div class="form-group">
                 <label for="inputKey" class="control-label col-md-2">key</label>
                 <div class="col-md-8">
                     <input type="text" class="form-control" name="key" id="inputKey">

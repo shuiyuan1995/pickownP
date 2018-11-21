@@ -48,7 +48,7 @@ class IndexController extends Controller
     public function form()
     {
         $img_url = 'http://oobpqw2m0.bkt.clouddn.com/xhg-download.png';
-        $imgs_url = 'http://oobpqw2m0.bkt.clouddn.com/webwxgetmsgimg.jpg, http://oobpqw2m0.bkt.clouddn.com/xhg-download.png';
+        $imgs_url = 'http://oobpqw2m0.bkt.clouddn.com/webwxgetmsgimg.jpg';
         return view('admin.index.form', compact('img_url', 'imgs_url'));
     }
 

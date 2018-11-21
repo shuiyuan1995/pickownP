@@ -15,9 +15,9 @@ class CreateUserBehaviorLogsTable extends Migration
     {
         Schema::create('user_behavior_logs', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('userid')->comment('用户id');
-            $table->integer('type')->comment('类型,');
-            $table->string('msg',1024)->comment('备注');
+            $table->unsignedInteger('userid')->nullable()->comment('用户id');
+            $table->integer('type')->nullable()->comment('类型,');
+            $table->string('msg',1024)->nullable()->comment('备注');
             $table->timestamps();
         });
     }

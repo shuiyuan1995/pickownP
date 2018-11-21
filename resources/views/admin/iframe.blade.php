@@ -72,7 +72,7 @@
                     {{csrf_field()}}
                     <div class="form-group">
                         <label for="" class="control-label">登录名(不可修改)</label>
-                        <span>{{auth()->user()->username}}</span>
+                        <span>{{ auth()->user()->username }}</span>
                     </div>
                     <div class="form-group has-feedback">
                         <input type="text" name="name" class="form-control" placeholder="Name" value="{{auth()->user()->name}}">

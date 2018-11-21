@@ -15,9 +15,9 @@ class CreateAdManagmentsTable extends Migration
     {
         Schema::create('ad_managments', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name',128)->comment('广告名称');
-            $table->unsignedInteger('ad_id')->comment('广告位id');
-            $table->string('img_url',1024)->comment('图片链接地址');
+            $table->string('name',128)->nullable()->comment('广告名称');
+            $table->unsignedInteger('ad_id')->nullable()->comment('广告位id');
+            $table->string('img_url',1024)->nullable()->comment('图片链接地址');
             $table->timestamps();
         });
     }

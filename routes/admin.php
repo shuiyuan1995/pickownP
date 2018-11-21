@@ -14,7 +14,7 @@ Route::group(['middleware' => ['auth:admin', 'permission']], function () {
     Route::get('table', ['uses'=>'IndexController@table', 'as'=>'admin.index.table']);
     Route::get('form', ['uses'=>'IndexController@form', 'as'=>'admin.index.form']);
     Route::get('ajax', ['uses'=>'IndexController@ajax', 'as'=>'admin.index.ajax']);
-
+    Route::get('ubi', ['uses'=>'UserBehaviorInfosController@index', 'as'=>'admin.ubi.index']);
     Route::post('formUpload', ['uses'=>'IndexController@formUpload', 'as'=>'admin.index.form_upload']);
 
     Route::resource('menu', 'MenusController', ['except'=>'show'])->names('admin.menu');

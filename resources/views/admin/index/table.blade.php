@@ -23,7 +23,7 @@
         <table class="table table-bordered table-hover">
             <thead>
             <tr>
-                <th>#</th>
+                <th>id</th>
                 <th>上级</th>
                 <th>名称</th>
                 <th>code</th>

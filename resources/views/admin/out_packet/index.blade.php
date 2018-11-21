@@ -1,6 +1,6 @@
 @extends('admin.layouts.iframe')
 @section('content')
- UserBehaviorInfos->index()
+ OutPackets->index()
 @endsection
 @section('script')
 

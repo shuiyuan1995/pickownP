@@ -1,6 +1,6 @@
 @extends('admin.layouts.iframe')
 @section('content')
- UserBehaviorInfos->index()
+ GamePartitions->index()
 @endsection
 @section('script')
 

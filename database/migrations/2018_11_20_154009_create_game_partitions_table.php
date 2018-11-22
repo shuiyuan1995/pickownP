@@ -19,7 +19,8 @@ class CreateGamePartitionsTable extends Migration
             $table->integer('sum')->nullable()->comment('数量值');
             $table->integer('up')->nullable()->comment('单个红包金额上限，存储为整数，如2表示为200');
             $table->integer('down')->nullable()->comment('单个红包金额下限，存储为整数，如5表示为500');
-            $table->integer('number')->nullable()->comment('默认拆分个数');
+            $table->integer('count')->nullable()->comment('默认拆分个数');
+            $table->integer('number')->nullable()->comment('默认尾数');
             $table->integer('status')->nullable()->comment('状态，1-开启，2-关闭');
             $table->timestamps();
         });

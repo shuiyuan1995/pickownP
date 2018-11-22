@@ -17,7 +17,7 @@ Route::group(['middleware' => ['auth:admin', 'permission']], function () {
     Route::post('formUpload', ['uses' => 'IndexController@formUpload', 'as' => 'admin.index.form_upload']);
 
     // 用户路由
-    Route::get('home_user', ['uses' => 'HomeUsersController@index', 'as' => 'admin.home_user.index']);
+    Route::resource('home_user','HomeUsersController')->names('admin.home_user');
     Route::get('ubi', ['uses' => 'UserBehaviorInfosController@index', 'as' => 'admin.ubi.index']);
 
 

@@ -28,6 +28,7 @@
                     <th>概率上限</th>
                     <th>概率下限</th>
                     <th>默认尾数</th>
+                    <th>默认个数</th>
                     <th>分区状态</th>
                     <td>更新时间</td>
                     <td>编辑</td>
@@ -41,6 +42,7 @@
                         <th>{{ $item->up / 100 }}%</th>
                         <th>{{ $item->down / 100 }}%</th>
                         <th>{{ $item->number }}</th>
+                        <th>{{ $item->count }}</th>
                         <th>{{ $item->status == 1 ? '开启':'关闭' }}</th>
                         <td>{{ $item->updated_at }}</td>
                         <td>

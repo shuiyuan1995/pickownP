@@ -39,6 +39,12 @@
                 </div>
             </div>
             <div class="form-group">
+                <label for="inputName" class="control-label col-md-2">默认个数</label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control" name="count" id="inputCount" data-rule-required="true" placeholder="填写一位整数" title="填写一位整数">
+                </div>
+            </div>
+            <div class="form-group">
                 <label for="inputName" class="control-label col-md-2">分区状态</label>
                 <div class="col-md-8">
                     <label><input type="radio" class="radio-inline" name="status" id="inputStatus" value="1" checked>开启</label>&nbsp;&nbsp;

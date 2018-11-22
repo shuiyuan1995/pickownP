@@ -22,9 +22,9 @@ Route::group(['middleware' => ['auth:admin', 'permission']], function () {
 
 
     // 红包路由
-    Route::get('game_partition', ['uses'=> 'GamePartitionsController@index', 'as' => 'admin.game_partition.index']);
-    Route::get('out_packet',['uses'=>'OutPacketsController@index','as'=> 'admin.out_packet.index']);
-    Route::get('in_packet',['uses'=> 'InPacketsController@index', 'as' => 'admin.in_packet.index']);
+    Route::resource('game_partition', 'GamePartitionsController')->names('admin.game_partition');
+    Route::get('out_packet', ['uses' => 'OutPacketsController@index', 'as' => 'admin.out_packet.index']);
+    Route::get('in_packet', ['uses' => 'InPacketsController@index', 'as' => 'admin.in_packet.index']);
 
 
     Route::resource('menu', 'MenusController', ['except' => 'show'])->names('admin.menu');

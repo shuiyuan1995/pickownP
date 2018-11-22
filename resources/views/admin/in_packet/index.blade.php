@@ -39,10 +39,10 @@
                     <tr>
                         <td>{{ $item->id }}</td>
                         <td>{{ $item->outid }}</td>
-                        <td>{{ $item->userid }}</td>
+                        <td>{{ $item->user->name }}</td>
                         <td>{{ $item->sum }}</td>
                         <td>{{ $item->packet_tail_number }}</td>
-                        <td>{{ $item->iswin == 1 ? '中奖':'未中奖' }}</td>
+                        <td>{{ $item->is_win == 1 ? '中奖':'未中奖' }}</td>
                         <td>{{ $item->status == 1 ? '正常' : '异常' }}</td>
                         <td>{{ $item->updated_at }}</td>
                         <td>{{ $item->created_at }}</td>

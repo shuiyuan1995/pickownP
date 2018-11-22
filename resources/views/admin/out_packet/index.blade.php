@@ -42,8 +42,8 @@
                 @foreach($list as $item)
                     <tr>
                         <td>{{ $item->id }}</td>
-                        <td>{{ $item->gameid }}</td>
-                        <td>{{ $item->userid }}</td>
+                        <td>{{ $item->game->name }}</td>
+                        <td>{{ $item->user->name }}</td>
                         <td>{{ $item->number }}</td>
                         <td>{{ $item->seed_sum }}</td>
                         <td>{{ $item->surplus_sum }}</td>

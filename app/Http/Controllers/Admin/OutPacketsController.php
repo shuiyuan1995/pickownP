@@ -10,7 +10,7 @@ class OutPacketsController extends Controller
 {
     public function index(Request $request)
     {
-        $query = OutPacket::query();
+        $query = OutPacket::query()->with('game')->with('user');
         if ($request->filled('key')) {
             $name = $request->input('key');
             $query->where(function ($query) use ($name) {

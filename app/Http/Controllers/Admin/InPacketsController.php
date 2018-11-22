@@ -10,7 +10,7 @@ class InPacketsController extends Controller
 {
     public function index(Request $request)
     {
-        $query = InPacket::query();
+        $query = InPacket::query()->with('user');
         if ($request->filled('key')) {
             $name = $request->input('key');
             $query->where(function ($query) use ($name) {

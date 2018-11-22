@@ -23,13 +23,19 @@ class HomeUsersController extends Controller
         return view('admin.home_user.index', compact('list'));
     }
 
-    public function edit()
+    public function edit($id)
     {
-        //
+        $entity = User::findOrFail($id);
+        return view('admin.home_user.edit',compact('entity'));
     }
 
-    public function update()
+    public function update(Request $request, $id)
     {
-        //
+        $data = User::findOrFail($id);
+        $data->status = $request->input('status');
+        $data->last_time = date('Y-m-d H:i:s',time());
+        $data->save();
+        return redirect(route('admin.home_user.index'))->with('flash_message', '添加成功');
+
     }
 }

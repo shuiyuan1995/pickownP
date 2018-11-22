@@ -18,7 +18,7 @@ class CreateUserInfosTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('userid')->comment('关联users.id');
             $table->string('email',255)->nullable()->comment('邮箱');
-            $table->string('phone',20)->nullable()->comment('手机号');
+            $table->string('phone',255)->nullable()->comment('手机号');
             $table->string('referral_code',255)->nullable()->comment('推荐码');
             $table->string('invite_id',255)->nullable()->comment('邀请人id');
             $table->integer('in_packet_eos')->nullable()->comment('用户抢红包累积金额');

@@ -11,6 +11,8 @@ class InPacketsTableSeeder extends Seeder
      */
     public function run()
     {
-        //
+        factory(App\Models\InPacket::class, 20)->create()->each(function($u) {
+            factory(App\Models\InPacket::class)->make();
+        });
     }
 }

@@ -24,8 +24,8 @@ Route::group(['middleware' => ['auth:admin', 'permission']], function () {
     // 红包路由
     Route::resource('game_partition', 'GamePartitionsController',
         ['only' => ['index', 'create', 'store', 'edit', 'update', 'destroy']])->names('admin.game_partition');
-    Route::get('out_packet', ['uses' => 'OutPacketsController@index', 'as' => 'admin.out_packet.index']);
-    Route::get('in_packet', ['uses' => 'InPacketsController@index', 'as' => 'admin.in_packet.index']);
+    Route::resource('out_packet', 'OutPacketsController')->names('admin.out_packet');
+    Route::resource('in_packet','InPacketsController')->names('admin.in_packet');
 
 
     Route::resource('menu', 'MenusController', ['except' => 'show'])->names('admin.menu');

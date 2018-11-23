@@ -27,6 +27,7 @@ Route::group(['middleware' => ['auth:admin', 'permission']], function () {
     Route::resource('out_packet', 'OutPacketsController')->names('admin.out_packet');
     Route::resource('in_packet','InPacketsController')->names('admin.in_packet');
 
+    Route::resource('transaction_info','TransactionInfosController')->names('admin.transaction_info');
 
     Route::resource('menu', 'MenusController', ['except' => 'show'])->names('admin.menu');
     Route::resource('permission', 'PermissionsController', ['except' => 'show'])->names('admin.permission');

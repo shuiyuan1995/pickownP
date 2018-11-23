@@ -58,10 +58,8 @@ class GamePartitionsController extends Controller
 
         ]);
         $data = GamePartition::findOrFail($id);
-
         $data->update($request->all());
         return redirect(route('admin.game_partition.index'))->with('flash_message', '添加成功');
-
     }
 
     public function destroy($id)

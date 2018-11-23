@@ -27,12 +27,12 @@ class Permission extends BasePermission
 
     public function parent()
     {
-        return $this->hasOne(Permission::class,'id', 'pid');
+        return $this->hasOne(Permission::class, 'id', 'pid');
     }
 
     public function children()
     {
-        return $this->hasMany(Permission::class,'pid', 'id');
+        return $this->hasMany(Permission::class, 'pid', 'id');
     }
 
 }

@@ -45,8 +45,8 @@
                         <td>{{ $item->game->name }}</td>
                         <td>{{ $item->user->name }}</td>
                         <td>{{ $item->number }}</td>
-                        <td>{{ $item->seed_sum }}</td>
-                        <td>{{ $item->surplus_sum }}</td>
+                        <td>{{ $item->seed_sum / 10000 }}</td>
+                        <td>{{ $item->surplus_sum / 10000 }}</td>
                         <td>{{ $item->count }}</td>
                         <td>{{ $item->surplus_count }}</td>
                         <td>{{ $item->up }}</td>

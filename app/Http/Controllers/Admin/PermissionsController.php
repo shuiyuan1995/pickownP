@@ -26,7 +26,7 @@ class PermissionsController extends Controller
         $request->validate([
             'name' => 'required|unique:permissions,name',
             'display_name' => 'required'
-        ],[
+        ], [
             'name.required' => 'key 值必填',
             'name.unique' => 'key 值 :input 已经存在'
         ]);
@@ -52,11 +52,10 @@ class PermissionsController extends Controller
         $request->validate([
             'name' => ['required', $unique_rule],
             'display_name' => 'required'
-        ],[
+        ], [
             'name.required' => 'key 值必填',
             'name.unique' => 'key 值 :input 已经存在'
         ]);
-
 
         $permission->update($request->all());
 

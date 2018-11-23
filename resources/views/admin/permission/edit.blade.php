@@ -19,7 +19,7 @@
                 <div class="form-group">
                     <label for="inputName" class="control-label col-md-2">Key*</label>
                     <div class="col-md-8">
-                        <input type="text" class="form-control" name="name" value="{{$permission->name}}" id="inputName" data-rule-required="true" data-rule-remote="{{route('api.web.unique', ['table'=>'permissions', 'unique'=>'name', 'ignore'=>$permission->id])}}">
+                        <input type="text" class="form-control" name="name" value="{{$permission->name}}" id="inputName" data-rule-required="true" data-rule-remote="{{route('api.web.unique', ['table'=>'permissions', 'unique'=>'name', 'ignore'=>$permission->name])}}">
                         <p class="help-block">权限的路由 <code>name</code>, 请询问 <code>网站开发者</code></p>
                     </div>
                 </div>

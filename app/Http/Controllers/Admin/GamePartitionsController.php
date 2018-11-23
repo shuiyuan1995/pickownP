@@ -36,14 +36,7 @@ class GamePartitionsController extends Controller
             'name' => 'required|unique:game_partitions,name',
         ]);
         $data = new GamePartition();
-        $data->name = $request->input('name');
-        $data->sum = $request->input('sum') * 10000;
-        $data->up = $request->input('up') * 100;
-        $data->down = $request->input('down') * 100;
-        $data->number = $request->input('number');
-        $data->count = $request->input('count');
-        $data->status = $request->input('status');
-        $data->save();
+        $data->create($request->all());
         return redirect(route('admin.game_partition.index'))->with('flash_message', '添加成功');
     }
 
@@ -64,16 +57,9 @@ class GamePartitionsController extends Controller
             'name' => ['required', Rule::unique('game_partitions', 'name')->ignore($id, 'id')],
 
         ]);
-        $sum = 'sum';
         $data = GamePartition::findOrFail($id);
-        $data->name = $request->input('name');
-        $data->$sum = $request->input('sum') * 10000;
-        $data->up = $request->input('up') * 100;
-        $data->down = $request->input('down') * 100;
-        $data->number = $request->input('number');
-        $data->count = $request->input('count');
-        $data->status = $request->input('status');
-        $data->save();
+
+        $data->update($request->all());
         return redirect(route('admin.game_partition.index'))->with('flash_message', '添加成功');
 
     }

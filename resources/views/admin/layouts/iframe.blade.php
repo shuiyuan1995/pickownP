@@ -131,12 +131,27 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                Page Header
-                <small>Optional description</small>
+                @if(isset($current_menu['children']))
+                    @foreach($current_menu['children'] as $item)
+                        @if($item['active'])
+                            {{$item['text']}}
+                            <small>{{$item['description']}}</small>
+                        @endif
+                    @endforeach
+                @else
+                    {{$current_menu['text']}}
+                    <small>{{$current_menu['description']}}</small>
+                @endif
             </h1>
             <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
-                <li class="active">Here</li>
+                <li><a href="javascript:void(0)"><i class="fa fa-dashboard"></i> {{$current_menu['text']}}</a></li>
+                @if(isset($current_menu['children']))
+                    @foreach($current_menu['children'] as $item)
+                        @if($item['active'])
+                            <li class="active">{{$item['text']}}</li>
+                        @endif
+                    @endforeach
+                @endif
             </ol>
         </section>
 

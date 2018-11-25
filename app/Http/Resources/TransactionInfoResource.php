@@ -14,6 +14,8 @@ class TransactionInfoResource extends JsonResource
      */
     public function toArray($request)
     {
+        $type = $this->typeArr;
+        $status = $this->statusArr;
         return [
             'id' => $this->id,
             'issus_userid' => $this->issus_userid,
@@ -21,9 +23,9 @@ class TransactionInfoResource extends JsonResource
             'income_userid' => $this->income_userid,
             'income_user' => $this->income_user->name,
             'type' => $this->type,
-            'type_value'=>$this->typeArr[$this->type],
+            'type_value'=>$type[$this->type],
             'status' => $this->status,
-            'status_value'=>$this->stutusArr[$this->status],
+            'status_value'=>$status[$this->status],
             'eos' => $this->eos / 10000,
             'issus_count_sum' => $this->issus_count_sum / 10000,
             'msg' => $this->msg,

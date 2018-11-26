@@ -17,20 +17,22 @@ Route::group(['middleware' => ['auth:admin', 'permission']], function () {
     Route::post('formUpload', ['uses' => 'IndexController@formUpload', 'as' => 'admin.index.form_upload']);
 
     // 用户路由
-    Route::get('home_user', ['uses' => 'HomeUsersController@index', 'as' => 'admin.home_user.index']);
+    Route::resource('home_user','HomeUsersController')->names('admin.home_user');
     Route::get('ubi', ['uses' => 'UserBehaviorInfosController@index', 'as' => 'admin.ubi.index']);
 
 
     // 红包路由
-    Route::get('game_partition', ['uses'=> 'GamePartitionsController@index', 'as' => 'admin.game_partition.index']);
-    Route::get('out_packet',['uses'=>'OutPacketsController@index','as'=> 'admin.out_packet.index']);
-    Route::get('in_packet',['uses'=> 'InPacketsController@index', 'as' => 'admin.in_packet.index']);
+    Route::resource('game_partition', 'GamePartitionsController',
+        ['only' => ['index', 'create', 'store', 'edit', 'update', 'destroy']])->names('admin.game_partition');
+    Route::resource('out_packet', 'OutPacketsController')->names('admin.out_packet');
+    Route::resource('in_packet','InPacketsController')->names('admin.in_packet');
 
+    Route::resource('transaction_info','TransactionInfosController')->names('admin.transaction_info');
 
     Route::resource('menu', 'MenusController', ['except' => 'show'])->names('admin.menu');
     Route::resource('permission', 'PermissionsController', ['except' => 'show'])->names('admin.permission');
 
-    Route::get('role/{id}/permission', ['uses' => 'UsersController@permission', 'as' => 'admin.role.permission']);
+    Route::get('role/{id}/permission', ['uses' => 'RolesController@permission', 'as' => 'admin.role.permission']);
     Route::resource('role', 'RolesController', ['except' => 'show'])->names('admin.role');
 
     Route::get('user/{id}/role', ['uses' => 'UsersController@role', 'as' => 'admin.user.role']);

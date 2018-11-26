@@ -11,6 +11,8 @@ class GamePartitionsTableSeeder extends Seeder
      */
     public function run()
     {
-        //
+        factory(App\Models\GamePartition::class, 3)->create()->each(function($u) {
+            factory(App\Models\GamePartition::class)->make();
+        });
     }
 }

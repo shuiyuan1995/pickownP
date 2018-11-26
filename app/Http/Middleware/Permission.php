@@ -22,10 +22,12 @@ class Permission
     public function handle($request, Closure $next)
     {
         $action = $request->route()->action;
-        $user = auth()->user();
+        $user = auth('admin')->user();
         $menus = $this->cacheMenus();
         view()->share($this->cache_key, $menus);
         if (!isset($action['as']) || $user->can($action['as'])) {
+//            $all_permissions = collect()->merge($user->getAllPermissions(), $user->permissions);
+//            dump($all_permissions);
             return $next($request);
         }
         throw UnauthorizedException::forPermissions([$action['as']]);
@@ -43,6 +45,9 @@ class Permission
         $menus = [];
         foreach ($list->where('pid', 0)->sortBy('sort')->all() as $item) {
             $menu = $this->getMenu($list, $item);
+            if ($menu['active']) {
+                view()->share('current_menu', $menu);
+            }
             array_push($menus, $menu);
         }
         return $menus;
@@ -55,6 +60,7 @@ class Permission
             'text' => $item->name,
             'icon' => $item->key?:'fa fa-list',
             'active' => false,
+            'description' => $item->description
         ];
         $current_url = url()->current();
         if (!$item->url) {
@@ -76,7 +82,7 @@ class Permission
             } else {
                 $url = url($url);
             }
-            if ($current_url == $url) {
+            if (starts_with($current_url.'/', $url.'/')) {
                 $menu['active'] = true;
             }
             $menu['url'] = $url;

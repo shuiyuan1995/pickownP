@@ -1,6 +1,6 @@
 @extends('admin.layouts.iframe')
 @section('content')
- UserBehaviorInfos->index()
+ 功能开发中
 @endsection
 @section('script')
 

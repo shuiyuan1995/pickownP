@@ -33,15 +33,19 @@ class MenusTableSeeder extends Seeder
                 ['name'=> '用户行为管理', 'key'=> 'fa', 'url'=> 'admin.ubi.index']
             ]],
             ['name'=> '红包', 'pid' => 0, 'key'=> 'fa fa-folder', 'url'=> null, 'children'=>[
-                ['name'=> '红包分区管理', 'key'=>'fa', 'url'=> 'admin.game_partition.index'],
-                ['name'=> '发红包管理', 'key'=> 'fa', 'url'=> 'admin.out_packet.index'],
-                ['name'=> '抢红包管理', 'key' => 'fa', 'url'=> 'admin.in_packet.index']
+                ['name'=> '红包分区', 'key'=>'fa', 'url'=> 'admin.game_partition.index'],
+                ['name'=> '发红包', 'key'=> 'fa', 'url'=> 'admin.out_packet.index'],
+                ['name'=> '抢红包', 'key' => 'fa', 'url'=> 'admin.in_packet.index']
+            ]],
+            ['name'=> '交易','pid'=> 0,'key'=> 'fa fa-folder','url'=>null, 'children'=>[
+                ['name'=>'交易信息', 'key' => 'fa' , 'url'=>'admin.transaction_info.index'],
             ]],
             ['name'=> '广告管理', 'pid' => 0, 'key'=> 'fa fa-picture-o', 'url'=> null, 'children'=>[
                 ['name'=> '广告位管理', 'key'=>'fa', 'url'=> 'admin.ad_positions.index'],
                 ['name'=> '广告管理', 'key'=>'fa', 'url'=> 'admin.ad_managments.index'],
             ]],
             ['name' => '网站信息配置', 'key' => 'fa fa-reorder', 'url' => 'admin.web.index'],
+
         ];
         $data = [];
         $user_menu = [];

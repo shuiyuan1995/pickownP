@@ -35,7 +35,7 @@
                     <tr>
                         <td>{{ $item->id }}</td>
                         <td>{{ $item->user->name }}</td>
-                        <td>{{ $item->type }}</td>
+                        <td>{{ $item->typeArr[$item->type] }}</td>
                         <td>{{ $item->created_at }}</td>
                         <td>{{ $item->updated_at }}</td>
                         <td>

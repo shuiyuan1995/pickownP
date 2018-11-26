@@ -40,9 +40,11 @@ Route::group(['middleware' => ['auth:admin', 'permission']], function () {
     Route::resource('user', 'UsersController')->names('admin.user');
 
     Route::resource('keywords_type', 'KeywordsTypeController', ['except' => 'show'])->names('admin.keywords_type');
-
+    Route::get('web_config/index','WebConfigController@index')->name('admin.web.index');
     Route::resource('keywords', 'KeywordsController', ['except' => 'show'])->names('admin.keywords');
-
+    Route::resource('ad_positions', 'AdPositionsController')->names('admin.ad_positions');
+    Route::resource('ad_managments', 'AdManagmentsController')->names('admin.ad_managments');
+    
 });
 Route::get('login', ['uses' => 'AuthController@showLoginForm', 'as' => 'admin.login', 'middleware' => ['guest:admin']]);
 Route::post('login', ['uses' => 'AuthController@login', 'as' => 'admin.doLogin']);

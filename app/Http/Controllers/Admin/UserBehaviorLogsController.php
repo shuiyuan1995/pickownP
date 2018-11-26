@@ -22,7 +22,9 @@ class UserBehaviorLogsController extends Controller
         $list = $query->paginate();
         return view('admin.user_behavior_log.index', compact('list'));
     }
-    public function show($id){
+
+    public function show($id)
+    {
         $data = UserBehaviorLog::findOrFail($id);
         return new UserBehaviorLogResource($data);
     }

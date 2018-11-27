@@ -15,7 +15,7 @@ class Controller extends BaseController
     public function json($data, $code = Response::HTTP_OK, $message = '')
     {
         $result = ['data' => $data, 'code' => $code, 'message' => $message];
-        return response()->json($result);
+        return response()->json($result)->setEncodingOptions(JSON_UNESCAPED_UNICODE);
     }
 
     public function success($data = [], $message = '')

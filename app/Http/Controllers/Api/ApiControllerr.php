@@ -127,10 +127,10 @@ class ApiControllerr extends Controller
     public function allowns_list(Request $request)
     {
         $query = InPacket::query();
-        if ($request->filled('time')){
-            $query->where('updated_at','>',$request->input('time'));
+        if ($request->filled('time')) {
+            $query->where('updated_at', '>', $request->input('time'));
         }
-        return $this->json(['data'=>'ok']);
+        return $this->json(['data' => 'ok']);
     }
 
     public function record_list()

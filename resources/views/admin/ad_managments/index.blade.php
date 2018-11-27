@@ -43,8 +43,11 @@
                         <td>
                         @if ($item->adposition->type == 1) 
                             <img height="200" width="200" src="{{\Storage::url($item->img_url)}}">
+                        @elseif ($item->adposition->type == 2)
+
+                        @elseif ($item->adposition->type == 3)
+                        文本框请点修改查看详情
                         @endif
-                            
                         </td>
                         <td>
                             {{$item->sort}}

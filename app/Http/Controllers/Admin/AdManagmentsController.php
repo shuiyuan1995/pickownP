@@ -47,13 +47,16 @@ class AdManagmentsController extends Controller
         $request->validate([
             'ad_id' => 'required',
             'name' => 'required',
-            'img_url' => 'required',
-        ],[
-            'img_url.required'=> '文件必传',
         ]);
-        $img_url = $request->file('img_url')->store('ad_managment');
         $ad_managments = new AdManagments();
+        if ($request->hasFile('img_url') && $request->input('type') !=3) {
+            $img_url = $request->file('img_url')->store('ad_managment');
+        }
+        if ($request->input('type') ==3 ) {
+            $img_url = $request->input('img_url_text');
+        }
         $ad_managments->name = $request->input('name');
+        $ad_managments->type = $request->input('type');
         $ad_managments->ad_id = $request->input('ad_id');
         $ad_managments->img_url = $img_url;
         $ad_managments->sort = $request->input('sort');
@@ -105,8 +108,11 @@ class AdManagmentsController extends Controller
         $img_url = $ad_managments->img_url;
         $ad_managments->name = $request->input('name');
         $ad_managments->ad_id = $request->input('ad_id');
-        if ($request->hasFile('img_url')) {
+        if ($request->hasFile('img_url') && $request->input('type') !=3) {
             $img_url = $request->file('img_url')->store('ad_managment');
+        }
+        if ($request->input('type') ==3 ) {
+            $img_url = $request->input('img_url_text');
         }
         $ad_managments->img_url = $img_url;
         $ad_managments->sort = $request->input('sort');

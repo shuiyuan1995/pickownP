@@ -13,6 +13,7 @@
                 <div class="col-md-8">
                     <select name="ad_id" id="inputType" class="form-control select2" data-rule-required="true" data-ajax-url="{{route('api.web.adpositions')}}">
                     </select>
+                    <input type="hidden" name="type" id="type">
                 </div>
             </div>
             <div class="form-group">
@@ -21,10 +22,16 @@
                     <input type="text" class="form-control" name="name" id="inputName" data-rule-required="true">
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group img1">
                 <label for="" class="col-md-2 control-label">文件</label>
                 <div class="col-md-8">
                     <input type="file" name="img_url"   class="form-control file-input">
+                </div>
+            </div>
+            <div class="form-group img2" style="display:none;">
+                <label for="" class="col-md-2 control-label">内容</label>
+                <div class="col-md-8">
+                <script id="container" name="img_url_text" type="text/plain"></script>
                 </div>
             </div>
             <div class="form-group">
@@ -43,13 +50,23 @@
     </div>
 </div>
 @endsection
+@include('vendor.ueditor.assets')
 @section('script')
 <script>
 $(function () {
+    var ue = UE.getEditor('container');console.log(ue);
+    ue.ready(function() {
+        ue.execCommand('serverparam', '_token', '{{ csrf_token() }}'); // 设置 CSRF token.
+    });
     $('#inputType').on('select2:select', function (e) {
         var data = e.params.data;
+        $("#type").val(data.type);
         if (data.type == 3) {
-            alert(1)
+            $(".img2").show();
+            $(".img1").hide();
+        } else {
+            $(".img2").hide();
+            $(".img1").show();
         }
     });
 });

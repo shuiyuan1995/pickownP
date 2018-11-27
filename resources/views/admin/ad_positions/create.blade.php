@@ -19,7 +19,7 @@
                 <div class="col-md-8">
                     <select name="type" id="selectType" class="form-control" data-rule-required="true">
                         <option value="1" selected="selected">图片</option>
-                        <option value="2" >视频</option>
+                        <!-- <option value="2" >视频</option> -->
                         <option value="3">文字</option>
                     </select>
                 </div>

@@ -21,6 +21,7 @@ Route::group(['prefix' => 'web'], function () {
     Route::get('role', ['uses'=>'Api\WebController@role', 'as' => 'api.web.role']);
     Route::get('keywords_type', ['uses'=>'Api\WebController@keywordsType', 'as' => 'api.web.keywords_type']);
     Route::get('keywords', ['uses'=>'Api\WebController@keywords', 'as' => 'api.web.keywords']);
+    Route::get('adpositions', ['uses'=>'Api\WebController@adpositions', 'as' => 'api.web.adpositions']);
 
     Route::any('unique', ['uses'=>'Api\WebController@unique', 'as' => 'api.web.unique']);
 });

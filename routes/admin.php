@@ -18,7 +18,7 @@ Route::group(['middleware' => ['auth:admin', 'permission']], function () {
 
     // 用户路由
     Route::resource('home_user','HomeUsersController')->names('admin.home_user');
-    Route::get('ubi', ['uses' => 'UserBehaviorInfosController@index', 'as' => 'admin.ubi.index']);
+    Route::resource('ubi', 'UserBehaviorLogsController')->names('admin.ubi');
 
 
     // 红包路由

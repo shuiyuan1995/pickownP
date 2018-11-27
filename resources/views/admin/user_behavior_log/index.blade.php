@@ -23,12 +23,8 @@
                 <thead>
                 <tr>
                     <th>ID</th>
-                    <th>发出用户名</th>
-                    <th>收到用户名</th>
-                    <th>交易信息类型</th>
-                    <th>状态</th>
-                    <th>交易额</th>
-                    <th>发出用户交易后的金额</th>
+                    <th>用户名</th>
+                    <th>类型</th>
                     <th>创建时间</th>
                     <th>更新时间</th>
                     <th>操作</th>
@@ -38,20 +34,16 @@
                 @foreach($list as $item)
                     <tr>
                         <td>{{ $item->id }}</td>
-                        <td>{{ $item->issus_user->name }}</td>
-                        <td>{{ $item->income_user->name }}</td>
-                        <td>{{ $item->type == 1 ? '抢红包':'发红包' }}</td>
-                        <td>{{ $item->status }}</td>
-                        <td>{{ $item->eos / 10000 }}</td>
-                        <td>{{ $item->issus_count_sum / 10000 }}</td>
+                        <td>{{ $item->user->name }}</td>
+                        <td>{{ $item->typeArr[$item->type] }}</td>
                         <td>{{ $item->created_at }}</td>
                         <td>{{ $item->updated_at }}</td>
                         <td>
                             <button type="button" class="btn btn-success" data-toggle="modal"
-                                    data-url="{{route('admin.transaction_info.show', $item)}}"
+                                    data-url="{{route('admin.ubi.show', $item)}}"
                                     data-target="#exampleModal" data-whatever="@mdo">查看详情
                             </button>
-                            <a href="{{route('admin.transaction_info.edit', $item)}}" class="btn btn-info btn-sm">修改</a>
+                            {{--<a href="{{route('admin.ubi.edit', $item)}}" class="btn btn-info btn-sm">修改</a>--}}
                         </td>
                     </tr>
                 @endforeach
@@ -69,28 +61,16 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                                 aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="exampleModalLabel">交易信息</h4>
+                    <h4 class="modal-title" id="exampleModalLabel">信息</h4>
                 </div>
                 <div class="modal-body" id="model-body">
-                    <label class="control-label">发出用户:</label>
-                    <p id="issus_user">...</p>
+                    <label class="control-label">用户名:</label>
+                    <p id="user">...</p>
                     <h1 class="page-header"></h1>
-                    <label class="control-label">获取用户:</label>
-                    <p id="income_user">...</p>
-                    <h1 class="page-header"></h1>
-                    <label class="control-label">交易类型:</label>
+                    <label class="control-label">类型:</label>
                     <p id="type">...</p>
                     <h1 class="page-header"></h1>
-                    <label class="control-label">状态:</label>
-                    <p id="status">...</p>
-                    <h1 class="page-header"></h1>
-                    <label class="control-label">交易额:</label>
-                    <p id="eos">...</p>
-                    <h1 class="page-header"></h1>
-                    <label class="control-label">发出用户交易后的金额:</label>
-                    <p id="issus_count_sum">...</p>
-                    <h1 class="page-header"></h1>
-                    <label class="control-label">备注信息:</label>
+                    <label class="control-label">信息:</label>
                     <p id="msg">...</p>
                     <h1 class="page-header"></h1>
                     <label class="control-label">创建时间:</label>
@@ -113,8 +93,8 @@
             var button = $(event.relatedTarget); // Button that triggered the modal
             @if(config('app.debug'))
                 console.log(event);
-                console.log(button);
-            @endif
+            console.log(button);
+                    @endif
             var url = button.data('url'); // Extract info from data-* attributes
             var modal = $(this).find('.modal-body');
             $.ajax({
@@ -125,12 +105,8 @@
                     @if(config('app.debug'))
                         console.log(data);
                     @endif
-                    modal.find('#issus_user').text(eneity.issus_user);
-                    modal.find('#income_user').text(eneity.income_user);
+                    modal.find('#user').text(eneity.user);
                     modal.find('#type').text(eneity.type_value);
-                    modal.find('#status').text(eneity.status_value);
-                    modal.find('#eos').text(eneity.eos);
-                    modal.find('#issus_count_sum').text(eneity.issus_count_sum);
                     modal.find('#msg').text(eneity.msg);
                     modal.find('#created_at').text(eneity.created_at.date);
                     modal.find('#updated_at').text(eneity.updated_at.date);

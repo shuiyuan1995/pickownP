@@ -20,7 +20,7 @@
                 <div class="col-md-8">
                     <select name="type" id="selectType" class="form-control" data-rule-required="true">
                         <option value="1" <?=$ad_position->type==1?'selected':''?>>图片</option>
-                        <!-- <option value="2" <?=$ad_position->type==2?'selected':''?> >视频</option> -->
+                        <option value="2" <?=$ad_position->type==2?'selected':''?> >视频</option>
                         <option value="3" <?=$ad_position->type==3?'selected':''?> >文字</option>
                     </select>
                 </div>

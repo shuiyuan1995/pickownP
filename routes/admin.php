@@ -40,10 +40,16 @@ Route::group(['middleware' => ['auth:admin', 'permission']], function () {
     Route::resource('user', 'UsersController')->names('admin.user');
 
     Route::resource('keywords_type', 'KeywordsTypeController', ['except' => 'show'])->names('admin.keywords_type');
-    Route::get('web_config/index','WebConfigController@index')->name('admin.web.index');
+    //网站配置路由
+    Route::get('user/{id}/del', ['uses' => 'WebConfigController@destroy', 'as' => 'admin.web_config.destroy']);
+    Route::resource('web_config', 'WebConfigController', ['except' => ['show', 'destroy']])->names('admin.web_config');
+    
     Route::resource('keywords', 'KeywordsController', ['except' => 'show'])->names('admin.keywords');
-    Route::resource('ad_positions', 'AdPositionsController')->names('admin.ad_positions');
-    Route::resource('ad_managments', 'AdManagmentsController')->names('admin.ad_managments');
+    Route::resource('ad_positions', 'AdPositionsController', ['except' => 'show'])->names('admin.ad_positions');
+    Route::resource('ad_managments', 'AdManagmentsController', ['except' => 'show'])->names('admin.ad_managments');
+    
+    Route::resource('site_mails', 'SiteMailsController',['except' =>['edit', 'update', 'destroy']])->names('admin.site_mails');
+    Route::resource('info_read_records', 'InfoReadRecordsController',['only'=>'index'])->names('admin.info_read_records');
     
 });
 Route::get('login', ['uses' => 'AuthController@showLoginForm', 'as' => 'admin.login', 'middleware' => ['guest:admin']]);

@@ -44,8 +44,11 @@ class MenusTableSeeder extends Seeder
                 ['name'=> '广告位管理', 'key'=>'fa', 'url'=> 'admin.ad_positions.index'],
                 ['name'=> '广告管理', 'key'=>'fa', 'url'=> 'admin.ad_managments.index'],
             ]],
-            ['name' => '网站信息配置', 'key' => 'fa fa-reorder', 'url' => 'admin.web.index'],
-
+            ['name'=> '站内信息管理', 'pid' => 0, 'key'=> 'fa fa-picture-o', 'url'=> null, 'children'=>[
+                ['name'=> '信息管理', 'key'=>'fa', 'url'=> 'admin.site_mails.index'],
+                ['name'=> '浏览记录管理', 'key'=>'fa', 'url'=> 'admin.info_read_records.index'],
+            ]],
+            ['name'=> '网站信息配置', 'pid' => 0, 'key'=> 'fa fa-reorder', 'url' => 'admin.web_config.index'],
         ];
         $data = [];
         $user_menu = [];

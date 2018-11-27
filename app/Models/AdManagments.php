@@ -11,6 +11,6 @@ class AdManagments extends Model
 
     public function adposition()
     {
-        return $this->belongsTo(AdPositions::class, 'id', 'ad_id');
+        return $this->belongsTo(AdPositions::class, 'ad_id', 'id');
     }
 }

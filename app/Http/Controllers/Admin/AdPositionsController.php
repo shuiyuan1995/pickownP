@@ -53,12 +53,16 @@ class AdPositionsController extends Controller
         //
         $request->validate([
             'type' => 'required',
-            'name' => 'required'
+            'name' => 'required',
+
         ]);
 
         $ad_position = new AdPositions();
         $ad_position->type = $request->input('type');
         $ad_position->name = $request->input('name');
+        $ad_position->is_use = $request->input('is_use');
+        $ad_position->intro = $request->input('intro');
+        $ad_position->num = $request->input('num',0)=="" ? 0 :$request->input('num',0);
         $ad_position->save();
 
         return redirect(route('admin.ad_positions.index'))->with('flash_message', '添加成功');
@@ -106,6 +110,9 @@ class AdPositionsController extends Controller
         $ad_position = AdPositions::findOrFail($id);
         $ad_position->type = $request->input('type');
         $ad_position->name = $request->input('name');
+        $ad_position->is_use = $request->input('is_use');
+        $ad_position->intro = $request->input('intro');
+        $ad_position->num = $request->input('num',0)=="" ? 0 :$request->input('num',0);
 
         $ad_position->save();
 

@@ -10,7 +10,7 @@ use Spatie\Permission\Exceptions\UnauthorizedException;
 class Permission
 {
     // 菜单缓存key
-    protected $cache_key = 'current_user_menus';
+    const MENU_CACHE_KEY = 'current_user_menus';
 
     /**
      * Handle an incoming request.
@@ -24,18 +24,21 @@ class Permission
         $action = $request->route()->action;
         $user = auth('admin')->user();
         $menus = $this->cacheMenus();
-        view()->share($this->cache_key, $menus);
-        if (!isset($action['as']) || $user->can($action['as'])) {
-//            $all_permissions = collect()->merge($user->getAllPermissions(), $user->permissions);
-//            dump($all_permissions);
-            return $next($request);
+        view()->share(self::MENU_CACHE_KEY, $menus);
+        if (isset($action['as'])) {
+            if ($user->can($action['as'])) {
+                $current_permission = \App\Models\Permission::query()->where('name', $action['as'])->first();
+                view()->share('current_permission', $current_permission);
+                return $next($request);
+            }
+            throw UnauthorizedException::forPermissions([$action['as']]);
         }
-        throw UnauthorizedException::forPermissions([$action['as']]);
+        return $next($request);
     }
 
     protected function cacheMenus()
     {
-        $key = $this->cache_key;
+        $key = self::MENU_CACHE_KEY;
         if (Cache::has($key)) {
             $list = Cache::get($key);
         } else {
@@ -82,7 +85,7 @@ class Permission
             } else {
                 $url = url($url);
             }
-            if (starts_with($current_url.'/', $url.'/')) {
+            if (starts_with($current_url .'/', $url.'/')) {
                 $menu['active'] = true;
             }
             $menu['url'] = $url;

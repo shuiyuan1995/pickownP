@@ -17,12 +17,31 @@
             <div class="form-group">
                 <label for="inputType" class="control-label col-md-2">类型*</label>
                 <div class="col-md-8">
-                    <!-- <input type="text" class="form-control" name="type" id="inputType" data-rule-required="true"> -->
-                    <select name="type" id="Type" name="type" class="form-control">
+                    <select name="type" id="selectType" class="form-control" data-rule-required="true">
                         <option value="1" selected="selected">图片</option>
                         <option value="2" >视频</option>
                         <option value="3">文字</option>
                     </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputType" class="control-label col-md-2">是否启用*</label>
+                <div class="col-md-8">
+                    <label class="radio-inline"><input name="is_use" type="radio" value="1" checked />是 </label>
+                    <label class="radio-inline"><input name="is_use" type="radio" value="0" />否 </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputType" class="control-label col-md-2">轮播个数 </label>
+                <div class="col-md-8">
+                    <input type="number" name="num" value="0"  data-rule-number="true" data-rule-decimal="0" min="0" data-msg-decimal="必须是正整数" class="form-control">
+                    <p class="help-block">0为不轮播，大于0为轮播个数</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputType"  class="control-label col-md-2">简绍*</label>
+                <div class="col-md-8">
+                <textarea name="intro" class="form-control"></textarea>
                 </div>
             </div>
             <div class="form-group">

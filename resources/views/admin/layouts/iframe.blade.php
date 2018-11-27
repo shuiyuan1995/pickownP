@@ -63,8 +63,7 @@
         <div class="tab-content">
             <div class="tab-pane" id="control-sidebar-skin">
                 <h3 class="control-sidebar-heading">Skins</h3>
-                @component('component.skins')
-                @endcomponent
+                @include('component.skins')
             </div>
             <div class="tab-pane active" id="control-sidebar-password">
                 <h3 class="control-sidebar-heading">个人信息</h3>
@@ -129,34 +128,36 @@
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
+        @if(isset($current_permission) && isset($current_menu))
         <section class="content-header">
-            <h1>
-                @if(isset($current_menu['children']))
-                    @foreach($current_menu['children'] as $item)
-                        @if($item['active'])
-                            {{$item['text']}}
-                            <small>{{$item['description']}}</small>
-                        @endif
-                    @endforeach
-                @else
-                    {{$current_menu['text']}}
-                    <small>{{$current_menu['description']}}</small>
-                @endif
-            </h1>
+            <h1>{{$current_permission->display_name}}</h1>
             <ol class="breadcrumb">
-                <li><a href="javascript:void(0)"><i class="fa fa-dashboard"></i> {{$current_menu['text']}}</a></li>
+                <li><a href="javascript:void(0);"><i class="fa fa-dashboard"></i> {{$current_menu['text']}}</a></li>
                 @if(isset($current_menu['children']))
-                    @foreach($current_menu['children'] as $item)
-                        @if($item['active'])
-                            <li class="active">{{$item['text']}}</li>
-                        @endif
-                    @endforeach
+                @foreach($current_menu['children'] as $item)
+                    @if($item['active'])
+                        <li class="active">{{$item['text']}}</li>
+                    @endif
+                @endforeach
                 @endif
             </ol>
         </section>
+        @endif
 
         <!-- Main content -->
         <section class="content">
+            @if($errors->any())
+            <div class="callout callout-danger">
+                @foreach($errors->all() as $value)
+                <p>{{$value}}</p>
+                @endforeach
+            </div>
+            @endif
+            @if(Session::has('flash_message'))
+            <div class="callout callout-success">
+                <p>{{Session::get('flash_message')}}</p>
+            </div>
+            @endif
             @yield('content')
         </section>
         <!-- /.content -->

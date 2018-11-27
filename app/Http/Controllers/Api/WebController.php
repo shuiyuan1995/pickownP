@@ -8,9 +8,11 @@ use App\Http\Resources\MenuResource;
 use App\Http\Resources\PermissionResource;
 use App\Http\Resources\RegionResource;
 use App\Http\Resources\RoleResource;
+use App\Http\Resources\AdManagmentsResource;
 use App\Models\Keywords;
 use App\Models\KeywordsType;
 use App\Models\Menu;
+use App\Models\AdPositions;
 use App\Models\Permission;
 use App\Models\Region;
 use App\Models\Role;
@@ -148,7 +150,20 @@ class WebController extends Controller
 
         return KeywordsResource::collection($list)->additional(['code' => Response::HTTP_OK, 'message' => '']);
     }
+    public function adpositions(Request $request){
+        $query = AdPositions::query();
 
+        if ($request->filled('key')) {
+            $name = $request->input('key');
+            $query->where(function ($query) use ($name) {
+                $query->where('name', 'like', '%'.$name.'%');
+            });
+        }
+
+        $list = $query->paginate();
+        
+        return AdManagmentsResource::collection($list)->additional(['code' => Response::HTTP_OK, 'message' => '']);
+    }
     public function unique(Request $request)
     {
         $code = Response::HTTP_BAD_REQUEST;

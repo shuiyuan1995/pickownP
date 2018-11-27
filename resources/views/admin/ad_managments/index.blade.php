@@ -4,23 +4,8 @@
         <div class="box-header with-border">
             <form action="" class="form-horizontal" autocomplete="off">
                 <div class="form-group">
-                    <label for="selectType" class="col-md-2 control-label">类型</label>
-                    <div class="col-md-2">
-                        <select name="type" id="selectType" class="form-control select2" data-ajax-url="{{route('api.web.keywords_type')}}">
-                            @if ($type)
-                            <option value="{{$type->id}}" selected="selected">{{$type->name}}</option>
-                            @endif
-                        </select>
-                    </div>
-                    <div class="col-md-2 control-label">关键字</div>
-                    <div class="col-md-2">
-                        <input type="text" class="form-control" name="key" value="{{request('key')}}" placeholder="key/名称">
-                    </div>
-                </div>
-                <div class="form-group">
                     <div class="col-md-4 pull-right">
-                        <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Search</button>
-                        <a href="{{route('admin.keywords.create')}}" class="btn btn-default"><i class="fa fa-plus"></i> 添加</a>
+                        <a href="{{route('admin.ad_managments.create')}}" class="btn btn-default"><i class="fa fa-plus"></i> 添加</a>
                     </div>
                 </div>
             </form>
@@ -30,26 +15,44 @@
             <table class="table table-bordered table-hover">
                 <thead>
                 <tr>
+                    <th>广告位名称</th>
                     <th>广告名称</th>
-                    <th>key</th>
+                    <th>广告类型</th>
+                    <th>是否显示</th>
                     <th>广告位图片</th>
+                    <th>排序</th>
                     <th></th>
                 </tr>
                 </thead>
                 <tbody>
                 @foreach($list as $item)
                     <tr>
+        
                         <td>
-                            <a href="{{route('admin.keywords.create', ['type'=>$item->type])}}" class="btn-link" title="添加">{{$item->keyType->name}}</a>
-                        </td>
-                        <td>{{$item->key}}</td>
-                        <td>
-                            <a href="{{route('admin.keywords.edit', $item)}}" title="修改" class="btn-link">{{$item->name}}</a>
+                            {{$item->adposition->name}}
                         </td>
                         <td>
-                            <a href="{{route('admin.keywords.edit', $item)}}" class="btn btn-info btn-sm">修改</a>
+                            {{$item->name}}
+                        </td>
+                        <td>
+                            {{$item->adposition->type_name}}
+                        </td>
+                        <td>
+                            {{$item->adposition->use_name}}
+                        </td>
+                        <td>
+                        @if ($item->adposition->type == 1) 
+                            <img height="200" width="200" src="{{\Storage::url($item->img_url)}}">
+                        @endif
+                            
+                        </td>
+                        <td>
+                            {{$item->sort}}
+                        </td>
+                        <td>
+                            <a href="{{route('admin.ad_managments.edit', $item)}}" class="btn btn-info btn-sm">修改</a>
                             <button type="submit" form="delForm{{$item->id}}" class="btn btn-default btn-sm" title="删除" onclick="return confirm('是否确定？')">删除</button>
-                            <form class="form-inline hide" id="delForm{{$item->id}}" action="{{ route('admin.keywords.destroy', $item) }}" method="post">
+                            <form class="form-inline hide" id="delForm{{$item->id}}" action="{{ route('admin.ad_managments.destroy', $item) }}" method="post">
                                 {{ csrf_field() }} {{ method_field('DELETE') }}
                             </form>
                         </td>

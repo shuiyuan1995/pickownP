@@ -17,22 +17,7 @@ class AdManagmentsController extends Controller
     public function index(Request $request)
     {
         //
-        $query = AdManagments::query()->with('adposition');
-
-        // if ($request->filled('key')) {
-        //     $name = $request->input('key');
-        //     $query->where(function ($query) use ($name) {
-        //         $query->where('name', 'like', '%'.$name.'%');
-        //         $query->orWhere('key', 'like', '%'.$name.'%');
-        //     });
-        // }
-
-        $type = null;
-        if ($request->filled('type')) {
-            $query_type = $request->input('type');
-            $type = AdPositions::find($query_type);
-            $query->where('ad_id', $query_type);
-        }
+        $query = AdManagments::query()->orderBy('ad_id', 'asc')->orderBy('sort', 'asc')->with('adposition');
 
         $list = $query->paginate();
 
@@ -47,6 +32,7 @@ class AdManagmentsController extends Controller
     public function create()
     {
         //
+        return view('admin.ad_managments.create');
     }
 
     /**
@@ -58,10 +44,26 @@ class AdManagmentsController extends Controller
     public function store(Request $request)
     {
         //
+        $request->validate([
+            'ad_id' => 'required',
+            'name' => 'required',
+            'img_url' => 'required',
+        ],[
+            'img_url.required'=> '文件必传',
+        ]);
+        $img_url = $request->file('img_url')->store('ad_managment');
+        $ad_managments = new AdManagments();
+        $ad_managments->name = $request->input('name');
+        $ad_managments->ad_id = $request->input('ad_id');
+        $ad_managments->img_url = $img_url;
+        $ad_managments->sort = $request->input('sort');
+        $ad_managments->save();
+
+        return redirect(route('admin.ad_managments.index'))->with('flash_message', '添加成功');
     }
 
     /**
-     * Display the specified resource.
+     * 查询广告位.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -80,6 +82,9 @@ class AdManagmentsController extends Controller
     public function edit($id)
     {
         //
+        $ad_managments = AdManagments::findOrFail($id);
+        $ad_positions = AdPositions::select(['id','name'])->findOrFail($ad_managments->ad_id);//dd($ad_positions);
+        return view('admin.ad_managments.edit',compact('ad_managments','ad_positions'));
     }
 
     /**
@@ -92,6 +97,22 @@ class AdManagmentsController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $request->validate([
+            'ad_id' => 'required',
+            'name' => 'required',
+        ]);
+        $ad_managments = AdManagments::findOrFail($id);
+        $img_url = $ad_managments->img_url;
+        $ad_managments->name = $request->input('name');
+        $ad_managments->ad_id = $request->input('ad_id');
+        if ($request->hasFile('img_url')) {
+            $img_url = $request->file('img_url')->store('ad_managment');
+        }
+        $ad_managments->img_url = $img_url;
+        $ad_managments->sort = $request->input('sort');
+        $ad_managments->save();
+
+        return redirect(route('admin.ad_managments.index'))->with('flash_message', '添加成功');
     }
 
     /**
@@ -103,5 +124,10 @@ class AdManagmentsController extends Controller
     public function destroy($id)
     {
         //
+        $ad_managments = AdManagments::findOrFail($id);
+
+        $ad_managments->delete();
+
+        return redirect(route('admin.ad_managments.index'))->with('flash_message', '删除成功');
     }
 }

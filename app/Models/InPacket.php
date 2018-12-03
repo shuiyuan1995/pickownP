@@ -18,6 +18,8 @@ class InPacket extends Model
         'updated_at'
     ];
 
+    public $statusArr = [1 => '正常', 2 => '异常'];
+
     public function user()
     {
         return $this->hasOne(User::class, 'id', 'userid');

@@ -26,10 +26,12 @@ Route::group(['prefix' => 'web'], function () {
 });
 
 Route::group(['namespace' => 'Api'], function () {
-    Route::get('login', ['uses' => 'ApiControllerr@login', 'as' => 'api.login']);
-    Route::get('game_partition',['uses'=>'ApiControllerr@game_partition','as'=>'api.game_partition']);
-    Route::get('all_game_gifts',['uses'=>'ApiControllerr@all_game_gifts','as'=>'api.all_game_gifts']);
-    Route::get('just_mine_game_gifts',['uses'=>'ApiControllerr@just_mine_game_gifts','as'=>'api.just_mine_game_gifts']);
-    Route::get('web_info',['uses'=>'ApiControllerr@web_info','as'=>'api.web_info']);
-    Route::get('allowns_list',['uses'=>'ApiControllerr@allowns_list','as'=>'api.allowns_list']);
+    Route::get('login', ['uses' => 'ApiController@login', 'as' => 'api.login']);
+    Route::get('game_partition',['uses'=>'InfoController@game_partition','as'=>'api.game_partition']);
+    Route::get('all_game_gifts',['uses'=>'InfoController@all_game_gifts','as'=>'api.all_game_gifts']);
+    Route::get('just_mine_game_gifts',['uses'=>'ApiController@just_mine_game_gifts','as'=>'api.just_mine_game_gifts']);
+    Route::get('web_info',['uses'=>'InfoController@web_info','as'=>'api.web_info']);
+    Route::get('rank_reward_list',['uses'=>'ApiController@rank_reward_list','as'=>'api.rank_reward_list']);
+    Route::get('allowns_list',['uses'=>'ApiController@allowns_list','as'=>'api.allowns_list']);
+    Route::get('record_list',['uses'=>'ApiController@record_list','as'=>'api.record_list']);
 });

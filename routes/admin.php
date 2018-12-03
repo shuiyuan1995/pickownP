@@ -19,7 +19,7 @@ Route::group(['middleware' => ['auth:admin', 'permission']], function () {
     // 用户路由
     Route::resource('home_user','HomeUsersController')->names('admin.home_user');
     Route::resource('ubi', 'UserBehaviorLogsController')->names('admin.ubi');
-
+    Route::resource('reward', 'RewardsController')->names('admin.reward');
 
     // 红包路由
     Route::resource('game_partition', 'GamePartitionsController',

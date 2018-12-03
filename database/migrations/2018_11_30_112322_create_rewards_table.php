@@ -16,6 +16,7 @@ class CreateRewardsTable extends Migration
         Schema::create('rewards', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('userid')->comment('用户id');
+            $table->integer('inid')->comment('抢红包id');
             $table->decimal('pairs', 18, 4)->nullable()->default(0)->comment('对子数');
             $table->decimal('three', 18, 4)->nullable()->default(0)->comment('三条数');
             $table->decimal('min', 18, 4)->nullable()->default(0)->comment('最小数');

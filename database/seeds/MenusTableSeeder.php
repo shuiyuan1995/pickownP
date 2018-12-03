@@ -30,12 +30,13 @@ class MenusTableSeeder extends Seeder
             ]],
             ['name' => '用户', 'pid' => 0, 'key' => 'fa fa-user', 'url'=>null, 'children' =>[
                 ['name'=> '用户管理', 'key'=>'fa', 'url'=> 'admin.home_user.index'],
-                ['name'=> '用户行为管理', 'key'=> 'fa', 'url'=> 'admin.ubi.index']
+                ['name'=> '用户行为管理', 'key'=> 'fa', 'url'=> 'admin.ubi.index'],
+                ['name'=> '用户奖励', 'key'=> 'fa','url'=> 'admin.reward.index']
             ]],
             ['name'=> '红包', 'pid' => 0, 'key'=> 'fa fa-folder', 'url'=> null, 'children'=>[
                 ['name'=> '红包分区', 'key'=>'fa', 'url'=> 'admin.game_partition.index'],
                 ['name'=> '发红包', 'key'=> 'fa', 'url'=> 'admin.out_packet.index'],
-                ['name'=> '抢红包', 'key' => 'fa', 'url'=> 'admin.in_packet.index']
+                ['name'=> '抢红包', 'key' => 'fa', 'url'=> 'admin.in_packet.index'],
             ]],
             ['name'=> '交易','pid'=> 0,'key'=> 'fa fa-folder','url'=>null, 'children'=>[
                 ['name'=>'交易信息', 'key' => 'fa' , 'url'=>'admin.transaction_info.index'],

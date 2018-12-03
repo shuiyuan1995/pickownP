@@ -16,10 +16,11 @@ class CreateGamePartitionsTable extends Migration
         Schema::create('game_partitions', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name',255)->nullable()->comment('游戏分区名');
-            $table->integer('sum')->nullable()->comment('数量值');
-            $table->integer('up')->nullable()->comment('单个红包金额上限，存储为整数，如2表示为200');
-            $table->integer('down')->nullable()->comment('单个红包金额下限，存储为整数，如5表示为500');
-            $table->integer('count')->nullable()->comment('默认拆分个数');
+            $table->decimal('sum',18,4)->nullable()->comment('数量值');
+            $table->decimal('up',6,2)->nullable()->comment('单个红包金额上限');
+            $table->decimal('down',6,2)->nullable()->comment('单个红包金额下限');
+            $table->integer('count')->nullable()->comment('发出红包红包默认可抢个数');
+            $table->integer('limit')->nullable()->comment('房间内可发出红包限制数');
             $table->integer('number')->nullable()->comment('默认尾数');
             $table->integer('status')->nullable()->comment('状态，1-开启，2-关闭');
             $table->timestamps();

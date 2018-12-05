@@ -26,8 +26,7 @@ class TransactionInfoResource extends JsonResource
             'type_value'=>$type[$this->type],
             'status' => $this->status,
             'status_value'=>$status[$this->status],
-            'eos' => $this->eos / 10000,
-            'issus_count_sum' => $this->issus_count_sum / 10000,
+            'eos' => $this->eos,
             'msg' => $this->msg,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at

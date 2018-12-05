@@ -14,22 +14,22 @@ class OutPacketResource extends JsonResource
      */
     public function toArray($request)
     {
+        $statusArr = $this->statusArr;
+        $indexArr = $this->indexArr;
         return [
             'id' => $this->id,
-            'gameid' => $this->gameid,
-            'game' => $this->game->name,
             'userid' => $this->userid,
-            'user' => $this->user->name,
-            'seed_sum' => (string)($this->seed_sum / 10000),
-            'number' => $this->number,
-            'surplus_sum' => $this->surplus_sum,
+            'user' => UserResource::make($this->user),
+            'issus_sum' => (string)$this->issus_sum,
+            'index'=>$indexArr[(string)$this->issus_sum],
+            'tail_number' => $this->tail_number,
             'count' => $this->count,
-            'up' => (string)($this->up / 100),
-            'down' => (string)($this->down / 100),
-            'surplus_count' => $this->surplus_count,
+            'eosid' => $this->eosid,
+            'blocknumber' => $this->blocknumber,
             'status' => $this->status,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'status_value'=>$statusArr[$this->status],
+            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
+            'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
         ];
     }
 }

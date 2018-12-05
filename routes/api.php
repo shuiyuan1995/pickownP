@@ -26,8 +26,13 @@ Route::group(['prefix' => 'web'], function () {
 
 Route::group(['namespace' => 'Api'], function () {
     Route::get('login', ['uses' => 'ApiController@login', 'as' => 'api.login']);
-    Route::post('issus_packet',['uses'=>'ApiController@issus_packet','as'=>'api.issus_packet']);
-    Route::get('get_info',['uses'=>'InfoController@getInfo','as'=>'api.get_info']);
-    Route::get('money_list',['uses'=>'InfoController@moneyList','as'=>'api.money_list']);
-    Route::get('get_money_list',['uses'=>'InfoController@getMoneyList','as'=>'api.get_money_list']);
+    Route::post('issus_packet', ['uses' => 'ApiController@issus_packet', 'as' => 'api.issus_packet']);
+    Route::post('income_packet', ['uses' => 'ApiController@income_packet', 'as' => 'api.income_packet']);
+    Route::post('my_issus_packet', ['uses' => 'ApiController@my_issus_packet', 'as' => 'api.my_issus_packet']);
+    Route::post('my_income_packet', ['uses' => 'ApiController@my_income_packet', 'as' => 'api.my_income_packet']);
+    Route::post('red_packet', ['uses' => 'ApiController@red_packet', 'as' => 'api.red_packet']);
+
+    Route::get('get_info', ['uses' => 'InfoController@getInfo', 'as' => 'api.get_info']);
+    Route::get('money_list', ['uses' => 'InfoController@moneyList', 'as' => 'api.money_list']);
+    Route::get('get_money_list', ['uses' => 'InfoController@getMoneyList', 'as' => 'api.get_money_list']);
 });

@@ -15,7 +15,7 @@ Broadcast::channel('App.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
-Broadcast::channel('channel-name', function ($socket) {
-    Log::info("test channel".$socket);
+Broadcast::channel('channel-name', function () {
+    Log::info("test channel");
     return false;
 });

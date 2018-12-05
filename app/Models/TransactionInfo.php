@@ -13,14 +13,13 @@ class TransactionInfo extends Model
         'type',
         'status',
         'eos',
-        'issus_count_sum',
         'msg',
         'created_at',
         'updated_at',
         'addr'
     ];
 
-    public $typeArr = [1 => '抢红包', 2 => '发红包', 3 => '踩雷'];
+    public $typeArr = [1 => '抢红包', 2 => '发红包', 3 => '踩雷', 4 => '中奖'];
     public $statusArr = [1 => '正常', 2 => '失败', 3 => '异常', 4 => '后台修改'];
 
     public function issus_user()

@@ -18,4 +18,8 @@ class User extends Model
         'updated_at'
     ];
     public $statusArr = [1 => '正常', 2 => '冻结'];
+
+    public function getOutPackets() {
+        return $this->hasMany(OutPacket::class,'userid','id');
+    }
 }

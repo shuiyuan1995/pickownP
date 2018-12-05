@@ -14,6 +14,7 @@ class InPacketResource extends JsonResource
      */
     public function toArray($request)
     {
+        $rewardTypeArr = $this->rewardTypeArr;
         return [
             'id' => $this->id,
             'outid' => $this->outid,
@@ -23,8 +24,10 @@ class InPacketResource extends JsonResource
             'blocknumber'=> $this->blocknumber,
             'income_sum' => $this->income_sum,
             'is_chailei' => $this->is_chailei,
+            'outpacket_sum'=>$this->out->issus_sum,
             'is_reward'  => $this->is_reward,
             'reward_type' => $this->reward_type,
+            'reward_type_value'=>$rewardTypeArr[$this->reward_type],
             'reward_sum' => $this->reward_sum,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),

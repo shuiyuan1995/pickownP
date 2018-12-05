@@ -15,18 +15,22 @@ class OutPacketEvent extends \Event implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     public $out_packet;
-    public $data;
+    public $index;
+    public $name;
 
     /**
      * Create a new event instance.
      *
      * @param OutPacket $outPacket
-     * @param $data
+     * @param $index
+     * @param $name
+     * @internal param $data
      */
-    public function __construct(OutPacket $outPacket, $data)
+    public function __construct(OutPacket $outPacket, $index, $name)
     {
         $this->out_packet = $outPacket;
-        $this->data = $data;
+        $this->index = $index;
+        $this->name = $name;
     }
 
     /**

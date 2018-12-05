@@ -9,6 +9,7 @@ use App\Http\Resources\OutPacketResource;
 use App\Models\InPacket;
 use App\Models\OutPacket;
 use App\Models\TransactionInfo;
+use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,6 +34,15 @@ class ApiController extends Controller
      */
     public function issus_packet(Request $request)
     {
+        $issus_sum_arr = [
+            0 => -1,
+            1 => 0,
+            5 => 1,
+            10 => 2,
+            20 => 3,
+            50 => 4,
+            100 => 5
+        ];
         $entity = OutPacket::create($request->all());
 
         $userid = $request->input('userid');
@@ -46,9 +56,13 @@ class ApiController extends Controller
         $transactionInfo->eos = $issus_sum;
         $transactionInfo->addr = $addr;
         $transactionInfo->save();
-
-        event(new OutPacketEvent($entity, 10));
-        return $this->success(['code' => 200, 'token' => $request->input('token'), 'userid' => $request->input('userid')], '发送成功');
+        $username = \App\Models\User::find($userid)->name;
+        event(new OutPacketEvent($entity, $issus_sum_arr[$issus_sum], $username));
+        return $this->success([
+            'code' => 200,
+            'token' => $request->input('token'),
+            'userid' => $request->input('userid')
+        ], '发送成功');
     }
 
     /**
@@ -76,7 +90,7 @@ class ApiController extends Controller
         $reward_sum = $request->input('reward_sum');
         $eos = $request->input('income_sum');
         $addr = $request->input('addr', 'pc');
-
+        $isnone = $request->input('isnone');
         $entity = InPacket::create($request->all());
         $income_userid = OutPacket::find($outid)->userid;
         // 抢红包信息
@@ -107,13 +121,20 @@ class ApiController extends Controller
             $data['eos'] = $reward_sum;
             TransactionInfo::create($data);
         }
+        if ($isnone){
+            event(new InPacketEvent($entity));
+        }
 
-        event(new InPacketEvent($entity));
-        return $this->success(['code' => 200, 'token' => $request->input('token'), 'userid' => $request->input('userid')], '发送成功');
+        return $this->success([
+            'code' => 200,
+            'token' => $request->input('token'),
+            'userid' => $request->input('userid')
+        ], '发送成功');
     }
 
     /**
      * 参数值
+     * token
      * 用户id userid
      * 当前用户发红包的情况
      * @param Request $request
@@ -129,6 +150,7 @@ class ApiController extends Controller
 
     /**
      * 参数值
+     * token
      * 用户id userid
      * 当前用户抢红包的情况
      * @param Request $request
@@ -144,6 +166,7 @@ class ApiController extends Controller
 
     /**
      * 参数值
+     * token
      * 发出红包id  outid
      * 发出红包领取的情况
      * @param Request $request

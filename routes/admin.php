@@ -53,6 +53,8 @@ Route::group(['middleware' => ['auth:admin', 'permission']], function () {
     
     Route::resource('site_mails', 'SiteMailsController',['except' =>['edit', 'update', 'destroy']])->names('admin.site_mails');
     Route::resource('info_read_records', 'InfoReadRecordsController',['only'=>'index'])->names('admin.info_read_records');
+
+    Route::resource('rank_list', 'RankListController',['only'=>'index'])->names('admin.rank_list');
     
 });
 Route::get('login', ['uses' => 'AuthController@showLoginForm', 'as' => 'admin.login', 'middleware' => ['guest:admin']]);

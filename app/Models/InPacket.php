@@ -27,7 +27,12 @@ class InPacket extends Model
 
     public $is_reward_arr = [1 => '未中奖', 2 => '中奖'];
 
-    public $rewardTypeArr = ['无','对子', '三条', '最小奖', '整数', '顺子', '炸弹', '最大奖'];
+    public $rewardTypeArr = ['无', '对子', '三条', '最小奖', '整数', '顺子', '炸弹', '最大奖'];
+
+    public function out()
+    {
+        return $this->hasOne(OutPacket::class, 'id', 'outid');
+    }
 
     public function user()
     {

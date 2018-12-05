@@ -33,11 +33,6 @@ class InfoController extends Controller
         ]);
     }
 
-    public function moneyList()
-    {
-
-    }
-
     public function moneyList(Request $request) {
         $time = date("Y-m-d H:i:s",time());
         $start_time = empty($request->input('start_time')) ? date("Y-m-d 00:00:00",time()): $request->input('start_time');

@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Resources\GamePartitionResource;
 use App\Http\Resources\OutPacketResource;
+use App\Http\Resources\InPacketResource;
 use App\Models\GamePartition;
 use App\Models\OutPacket;
+use App\Models\InPacket;
 use App\Models\TransactionInfo;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 
 class InfoController extends Controller
@@ -17,10 +20,10 @@ class InfoController extends Controller
      * 获取网站的统计信息
      * @return $this
      */
-    public function web_info()
+    public function getInfo()
     {
         $outPacketCount = OutPacket::count();
-        $transactionInfoCount = TransactionInfo::count();
+        $transactionInfoCount = TransactionInfo::sum('eos');
         $userCount = User::count();
         return $this->success([
             'out_packet_count' => $outPacketCount,
@@ -60,5 +63,19 @@ class InfoController extends Controller
         $query = GamePartition::query();
         $list = $query->where('status', 1)->get();
         return GamePartitionResource::collection($list)->additional(['code' => Response::HTTP_OK, 'message' => '']);
+    }
+
+    public function moneyList() {
+        
+    }
+    /**
+     * 抢红包列表 function
+     *
+     * @return void
+     */
+    public function getMoneyList() {
+        $query = InPacket::query()->with('user');
+        $list = $query->get();
+        return InPacketResource::collection($list)->additional(['code' => Response::HTTP_OK, 'message' => '']);
     }
 }

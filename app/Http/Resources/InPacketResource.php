@@ -14,16 +14,20 @@ class InPacketResource extends JsonResource
      */
     public function toArray($request)
     {
-        $status = $this->statusArr;
         return [
             'id' => $this->id,
             'outid' => $this->outid,
-            'sum' => $this->sum,
-            'packet_tail_number' => $this->packet_tail_number,
-            'is_win' => $this->is_win,
-            'status' => $status[$this->status],
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'userid' => $this->userid,
+            'user'=> UserResource::make($this->user),
+            'eosid' => $this->eosid,
+            'blocknumber'=> $this->blocknumber,
+            'income_sum' => $this->income_sum,
+            'is_chailei' => $this->is_chailei,
+            'is_reward'  => $this->is_reward,
+            'reward_type' => $this->reward_type,
+            'reward_sum' => $this->reward_sum,
+            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
+            'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
         ];
     }
 }

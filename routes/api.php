@@ -31,8 +31,10 @@ Route::group(['namespace' => 'Api'], function () {
     Route::get('game_partition',['uses'=>'InfoController@game_partition','as'=>'api.game_partition']);
     Route::get('all_game_gifts',['uses'=>'InfoController@all_game_gifts','as'=>'api.all_game_gifts']);
     Route::get('just_mine_game_gifts',['uses'=>'ApiController@just_mine_game_gifts','as'=>'api.just_mine_game_gifts']);
-    Route::get('web_info',['uses'=>'InfoController@web_info','as'=>'api.web_info']);
+    Route::get('get_info',['uses'=>'InfoController@getInfo','as'=>'api.get_info']);
     Route::get('rank_reward_list',['uses'=>'ApiController@rank_reward_list','as'=>'api.rank_reward_list']);
     Route::get('allowns_list',['uses'=>'ApiController@allowns_list','as'=>'api.allowns_list']);
     Route::get('record_list',['uses'=>'ApiController@record_list','as'=>'api.record_list']);
+    Route::get('money_list',['uses'=>'InfoController@moneyList','as'=>'api.money_list']);
+    Route::get('get_money_list',['uses'=>'InfoController@getMoneyList','as'=>'api.get_money_list']);
 });

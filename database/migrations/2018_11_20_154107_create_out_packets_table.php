@@ -21,7 +21,7 @@ class CreateOutPacketsTable extends Migration
             $table->integer('count')->nullable()->default(10)->comment('红包总个数');
             $table->string('eosid',255)->nullable()->comment('区块链id');
             $table->string('blocknumber',255)->nullable()->comment('blocknumber');
-            $table->integer('status')->nullable()->comment('状态(1-未领完，2-已领完，3-退回，4-冻结)');
+            $table->integer('status')->nullable()->defalut(1)->comment('状态(1-未领完，2-已领完，3-退回，4-冻结)');
             // 创建时间为 发送时间， 更新时间为 领完时间/退回时间
             $table->timestamps();
         });

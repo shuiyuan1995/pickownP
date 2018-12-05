@@ -2,26 +2,29 @@
 
 namespace App\Events;
 
+use App\Models\InPacket;
+use Illuminate\Broadcasting\Channel;;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class WebSocketTestEvent extends \Event implements ShouldBroadcast
+class InPacketEvent extends \Event implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $socket;
+    public $in_packet;
 
     /**
      * Create a new event instance.
      *
-     * @param $socket
+     * @param InPacket $inPacket
      */
-    public function __construct($socket)
+    public function __construct(InPacket $inPacket)
     {
-        $this->socket = $socket;
+        $this->in_packet = $inPacket;
     }
 
     /**
@@ -31,11 +34,11 @@ class WebSocketTestEvent extends \Event implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('channel-name');
+        return new PrivateChannel('income_channel');
     }
 
     public function broadcastAs()
     {
-        return 'server.created';
+        return 'income_packet';
     }
 }

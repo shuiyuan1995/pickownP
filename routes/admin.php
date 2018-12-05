@@ -16,9 +16,14 @@ Route::group(['middleware' => ['auth:admin', 'permission']], function () {
     Route::get('ajax', ['uses' => 'IndexController@ajax', 'as' => 'admin.index.ajax']);
     Route::post('formUpload', ['uses' => 'IndexController@formUpload', 'as' => 'admin.index.form_upload']);
 
+    // 财务
+    Route::get('account','AccountController@index')->name('admin.account.index');
+    Route::get('info_count','InfoCountController@index')->name('admin.info_count.index');
+
     // 用户路由
     Route::resource('home_user','HomeUsersController')->names('admin.home_user');
     Route::resource('ubi', 'UserBehaviorLogsController')->names('admin.ubi');
+    Route::get('user_count','UserCountController@index')->name('admin.user_count.index');
 
     // 红包路由
 

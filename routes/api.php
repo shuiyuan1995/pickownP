@@ -27,6 +27,7 @@ Route::group(['prefix' => 'web'], function () {
 
 Route::group(['namespace' => 'Api'], function () {
     Route::get('login', ['uses' => 'ApiController@login', 'as' => 'api.login']);
+    Route::post('issus_packet',['uses'=>'ApiController@issus_packet','as'=>'api.issus_packet']);
     Route::get('game_partition',['uses'=>'InfoController@game_partition','as'=>'api.game_partition']);
     Route::get('all_game_gifts',['uses'=>'InfoController@all_game_gifts','as'=>'api.all_game_gifts']);
     Route::get('just_mine_game_gifts',['uses'=>'ApiController@just_mine_game_gifts','as'=>'api.just_mine_game_gifts']);

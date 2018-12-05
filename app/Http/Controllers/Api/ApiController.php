@@ -121,7 +121,7 @@ class ApiController extends Controller
             $data['eos'] = $reward_sum;
             TransactionInfo::create($data);
         }
-        if ($isnone){
+        if ($isnone) {
             event(new InPacketEvent($entity));
         }
 
@@ -143,9 +143,16 @@ class ApiController extends Controller
     public function my_issus_packet(Request $request)
     {
         $userid = $request->input('userid');
+        $outpacket = OutPacket::where('userid', $userid)->count();
+        $chaileicount = TransactionInfo::where('income_userid', $userid)->where('type', 3)->count();
         return OutPacketResource::collection(
             OutPacket::where('userid', $userid)->orderBy('created_at', 'desc')->limit(30)->get()
-        )->additional(['code' => Response::HTTP_OK, 'message' => '']);
+        )->additional([
+            'code' => Response::HTTP_OK,
+            'outpacketcount' => $outpacket,
+            'chaileicount' => $chaileicount,
+            'message' => ''
+        ]);
     }
 
     /**
@@ -159,9 +166,28 @@ class ApiController extends Controller
     public function my_income_packet(Request $request)
     {
         $userid = $request->input('userid');
+        $pairs = InPacket::where('userid', $userid)->where('reward_type', 1)->count();
+        $three = InPacket::where('userid', $userid)->where('reward_type', 2)->count();
+        $min = InPacket::where('userid', $userid)->where('reward_type', 3)->count();
+        $int = InPacket::where('userid', $userid)->where('reward_type', 4)->count();
+        $shunzi = InPacket::where('userid', $userid)->where('reward_type', 5)->count();
+        $bomb = InPacket::where('userid', $userid)->where('reward_type', 6)->count();
+        $max = InPacket::where('userid', $userid)->where('reward_type', 7)->count();
+        $chailei = InPacket::where('userid', $userid)->where('is_chailei', 2)->count();
         return InPacketResource::collection(
             InPacket::where('userid', $userid)->orderBy('created_at', 'desc')->limit(30)->get()
-        )->additional(['code' => Response::HTTP_OK, 'message' => '']);
+        )->additional([
+            'code' => Response::HTTP_OK,
+            'paris' => $pairs,
+            'three' => $three,
+            'min' => $min,
+            'int' => $int,
+            'shunzi' => $shunzi,
+            'bomb' => $bomb,
+            'max' => $max,
+            'chailei' => $chailei,
+            'message' => ''
+        ]);
     }
 
     /**

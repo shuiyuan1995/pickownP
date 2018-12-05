@@ -32,4 +32,10 @@ class OutPacket extends Model
     {
         return $this->hasOne(User::class, 'id', 'userid');
     }
+
+    public function inpacket()
+    {
+        return $this->hasMany(InPacket::class, 'outid', 'id');
+    }
+
 }

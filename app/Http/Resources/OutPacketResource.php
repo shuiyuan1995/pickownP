@@ -21,15 +21,16 @@ class OutPacketResource extends JsonResource
             'userid' => $this->userid,
             'user' => UserResource::make($this->user),
             'issus_sum' => (string)$this->issus_sum,
-            'index'=>$indexArr[(string)$this->issus_sum],
+            'index' => $indexArr[(string)$this->issus_sum],
             'tail_number' => $this->tail_number,
             'count' => $this->count,
             'eosid' => $this->eosid,
             'blocknumber' => $this->blocknumber,
             'status' => $this->status,
-            'status_value'=>$statusArr[$this->status],
+            'status_value' => $statusArr[$this->status],
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
+            'inpacket_sum' => count($this->inpacket)
         ];
     }
 }

@@ -82,7 +82,7 @@ class InfoController extends Controller
     public function getMoneyList()
     {
         $query = OutPacket::query()->with('user');
-        $list = $query->where('status', 1)->get();
+        $list = $query->where('status', 1)->limit(42)->get();
         return OutPacketResource::collection($list)->additional(['code' => Response::HTTP_OK, 'message' => '']);
     }
 

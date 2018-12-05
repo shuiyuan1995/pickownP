@@ -116,7 +116,7 @@ class ApiController extends Controller
             $data['issus_userid'] = 0;
             $data['income_userid'] = $income_userid;
             $data['type'] = 4;
-            $data['eos'] = OutPacket::find($outid)->issus_sum;
+            $data['eos'] = $reward_sum;
             TransactionInfo::create($data);
         }
 

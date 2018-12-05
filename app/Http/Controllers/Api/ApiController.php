@@ -40,6 +40,7 @@ class ApiController extends Controller
         $addr = $request->input('addr', 'pc');
         $transactionInfo = new TransactionInfo();
         $transactionInfo->issus_userid = $userid;
+        $transactionInfo->income_userid = 0;
         $transactionInfo->type = 2;
         $transactionInfo->status = 1;
         $transactionInfo->eos = $issus_sum;

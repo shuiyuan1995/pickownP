@@ -20,12 +20,13 @@ class InfoController extends Controller
      */
     public function login(Request $request)
     {
+        $token = md5(time());
         $publickey = $request->input('publickey');
         $list = User::where('publickey', $publickey)->first();
         if (empty($list)) {
             $list = User::create($request->all());
         }
-        return $this->success(['data' => ['token' => md5(time()), 'userid' => $list->id]], '访问成功！');
+        return $this->success(['data' => ['token' => $token, 'userid' => $list->id]], '访问成功！');
     }
 
     /**
@@ -77,13 +78,37 @@ class InfoController extends Controller
     /**
      * 抢红包列表 function
      *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @return InfoController
      */
     public function getMoneyList()
     {
+
         $query = OutPacket::query()->with('user');
-        $list = $query->where('status', 1)->limit(42)->get();
-        return OutPacketResource::collection($list)->additional(['code' => Response::HTTP_OK, 'message' => '']);
+        $list = $query->where('status', 1)->orderBy('created_at','desc')->limit(42)->get();
+        $data = [];
+        foreach ($list as $item => $value) {
+            $data[$item]['packetId'] = $value['eosid'];
+            $data[$item]['txId'] = $value['blocknumber'];
+            $data[$item]['type'] = 1;
+            $data[$item]['num'] = $value['tail_number'];
+            $data[$item]['eos'] = $value['issus_sum'];
+            $data[$item]['time'] = $value['created_at'];
+            $data[$item]['none'] = false;
+//            if ($value['issus_sum'] == '1.0000') {
+//                $data[0][] = $value;
+//            } elseif ($value['issus_sum'] == '5.0000') {
+//                $data[1][] = $value;
+//            } elseif ($value['issus_sum'] == '10.0000') {
+//                $data[2][] = $value;
+//            } elseif ($value['issus_sum'] == '20.0000') {
+//                $data[3][] = $value;
+//            } elseif ($value['issus_sum'] == '50.0000') {
+//                $data[4][] = $value;
+//            } elseif ($value['issus_sum'] == '100.0000') {
+//                $data[5][] = $value;
+//            }
+        }
+        return $this->json($data);
     }
 
 

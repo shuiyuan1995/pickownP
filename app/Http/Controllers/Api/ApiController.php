@@ -91,6 +91,7 @@ class ApiController extends Controller
         $eos = $request->input('income_sum');
         $addr = $request->input('addr', 'pc');
         $isnone = $request->input('isnone');
+
         $entity = InPacket::create($request->all());
         $income_userid = OutPacket::find($outid)->userid;
         // 抢红包信息

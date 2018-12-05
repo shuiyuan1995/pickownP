@@ -9,7 +9,7 @@ use App\Http\Resources\OutPacketResource;
 use App\Models\InPacket;
 use App\Models\OutPacket;
 use App\Models\TransactionInfo;
-use App\User;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Symfony\Component\HttpFoundation\Response;
@@ -56,7 +56,7 @@ class ApiController extends Controller
         $transactionInfo->eos = $issus_sum;
         $transactionInfo->addr = $addr;
         $transactionInfo->save();
-        $username = \App\Models\User::find($userid)->name;
+        $username = User::find($userid)->name;
         event(new OutPacketEvent($entity, $issus_sum_arr[$issus_sum], $username));
         return $this->success([
             'code' => 200,
@@ -84,6 +84,9 @@ class ApiController extends Controller
     public function income_packet(Request $request)
     {
         $outid = $request->input('outid');
+
+
+
         $userid = $request->input('userid');
         $is_chailei = $request->input('is_chailei');
         $is_reward = $request->input('is_reward');
@@ -93,6 +96,8 @@ class ApiController extends Controller
         $isnone = $request->input('isnone');
 
         $entity = InPacket::create($request->all());
+
+
         $income_userid = OutPacket::find($outid)->userid;
         // 抢红包信息
         $data = [

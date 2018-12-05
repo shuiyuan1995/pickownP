@@ -144,6 +144,7 @@ class ApiController extends Controller
     public function my_issus_packet(Request $request)
     {
         $userid = $request->input('userid');
+        $outpacketsum = OutPacket::where('userid', $userid)->sum('issus_sum');
         $outpacket = OutPacket::where('userid', $userid)->count();
         $chaileicount = TransactionInfo::where('income_userid', $userid)->where('type', 3)->count();
         return OutPacketResource::collection(
@@ -152,6 +153,7 @@ class ApiController extends Controller
             'code' => Response::HTTP_OK,
             'outpacketcount' => $outpacket,
             'chaileicount' => $chaileicount,
+            'outpacketsum' => $outpacketsum,
             'message' => ''
         ]);
     }

@@ -15,7 +15,9 @@ class DatabaseSeeder extends Seeder
         $this->call(PermissionsTableSeeder::class);
         $this->call(MenusTableSeeder::class);
         $this->call(UsersTableSeeder::class);
-        $this->call(GamePartitionsTableSeeder::class);
+        $this->call(OutPacketsTableSeeder::class);
+        $this->call(InPacketsTableSeeder::class);
+        $this->call(TransactionInfosTableSeeder::class);
 
     }
 }

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class LoginRecord extends Model
 {
-    protected $fillable = ['id', 'userid', 'ip', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'userid', 'ip', 'addr', 'created_at', 'updated_at'];
 
     public function user()
     {

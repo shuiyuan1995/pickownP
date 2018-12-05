@@ -17,7 +17,8 @@ class CreateLoginRecordsTable extends Migration
         Schema::create('login_records', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('userid')->comment('用户id');
-            $table->string('ip',40)->nullable()->default('0.0.0.0')->comment('IP地址');
+            $table->string('addr', 255)->nullable()->comment('平台');
+            $table->string('ip', 40)->nullable()->default('0.0.0.0')->comment('IP地址');
             $table->timestamps();
         });
     }

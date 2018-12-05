@@ -25,12 +25,12 @@
                     <th>ID</th>
                     <th>发出用户名</th>
                     <th>收到用户名</th>
-                    <th>交易信息类型</th>
+                    <th>信息类型</th>
                     <th>状态</th>
                     <th>交易额</th>
                     <th>发出用户交易后的金额</th>
-                    <th>创建时间</th>
-                    <th>更新时间</th>
+                    <th>平台</th>
+                    <th>时间</th>
                     <th>操作</th>
                 </tr>
                 </thead>
@@ -40,11 +40,11 @@
                         <td>{{ $item->id }}</td>
                         <td>{{ $item->issus_user->name }}</td>
                         <td>{{ $item->income_user->name }}</td>
-                        <td>{{ $item->type == 1 ? '抢红包':'发红包' }}</td>
-                        <td>{{ $item->status }}</td>
-                        <td>{{ $item->eos / 10000 }}</td>
-                        <td>{{ $item->issus_count_sum / 10000 }}</td>
-                        <td>{{ $item->created_at }}</td>
+                        <td>{{ $item->typeArr[$item->type] }}</td>
+                        <td>{{ $item->statusArr[$item->status] }}</td>
+                        <td>{{ $item->eos }}</td>
+                        <td>{{ $item->issus_count_sum }}</td>
+                        <td>{{ $item->addr }}</td>
                         <td>{{ $item->updated_at }}</td>
                         <td>
                             <button type="button" class="btn btn-success" data-toggle="modal"

@@ -8,24 +8,17 @@ class OutPacket extends Model
 {
     protected $fillable = [
         'id',
-        'gameid',
         'userid',
-        'seed_sum',
-        'number',
-        'surplus_sum',
+        'issus_sum',
         'count',
-        'up',
-        'down',
-        'surplus_sum',
+        'eosid',
+        'blocknumber',
+        'tail_number',
         'status',
         'created_at',
         'updated_at'
     ];
-
-    public function game()
-    {
-        return $this->hasOne(GamePartition::class, 'id', 'gameid');
-    }
+    public $statusArr = [1 => '未抢完', 2 => '已抢完'];
 
     public function user()
     {

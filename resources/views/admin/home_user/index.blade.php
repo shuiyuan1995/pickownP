@@ -7,7 +7,7 @@
                     <div class="col-md-2 control-label">请输入</div>
                     <div class="col-md-2">
                         <input type="text" class="form-control" name="key" value="{{request('key')}}"
-                               placeholder="用户名/钱包ID">
+                               placeholder="用户名">
                     </div>
                 </div>
                 <div class="form-group">
@@ -22,10 +22,11 @@
             <table class="table table-bordered table-hover">
                 <thead>
                 <tr>
+                    <th>ID</th>
                     <th>用户名</th>
-                    <th>钱包ID</th>
+                    <th>publickey</th>
+                    <th>平台</th>
                     <td>状态</td>
-                    <th>活跃时间</th>
                     <th>加入时间</th>
                     <td>操作</td>
                 </tr>
@@ -33,12 +34,11 @@
                 <tbody>
                 @foreach($list as $item)
                     <tr>
-                        <td>
-                            {{ $item->name }}
-                        </td>
-                        <td>{{ $item->walletid }}</td>
+                        <td>{{ $item->id }}</td>
+                        <td>{{ $item->name }}</td>
+                        <td>{{ $item->publickey }}</td>
+                        <td>{{ $item->addr }}</td>
                         <td>{{ $item->status == 1 ? '正常' : '冻结' }}</td>
-                        <td>{{ $item->updated_at }}</td>
                         <td>{{ $item->created_at }}</td>
                         <td>
                             <a href="{{route('admin.home_user.edit', $item)}}" class="btn btn-info btn-sm">修改</a>

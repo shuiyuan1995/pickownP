@@ -21,12 +21,17 @@ class ApiController extends Controller
      */
     public function login(Request $request)
     {
-        $username = $request->input('name');
-        $password = $request->input('password');
-        $query = User::query();
-        $query->where('name', $username)
-            ->where('password', $password);
-        return $this->success(['data' => 'ok'], '访问成功！');
+
+        $name = $request->input('name');
+
+        //dd($name);
+        $publickey = $request->input('publickey');
+        $list = User::where('publickey',$publickey)->first();
+        if (empty($list)) {
+
+            $list = User::create($request->all());
+        }
+        return $this->success(['data' => ['token' => md5(time()), 'userid' => $list->id]], '访问成功！');
     }
 
     /**
@@ -50,9 +55,6 @@ class ApiController extends Controller
     }
 
 
-
-
-
     /**
      * 获取可用当前分区下当前用户所发出的红包
      * @param Request $request
@@ -70,7 +72,6 @@ class ApiController extends Controller
             ->get();
         return OutPacketResource::collection($list)->additional(['code' => Response::HTTP_OK, 'message' => '']);
     }
-
 
 
     public function rank_reward_list()

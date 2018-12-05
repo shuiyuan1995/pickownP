@@ -6,10 +6,13 @@ $factory->define(App\Models\InPacket::class, function (Faker $faker) {
     return [
         'outid'=>\App\Models\OutPacket::inRandomOrder()->first()->id,
         'userid'=>\App\Models\User::inRandomOrder()->first()->id,
-        'sum'=>random_int(10000,800000000),
-        'packet_tail_number'=>random_int(0,9),
-        'is_win'=>random_int(1,2),
-        'status'=>random_int(1,2),
+        'income_sum'=>$faker->randomFloat(),
+        'is_chailei'=>random_int(1,2),
+        'blocknumber'=>str_random(),
+        'eosid'=>str_random(),
+        'is_reward'=>random_int(1,2),
+        'reward_type'=>random_int(0,6),
+        'reward_sum'=>$faker->randomFloat(),
         'created_at'=>$faker->dateTime,
         'updated_at'=>$faker->dateTime
     ];

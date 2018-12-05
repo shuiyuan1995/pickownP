@@ -22,33 +22,37 @@
             <table class="table table-bordered table-hover">
                 <thead>
                 <tr>
-                    <th>ID</th>
+
                     <th>红包ID</th>
                     <th>抢红包用户名</th>
                     <th>抢的金额</th>
-                    <th>抢红包的尾号</th>
-                    <th>输赢</th>
-                    <th>状态</th>
-                    <th>更新时间</th>
-                    <th>创建时间</th>
-                    <th>操作</th>
+                    <th>区块链ID</th>
+                    <th>blocknumber</th>
+                    <th>是否踩雷</th>
+                    <th>是否中奖</th>
+                    <th>中奖类型</th>
+                    <th>中奖金额</th>
+                    <th>时间</th>
+                    {{--<th>操作</th>--}}
                 </tr>
                 </thead>
                 <tbody>
                 @foreach($list as $item)
                     <tr>
-                        <td>{{ $item->id }}</td>
+
                         <td>{{ $item->outid }}</td>
                         <td>{{ $item->user->name }}</td>
-                        <td>{{ $item->sum / 10000 }}</td>
-                        <td>{{ $item->packet_tail_number }}</td>
-                        <td>{{ $item->is_win == 1 ? '中奖':'未中奖' }}</td>
-                        <td>{{ $item->status == 1 ? '正常' : '异常' }}</td>
+                        <td>{{ $item->income_sum }}</td>
+                        <td>{{ $item->eosid }}</td>
+                        <td>{{ $item->blocknumber }}</td>
+                        <td>{{ $item->is_chailei_arr[$item->is_chailei] }}</td>
+                        <td>{{ $item->is_reward_arr[$item->is_reward] }}</td>
+                        <td>{{ $item->rewardTypeArr[$item->reward_type] }}</td>
+                        <td>{{ $item->reward_sum }}</td>
                         <td>{{ $item->updated_at }}</td>
-                        <td>{{ $item->created_at }}</td>
-                        <td>
-                            <a href="{{route('admin.home_user.edit', $item)}}" class="btn btn-info btn-sm">修改</a>
-                        </td>
+                        {{--<td>--}}
+                            {{--<a href="{{route('admin.home_user.edit', $item)}}" class="btn btn-info btn-sm">修改</a>--}}
+                        {{--</td>--}}
                     </tr>
                 @endforeach
                 </tbody>

@@ -39,6 +39,7 @@ class Permission
     protected function cacheMenus()
     {
         $key = self::MENU_CACHE_KEY;
+
         if (Cache::has($key)) {
             $list = Cache::get($key);
         } else {

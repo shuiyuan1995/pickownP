@@ -2,15 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Resources\InPacketResource;
-use App\Http\Resources\OutPacketResource;
-use App\Models\GamePartition;
-use App\Models\InPacket;
+use App\Events\OutPacketEvent;
 use App\Models\OutPacket;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Symfony\Component\HttpFoundation\Response;
 
 class ApiController extends Controller
 {
@@ -21,102 +17,51 @@ class ApiController extends Controller
      */
     public function login(Request $request)
     {
-
-        $name = $request->input('name');
-
-        //dd($name);
         $publickey = $request->input('publickey');
-        $list = User::where('publickey',$publickey)->first();
+        $list = User::where('publickey', $publickey)->first();
         if (empty($list)) {
-
             $list = User::create($request->all());
         }
         return $this->success(['data' => ['token' => md5(time()), 'userid' => $list->id]], '访问成功！');
     }
 
     /**
-     * 用户发红包接口
+     * 参数值
+     * userid
+     * issus_sum
+     * tail_number
+     * count
+     * eosid
+     * blocknumber
+     *
+     * 发红包接口
      * @param Request $request
      * @return $this
      */
-    public function out_packet(Request $request)
+    public function issus_packet(Request $request)
     {
-        return $this;
+        $entity = OutPacket::create($request->all());
+        event(new OutPacketEvent($entity));
+        return $this->success(['code' => 200, 'token' => '', 'userid' => $request->input('userid')], '发送成功');
     }
 
-    /**
-     * 用户抢红包接口
-     * @param Request $request
-     * @return $this
-     */
-    public function in_packet(Request $request)
+    public function income_packet(Request $request)
     {
-        return $this;
+
     }
 
-
-    /**
-     * 获取可用当前分区下当前用户所发出的红包
-     * @param Request $request
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
-     */
-    public function just_mine_game_gifts(Request $request)
+    public function my_issus_packet(Request $request)
     {
-        $gameid = $request->input('gameid', GamePartition::first()->id);
 
-        $userid = $request->input('userid', User::first()->id);
-
-        $query = OutPacket::query();
-        $list = $query->where('gameid', $gameid)
-            ->where('userid', '=', $userid)
-            ->get();
-        return OutPacketResource::collection($list)->additional(['code' => Response::HTTP_OK, 'message' => '']);
     }
 
-
-    public function rank_reward_list()
+    public function my_income_packet(Request $request)
     {
-        //
+
     }
 
-    /**
-     * 此处time为时间戳
-     * @param Request $request
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
-     */
-    public function allowns_list(Request $request)
+    public function red_packet(Request $request)
     {
-        $query = InPacket::query();
-        if ($request->filled('time')) {
-            $time = $request->input('time');
-            $time = date('Y-m-d H:i:s', $time);
-            $query->where('updated_at', '>', $time);
-        }
-        $list = $query->orderBy('updated_at', 'desc')->limit('100')->get();
-        return InPacketResource::collection($list)->additional(['code' => Response::HTTP_OK, 'message' => '']);
-    }
 
-    /**
-     * 当前用户发红包和抢红包
-     * @param Request $request
-     * @return $this
-     */
-    public function record_list(Request $request)
-    {
-        $userid = $request->input('userid', User::first()->id);
-        $outQuery = OutPacket::query();
-        $outList = $outQuery->where('userid', $userid)
-            ->orderBy('updated_at', 'desc')
-            ->limit(100)
-            ->get();
-        $inQuery = InPacket::query();
-        $inList = $inQuery->where('userid', $userid)
-            ->orderBy('updated_at', 'desc')
-            ->limit(100)
-            ->get();
-        return $this->json([
-            'out_list' => OutPacketResource::collection($outList),
-            'in_list' => InPacketResource::collection($inList)
-        ]);
     }
 }

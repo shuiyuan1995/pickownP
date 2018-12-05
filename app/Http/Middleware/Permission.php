@@ -15,8 +15,8 @@ class Permission
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param  \Illuminate\Http\Request $request
+     * @param  \Closure $next
      * @return mixed
      */
     public function handle($request, Closure $next)
@@ -39,7 +39,9 @@ class Permission
     protected function cacheMenus()
     {
         $key = self::MENU_CACHE_KEY;
-
+        if (config('app.debug')) {
+            Cache::delete($key);
+        }
         if (Cache::has($key)) {
             $list = Cache::get($key);
         } else {
@@ -62,7 +64,7 @@ class Permission
         $menu = [
             'id' => $item->id,
             'text' => $item->name,
-            'icon' => $item->key?:'fa fa-list',
+            'icon' => $item->key ?: 'fa fa-list',
             'active' => false,
             'description' => $item->description
         ];
@@ -86,7 +88,7 @@ class Permission
             } else {
                 $url = url($url);
             }
-            if (starts_with($current_url .'/', $url.'/')) {
+            if (starts_with($current_url . '/', $url . '/')) {
                 $menu['active'] = true;
             }
             $menu['url'] = $url;

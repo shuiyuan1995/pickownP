@@ -105,6 +105,12 @@ class MenusTableSeeder extends Seeder
                     ['name' => '字典', 'key' => 'fa fa-key', 'url' => 'admin.keywords.index']
                 ]
             ],
+            [
+                'name' => '排行榜',
+                'pid' => 0,
+                'key' => 'fa fa-globe',
+                'url' => 'admin.rank_list.index',
+            ],
         ];
         $data = [];
         $user_menu = [];

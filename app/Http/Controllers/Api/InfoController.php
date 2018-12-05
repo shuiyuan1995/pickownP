@@ -14,6 +14,21 @@ use Symfony\Component\HttpFoundation\Request;
 class InfoController extends Controller
 {
     /**
+     * 用户登录接口
+     * @param Request $request
+     * @return $this
+     */
+    public function login(Request $request)
+    {
+        $publickey = $request->input('publickey');
+        $list = User::where('publickey', $publickey)->first();
+        if (empty($list)) {
+            $list = User::create($request->all());
+        }
+        return $this->success(['data' => ['token' => md5(time()), 'userid' => $list->id]], '访问成功！');
+    }
+
+    /**
      * 获取网站的统计信息
      * @return $this
      */

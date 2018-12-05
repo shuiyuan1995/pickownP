@@ -9,7 +9,6 @@ use App\Http\Resources\OutPacketResource;
 use App\Models\InPacket;
 use App\Models\OutPacket;
 use App\Models\TransactionInfo;
-use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,22 +16,8 @@ use Symfony\Component\HttpFoundation\Response;
 class ApiController extends Controller
 {
     /**
-     * 用户登录接口
-     * @param Request $request
-     * @return $this
-     */
-    public function login(Request $request)
-    {
-        $publickey = $request->input('publickey');
-        $list = User::where('publickey', $publickey)->first();
-        if (empty($list)) {
-            $list = User::create($request->all());
-        }
-        return $this->success(['data' => ['token' => md5(time()), 'userid' => $list->id]], '访问成功！');
-    }
-
-    /**
      * 参数值
+     * token
      * userid 用户id
      * issus_sum 金额
      * tail_number 尾号
@@ -62,19 +47,19 @@ class ApiController extends Controller
         $transactionInfo->save();
 
         event(new OutPacketEvent($entity, 10));
-        return $this->success(['code' => 200, 'token' => '', 'userid' => $request->input('userid')], '发送成功');
+        return $this->success(['code' => 200, 'token' => $request->input('token'), 'userid' => $request->input('userid')], '发送成功');
     }
 
     /**
-     * outid
-     * userid
-     * eosid
-     * blocknumber
-     * income_sum
-     * is_chailei
-     * is_reward
-     * reward_type
-     * reward_sum
+     * outid 发出的红包id
+     * userid 用户id
+     * eosid 区块链id
+     * blocknumber 区块链号
+     * income_sum 抢中金额
+     * is_chailei 是否踩雷
+     * is_reward 是否中奖
+     * reward_type 中奖类型
+     * reward_sum 中奖金额
      * addr 平台
      * 抢红包记录接口
      * @param Request $request
@@ -103,6 +88,7 @@ class ApiController extends Controller
             'addr' => $addr,
         ];
         TransactionInfo::create($data);
+
         // 踩雷信息
         if ($is_chailei === 2) {
             $data['issus_userid'] = $income_userid;
@@ -111,8 +97,9 @@ class ApiController extends Controller
             $data['eos'] = OutPacket::find($outid)->issus_sum;
             TransactionInfo::create($data);
         }
+
         // 中奖信息
-        if ($is_reward === 2) {
+        if ($is_reward !== 0) {
             $data['issus_userid'] = 0;
             $data['income_userid'] = $income_userid;
             $data['type'] = 4;
@@ -121,7 +108,7 @@ class ApiController extends Controller
         }
 
         event(new InPacketEvent($entity));
-        return $this->success(['code' => 200, 'token' => '', 'userid' => $request->input('userid')], '发送成功');
+        return $this->success(['code' => 200, 'token' => $request->input('token'), 'userid' => $request->input('userid')], '发送成功');
     }
 
     /**

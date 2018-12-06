@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\ApiThrottleRequests;
+use App\Http\Middleware\CheckToken;
 use App\Http\Middleware\Permission;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -63,6 +64,7 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'permission' => Permission::class,
-        'api_throttle'=>ApiThrottleRequests::class,
+        'api_throttle' => ApiThrottleRequests::class,
+        'checktoken' => CheckToken::class,
     ];
 }

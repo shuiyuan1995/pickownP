@@ -16,6 +16,7 @@ class InPacketEvent extends \Event implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $in_packet;
+    public $data;
 
     /**
      * Create a new event instance.

@@ -75,6 +75,7 @@ class ApiController extends Controller
      * is_reward 是否中奖
      * reward_type 中奖类型
      * reward_sum 中奖金额
+     * isnone 是否是最后一个
      * addr 平台
      * 抢红包记录接口
      * @param Request $request
@@ -83,9 +84,8 @@ class ApiController extends Controller
 
     public function income_packet(Request $request)
     {
-        $outid = $request->input('outid');
-
-
+        $outeosid = $request->input('outid');
+        $outid = OutPacket::where('eosid', $outeosid)->first()->id;
 
         $userid = $request->input('userid');
         $is_chailei = $request->input('is_chailei');
@@ -94,8 +94,19 @@ class ApiController extends Controller
         $eos = $request->input('income_sum');
         $addr = $request->input('addr', 'pc');
         $isnone = $request->input('isnone');
-
-        $entity = InPacket::create($request->all());
+        $InpacketData = [
+            'outid' => $outid,
+            'userid' => $userid,
+            'eosid' => $request->input('eosid'),
+            'blocknumber' => $request->input('blocknumber'),
+            'income_sum' => $request->input('income_sum'),
+            'is_chailei' => $request->input('is_chailei') == 1 ? 1 : 2,
+            'is_reward' => $request->input('reward_type') == 0 ? 1 : 2,
+            'reward_type' => $request->input('reward_type'),
+            'reward_sum' => $request->input('reward_type') == 0 ? 0 : $request->input('reward_sum'),
+            'addr' => $request->input('addr'),
+        ];
+        $entity = InPacket::create($InpacketData);
 
 
         $income_userid = OutPacket::find($outid)->userid;
@@ -111,7 +122,7 @@ class ApiController extends Controller
         TransactionInfo::create($data);
 
         // 踩雷信息
-        if ($is_chailei === 2) {
+        if ($is_chailei == 1) {
             $data['issus_userid'] = $income_userid;
             $data['income_userid'] = $userid;
             $data['type'] = 3;
@@ -127,7 +138,10 @@ class ApiController extends Controller
             $data['eos'] = $reward_sum;
             TransactionInfo::create($data);
         }
-        if ($isnone) {
+        if ($isnone == 'true') {
+            // 红包被抢完后生产发红包对用的抢红包的列表
+            $out_in_packet = InPacket::where('outid', $outid)->get();
+
             event(new InPacketEvent($entity));
         }
 
@@ -181,7 +195,7 @@ class ApiController extends Controller
         $shunzi = InPacket::where('userid', $userid)->where('reward_type', 5)->count();
         $bomb = InPacket::where('userid', $userid)->where('reward_type', 6)->count();
         $max = InPacket::where('userid', $userid)->where('reward_type', 7)->count();
-        $chailei = InPacket::where('userid', $userid)->where('is_chailei', 2)->count();
+        $chailei = InPacket::where('userid', $userid)->where('is_chailei', 1)->count();
         return InPacketResource::collection(
             InPacket::where('userid', $userid)->orderBy('created_at', 'desc')->limit(30)->get()
         )->additional([

@@ -11,6 +11,7 @@ $factory->define(App\Models\OutPacket::class, function (Faker $faker) {
         'blocknumber' => str_random(),
         'tail_number' => random_int(0, 9),
         'status' => random_int(1, 2),
+        'addr' => str_random(),
         'created_at' => $faker->dateTime,
         'updated_at' => $faker->dateTime
     ];

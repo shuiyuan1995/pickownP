@@ -14,6 +14,7 @@ class OutPacket extends Model
         'eosid',
         'blocknumber',
         'tail_number',
+        'addr',
         'status',
         'created_at',
         'updated_at'

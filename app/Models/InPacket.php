@@ -17,13 +17,14 @@ class InPacket extends Model
         'is_reward',
         'reward_type',
         'reward_sum',
+        'addr',
         'created_at',
         'updated_at'
     ];
 
     public $statusArr = [1 => '正常', 2 => '异常'];
 
-    public $is_chailei_arr = [1 => '未踩雷', 2 => '踩雷'];
+    public $is_chailei_arr = [1 => '踩雷', 2 => '未踩雷'];
 
     public $is_reward_arr = [1 => '未中奖', 2 => '中奖'];
 

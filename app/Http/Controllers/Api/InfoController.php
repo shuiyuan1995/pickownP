@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Resources\OutPacketResource;
+use App\Models\InPacket;
+use App\Models\LoginRecord;
 use App\Models\OutPacket;
 use App\Models\TransactionInfo;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
-use Symfony\Component\HttpFoundation\Request;
+use Illuminate\Support\Facades\Redis;
+
 
 class InfoController extends Controller
 {
@@ -20,12 +24,31 @@ class InfoController extends Controller
      */
     public function login(Request $request)
     {
+        if (empty($request->input('name', null))) {
+            return $this->json([], 2001, '用户名缺失');
+        }
+        if (empty($request->input('publickey', null))) {
+            return $this->json([], 2002, 'publickey缺失');
+        }
+        if (empty($request->input('addr', null))) {
+            return $this->json([], 2003, '平台缺失');
+        }
+
         $token = md5(time());
-        $publickey = $request->input('publickey');
+
+        $publickey = $request->input('publickey', null);
         $list = User::where('publickey', $publickey)->first();
         if (empty($list)) {
             $list = User::create($request->all());
         }
+        Redis::setex('userid:' . $list->id . 'token', 2 * 60 * 60, $token);
+        $Logindata = [
+            'userid' => $list->id,
+            'ip' => $request->getClientIp(),
+            'addr' => $request->input('addr'),
+        ];
+        LoginRecord::create($Logindata);
+
         return $this->success(['data' => ['token' => $token, 'userid' => $list->id]], '访问成功！');
     }
 
@@ -72,19 +95,19 @@ class InfoController extends Controller
                 }
             }
         }
-        dd($list);
+        return $this->success($list);
     }
 
     /**
      * 抢红包列表 function
      *
+     * @param Request $request
      * @return InfoController
      */
-    public function getMoneyList()
+    public function getMoneyList(Request $request)
     {
-
         $query = OutPacket::query()->with('user');
-        $list = $query->where('status', 1)->orderBy('created_at','desc')->limit(42)->get();
+        $list = $query->where('status', 1)->orderBy('created_at', 'desc')->limit(42)->get();
         $data = [];
         foreach ($list as $item => $value) {
             $data[$item]['packetId'] = $value['eosid'];
@@ -94,6 +117,21 @@ class InfoController extends Controller
             $data[$item]['eos'] = $value['issus_sum'];
             $data[$item]['time'] = $value['created_at'];
             $data[$item]['none'] = false;
+
+            if ($request->filled('userid')){
+                $userid = $request->input('userid');
+                $in = InPacket::where('outid',$value['id'])->where('userid',$userid)->get();
+                if (empty($in)){
+                    $data[$item]['isgo'] = true;
+                }else{
+                    $data[$item]['isgo'] = false;
+                }
+            }else{
+                $data[$item]['isgo'] = true;
+            }
+
+
+
 //            if ($value['issus_sum'] == '1.0000') {
 //                $data[0][] = $value;
 //            } elseif ($value['issus_sum'] == '5.0000') {

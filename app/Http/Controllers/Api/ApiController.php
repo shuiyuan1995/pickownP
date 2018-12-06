@@ -248,7 +248,6 @@ class ApiController extends Controller
         $outpacketentity = OutPacket::where('eosid', $eosid)->first();
 
         $outid = $outpacketentity['id'];
-
 //        if ($outpacketentity['status'] == 1) {
 //            return $this->success([],'红包未抢完');
 //        } else {

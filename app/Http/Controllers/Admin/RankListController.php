@@ -19,17 +19,14 @@ class RankListController extends Controller
         $time = date("Y-m-d H:i:s", time());
         $start_time = empty($request->input('start_time')) ? date("Y-m-d 00:00:00",time()) : $request->input('start_time');
         $end_time = empty($request->input('end_time')) ? $time : $request->input('end_time');
-        // dd($start_time,$end_time);
         $query = DB::table('users')
                     ->selectRaw('users.id, users.name, SUM(out_packets.issus_sum) AS num')
                     ->leftJoin('out_packets', 'out_packets.userid', '=', 'users.id')
                     ->whereRaw('out_packets.created_at > ? AND out_packets.created_at<= ?',[$start_time, $end_time])
                     ->groupBy('users.id')
                     ->orderByRaw('num DESC');
-                    // ->get();
 
         $list = $query->paginate();
-        // dd($list);
         return view('admin.rank_list.index', compact('list'));
     }
 

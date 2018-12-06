@@ -11,7 +11,7 @@ $factory->define(App\Models\InPacket::class, function (Faker $faker) {
         'blocknumber' => str_random(),
         'eosid' => str_random(),
         'is_reward' => random_int(1, 2),
-        'reward_type' => random_int(0, 6),
+        'reward_type' => random_int(0, 5),
         'reward_sum' => $faker->randomFloat(),
         'addr' => str_random(),
         'created_at' => $faker->dateTime,

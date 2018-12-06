@@ -142,7 +142,7 @@ class ApiController extends Controller
             // 红包被抢完后生产发红包对用的抢红包的列表
             $out_in_packet = InPacket::where('outid', $outid)->get();
 
-            event(new InPacketEvent($entity));
+            event(new InPacketEvent($out_in_packet));
         }
 
         return $this->success([

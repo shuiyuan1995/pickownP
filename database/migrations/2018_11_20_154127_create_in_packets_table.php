@@ -26,7 +26,7 @@ class CreateInPacketsTable extends Migration
             $table->integer('is_chailei')->nullable()->defalut(2)->comment('是否踩雷，1-踩雷，2-未踩雷');
 
             $table->integer('is_reward')->nullable()->defalut(1)->comment('是否中奖，1-未中奖，2-踩雷');
-            $table->integer('reward_type')->nullable()->defalut(0)->comment('中奖类型,0-无，1-对子,2-三条，3-最小奖,4-整数，5-顺子，6-炸弹，7-最大奖');
+            $table->integer('reward_type')->nullable()->defalut(0)->comment('中奖类型,0-无，1-对子,2-三条,3-整数，4-顺子，5-炸弹');
             $table->decimal('reward_sum',18,4)->nullable()->defalut(0)->comment('中奖金额');
             $table->string('addr',255)->nullable()->comment();
             // 创建时间用于领奖时间

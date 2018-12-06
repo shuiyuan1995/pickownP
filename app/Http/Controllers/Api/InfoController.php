@@ -108,8 +108,17 @@ class InfoController extends Controller
     {
         $query = OutPacket::query()->with('user');
         $list = $query->where('status', 1)->orderBy('created_at', 'desc')->limit(42)->get();
+        $indexArr = [
+            '1.0000' => 0,
+            '5.0000' => 1,
+            '10.0000' => 2,
+            '20.0000' => 3,
+            '50.0000' => 4,
+            '100.0000' => 5
+        ];
         $data = [];
         foreach ($list as $item => $value) {
+            $data[$item]['name'] = $value['user']['name'];
             $data[$item]['packetId'] = $value['eosid'];
             $data[$item]['txId'] = $value['blocknumber'];
             $data[$item]['type'] = 1;
@@ -117,7 +126,7 @@ class InfoController extends Controller
             $data[$item]['eos'] = $value['issus_sum'];
             $data[$item]['time'] = $value['created_at'];
             $data[$item]['none'] = false;
-
+            $data[$item]['index'] = $indexArr[$value['issus_sum']];
             if ($request->filled('userid')){
                 $userid = $request->input('userid');
                 $in = InPacket::where('outid',$value['id'])->where('userid',$userid)->get();

@@ -12,7 +12,6 @@ use App\Models\TransactionInfo;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Symfony\Component\HttpFoundation\Response;
 
 class ApiController extends Controller
 {
@@ -141,7 +140,9 @@ class ApiController extends Controller
         if ($isnone == 'true') {
             // 红包被抢完后生产发红包对用的抢红包的列表
             $out_in_packet = InPacket::where('outid', $outid)->get();
-
+            $outPacket_entity = OutPacket::find($outid);
+            $outPacket_entity->status = 2;
+            $outPacket_entity->save();
             event(new InPacketEvent($out_in_packet));
         }
 
@@ -169,7 +170,7 @@ class ApiController extends Controller
         return OutPacketResource::collection(
             OutPacket::where('userid', $userid)->orderBy('created_at', 'desc')->limit(30)->get()
         )->additional([
-            'code' => Response::HTTP_OK,
+            'code' => 200,
             'outpacketcount' => $outpacket,
             'chaileicount' => $chaileicount,
             'outpacketsum' => $outpacketsum,
@@ -199,7 +200,7 @@ class ApiController extends Controller
         return InPacketResource::collection(
             InPacket::where('userid', $userid)->orderBy('created_at', 'desc')->limit(30)->get()
         )->additional([
-            'code' => Response::HTTP_OK,
+            'code' => 200,
             'paris' => $pairs,
             'three' => $three,
             'min' => $min,
@@ -223,9 +224,21 @@ class ApiController extends Controller
 
     public function red_packet(Request $request)
     {
-        $outid = $request->input('outid');
-        return InPacketResource::collection(
-            InPacket::where('outid', $outid)->orderBy('created_at', 'desc')->get()
-        )->additional(['code' => Response::HTTP_OK, 'message' => '']);
+        $eosid = $request->input('outid');
+        //dd($request);
+        $outpacketentity = OutPacket::where('eosid', $eosid)->first();
+//        dd($eosid);
+
+        $outid = $outpacketentity['id'];
+
+//        if ($outpacketentity->status == 1) {
+//            return $this->success([],'红包为抢完');
+//        } else {
+            return InPacketResource::collection(
+                InPacket::where('outid', $outid)->orderBy('created_at', 'desc')->get()
+            )->additional(['code' => 200, 'message' => '']);
+        //}
     }
+
+
 }

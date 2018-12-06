@@ -15,19 +15,35 @@ class InPacketEvent extends \Event implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $in_packet;
+    public $reward_data;
     public $out_packet;
+    public $in_packet_data;
+    public $chailei_data;
+    public $name;
+    public $type;
+    public $index;
 
     /**
      * Create a new event instance.
      *
-     * @param InPacket $inPacket
+     * @param $reward_data
      * @param $out_packe
+     * @param $chailei_data
+     * @param $in_packet_data
+     * @param $name
+     * @param $type
+     * @param $index
+     * @internal param $rewrd_data
      */
-    public function __construct($inPacket,$out_packe)
+    public function __construct($reward_data, $out_packe, $chailei_data, $in_packet_data, $name, $type, $index)
     {
-        $this->in_packet = $inPacket;
+        $this->reward_data = $reward_data;
         $this->out_packet = $out_packe;
+        $this->chailei_data = $chailei_data;
+        $this->in_packet_data = $in_packet_data;
+        $this->name = $name;
+        $this->type = $type;
+        $this->index = $index;
     }
 
     /**

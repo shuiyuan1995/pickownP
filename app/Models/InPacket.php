@@ -28,7 +28,7 @@ class InPacket extends Model
 
     public $is_reward_arr = [1 => '未中奖', 2 => '中奖'];
 
-    public $rewardTypeArr = [0=>'无', 1=>'对子', 2=>'三条', 3=>'整数', 4=>'顺子', 5=>'炸弹'];
+    public $rewardTypeArr = [0=>'无', 1=>'对子', 2=>'三条', 3=>'整数', 4=>'顺子', 5=>'四条',6=>'无',7=>'无'];
 
     public function out()
     {

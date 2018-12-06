@@ -137,14 +137,51 @@ class ApiController extends Controller
             $data['eos'] = $reward_sum;
             TransactionInfo::create($data);
         }
-        if ($isnone == 'true') {
+        if ($isnone == 1) {
             // 红包被抢完后生成发红包对用的抢红包的列表
             $out_in_packet = InPacket::where('outid', $outid)->get();
+            $out_in_packet_data = [];
+            $reward_data = [];
+            $chailei_data = [];
+            foreach ($out_in_packet as $item => $value) {
+                $out_in_packet_data[$item]['name'] = User::find($value['userid'])->name;
+                $out_in_packet_data[$item]['income_sum'] = $value['income_sum'];
+                if ($value['is_chailei'] == 1) {
+                    $chailei_data[$item]['name'] = User::find($value['userid'])->name;
+                }
+                if ($value['is_reward'] == 2) {
+                    $reward_data[$item]['name'] = User::find($value['userid'])->name;
+                    $reward_data[$item]['reward_type'] = $value['reward_type'];
+                    $reward_data[$item]['reward_sum'] = $value['reward_sum'];
+                }
+
+            }
+
+
             $outPacket_entity = OutPacket::find($outid);
             $outPacket_entity->status = 2;
             $outPacket_entity->save();
             $outPacket = OutPacket::find($outid);
-            event(new InPacketEvent($out_in_packet, $outPacket));
+            $name = User::find($outPacket->userid)->name;
+            $issus_sum_arr = [
+                0 => -1,
+                1 => 0,
+                5 => 1,
+                10 => 2,
+                20 => 3,
+                50 => 4,
+                100 => 5
+            ];
+            $index = $issus_sum_arr[intval($outPacket->issus_sum)];
+            event(new InPacketEvent(
+                $reward_data,
+                $outPacket,
+                $chailei_data,
+                $out_in_packet_data,
+                $name,
+                2,
+                $index
+            ));
         }
 
         return $this->success([
@@ -164,7 +201,7 @@ class ApiController extends Controller
      */
     public function my_issus_packet(Request $request)
     {
-        $page = $request->input('page', 0);
+        $page = $request->input('page', 1);
         $userid = $request->input('userid');
         $outpacketsum = OutPacket::where('userid', $userid)->sum('issus_sum');
         $outpacket = OutPacket::where('userid', $userid)->count();
@@ -176,7 +213,7 @@ class ApiController extends Controller
             $query->where('created_at', '>', $begin_time)->where('created_at', '<', $end_time);
         }
         return OutPacketResource::collection(
-            $query->orderBy('created_at', 'desc')->limit(30)->get()
+            $query->where('status', '<>', 1)->orderBy('created_at', 'desc')->limit(30)->get()
         )->additional([
             'code' => 200,
             'outpacketcount' => $outpacket,
@@ -246,27 +283,37 @@ class ApiController extends Controller
     public function red_packet(Request $request)
     {
         $eosid = $request->input('outid');
-//        dd($eosid);
         $outpacketentity = OutPacket::where('eosid', $eosid)->first();
         if (empty($outpacketentity)) {
-            return $this->success([], '参数错误');
+            return response()->json([
+                'data' => [],
+                'code' => 2001,
+                'message' => '参数错误'
+            ]);
         }
 
         $outid = $outpacketentity->id;
         $outuserid = $outpacketentity->userid;
-//        if ($outpacketentity['status'] == 1) {
-//            return $this->success([],'红包未抢完');
-//        } else {
-        return InPacketResource::collection(
-            InPacket::where('outid', $outid)->orderBy('created_at', 'desc')->get()
-        )->additional([
-            'outpacketname' => User::find($outuserid)->name,
-            'outpacketsum' => $outpacketentity->issus_sum,
-            'outpackettailnumber' => $outpacketentity->tail_number,
-            'code' => 200,
-            'message' => ''
-        ]);
-        //}
+        if ($outpacketentity->status == 1) {
+            return response()->json([
+                'data' => [],
+                'outpacketname' => User::find($outuserid)->name,
+                'outpacketsum' => $outpacketentity->issus_sum,
+                'outpackettailnumber' => $outpacketentity->tail_number,
+                'code' => 2002,
+                'message' => '红包未领完'
+            ]);
+        } else {
+            return InPacketResource::collection(
+                InPacket::where('outid', $outid)->orderBy('created_at', 'desc')->get()
+            )->additional([
+                'outpacketname' => User::find($outuserid)->name,
+                'outpacketsum' => $outpacketentity->issus_sum,
+                'outpackettailnumber' => $outpacketentity->tail_number,
+                'code' => 200,
+                'message' => ''
+            ]);
+        }
     }
 
 

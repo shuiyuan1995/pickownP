@@ -143,7 +143,8 @@ class ApiController extends Controller
             $outPacket_entity = OutPacket::find($outid);
             $outPacket_entity->status = 2;
             $outPacket_entity->save();
-            event(new InPacketEvent($out_in_packet));
+            $outPacket = OutPacket::find($outid);
+            event(new InPacketEvent($out_in_packet, $outPacket));
         }
 
         return $this->success([
@@ -245,15 +246,26 @@ class ApiController extends Controller
     public function red_packet(Request $request)
     {
         $eosid = $request->input('outid');
+//        dd($eosid);
         $outpacketentity = OutPacket::where('eosid', $eosid)->first();
+        if (empty($outpacketentity)) {
+            return $this->success([], '参数错误');
+        }
 
-        $outid = $outpacketentity['id'];
+        $outid = $outpacketentity->id;
+        $outuserid = $outpacketentity->userid;
 //        if ($outpacketentity['status'] == 1) {
 //            return $this->success([],'红包未抢完');
 //        } else {
         return InPacketResource::collection(
             InPacket::where('outid', $outid)->orderBy('created_at', 'desc')->get()
-        )->additional(['code' => 200, 'message' => '']);
+        )->additional([
+            'outpacketname' => User::find($outuserid)->name,
+            'outpacketsum' => $outpacketentity->issus_sum,
+            'outpackettailnumber' => $outpacketentity->tail_number,
+            'code' => 200,
+            'message' => ''
+        ]);
         //}
     }
 

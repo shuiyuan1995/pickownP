@@ -129,7 +129,7 @@ class InfoController extends Controller
             $data[$item]['index'] = $indexArr[$value['issus_sum']];
             if ($request->filled('userid')){
                 $userid = $request->input('userid');
-                $in = InPacket::where('outid',$value['id'])->where('userid',$userid)->get();
+                $in = InPacket::where('outid',$value['id'])->where('userid',$userid)->count();
                 if (count($in) > 0){
                     $data[$item]['isgo'] = 1;
                 }else{

@@ -16,15 +16,18 @@ class InPacketEvent extends \Event implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $in_packet;
+    public $out_packet;
 
     /**
      * Create a new event instance.
      *
      * @param InPacket $inPacket
+     * @param $out_packe
      */
-    public function __construct($inPacket)
+    public function __construct($inPacket,$out_packe)
     {
         $this->in_packet = $inPacket;
+        $this->out_packet = $out_packe;
     }
 
     /**

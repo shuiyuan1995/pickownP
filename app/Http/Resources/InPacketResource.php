@@ -15,6 +15,7 @@ class InPacketResource extends JsonResource
     public function toArray($request)
     {
         $rewardTypeArr = $this->rewardTypeArr;
+        $isChaileiArr = $this->is_chailei_arr;
         return [
             'id' => $this->id,
             'outid' => $this->outid,
@@ -24,6 +25,7 @@ class InPacketResource extends JsonResource
             'blocknumber' => $this->blocknumber,
             'income_sum' => $this->income_sum,
             'is_chailei' => $this->is_chailei,
+            'is_chailei_value' => $isChaileiArr[$this->is_chailei],
             'outpacket_sum' => $this->out->issus_sum,
             'is_reward' => $this->is_reward,
             'reward_type' => $this->reward_type,

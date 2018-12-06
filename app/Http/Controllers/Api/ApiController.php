@@ -163,16 +163,16 @@ class ApiController extends Controller
      */
     public function my_issus_packet(Request $request)
     {
-        $page = $request->input('page',0);
+        $page = $request->input('page', 0);
         $userid = $request->input('userid');
         $outpacketsum = OutPacket::where('userid', $userid)->sum('issus_sum');
         $outpacket = OutPacket::where('userid', $userid)->count();
         $chaileicount = TransactionInfo::where('income_userid', $userid)->where('type', 3)->count();
         $query = OutPacket::where('userid', $userid);
-        if($request->filled('time')){
-            $begin_time = date('Y-m-d 0:0:0',$request->input('time'));
-            $end_time = date('Y-m-d 59:59:59',$request->input('time'));
-            $query->where('created_at','>',$begin_time)->where('created_at','<',$end_time);
+        if ($request->filled('time')) {
+            $begin_time = date('Y-m-d 0:0:0', $request->input('time'));
+            $end_time = date('Y-m-d 59:59:59', $request->input('time'));
+            $query->where('created_at', '>', $begin_time)->where('created_at', '<', $end_time);
         }
         return OutPacketResource::collection(
             $query->orderBy('created_at', 'desc')->limit(30)->get()
@@ -181,9 +181,9 @@ class ApiController extends Controller
             'outpacketcount' => $outpacket,
             'chaileicount' => $chaileicount,
             'outpacketsum' => $outpacketsum,
-            'name'=> User::find($userid)->name,
-            'last_time'=>OutPacket::where('userid',$userid)->min('created_at'),
-            'max_time'=>OutPacket::where('userid',$userid)->max('created_at'),
+            'name' => User::find($userid)->name,
+            'last_time' => strtotime(OutPacket::where('userid', $userid)->min('created_at')),
+            'max_time' => strtotime(OutPacket::where('userid', $userid)->max('created_at')),
             'message' => ''
         ]);
     }
@@ -198,7 +198,7 @@ class ApiController extends Controller
      */
     public function my_income_packet(Request $request)
     {
-        $page = $request->input('page',1);
+        $page = $request->input('page', 1);
         $userid = $request->input('userid');
         $pairs = InPacket::where('userid', $userid)->where('reward_type', 1)->count();
         $three = InPacket::where('userid', $userid)->where('reward_type', 2)->count();
@@ -208,11 +208,11 @@ class ApiController extends Controller
         $bomb = InPacket::where('userid', $userid)->where('reward_type', 5)->count();
 
         $chailei = InPacket::where('userid', $userid)->where('is_chailei', 1)->count();
-        $query =  InPacket::where('userid', $userid);
-        if($request->filled('time')){
-            $begin_time = date('Y-m-d 0:0:0',$request->input('time'));
-            $end_time = date('Y-m-d 59:59:59',$request->input('time'));
-            $query->where('created_at','>',$begin_time)->where('created_at','<',$end_time);
+        $query = InPacket::where('userid', $userid);
+        if ($request->filled('time')) {
+            $begin_time = date('Y-m-d 0:0:0', $request->input('time'));
+            $end_time = date('Y-m-d 59:59:59', $request->input('time'));
+            $query->where('created_at', '>', $begin_time)->where('created_at', '<', $end_time);
         }
         return InPacketResource::collection(
             $query->orderBy('created_at', 'desc')->limit(30)->get()
@@ -224,11 +224,11 @@ class ApiController extends Controller
             'shunzi' => $shunzi,
             'bomb' => $bomb,
             'chailei' => $chailei,
-            'name'=> User::find($userid)->name,
-            'packetcount'=> InPacket::where('userid',$userid)->count(),
-            'packetsum'=>InPacket::where('userid',$userid)->sum('income_sum'),
-            'last_time'=>InPacket::where('userid',$userid)->min('created_at'),
-            'max_time'=>InPacket::where('userid',$userid)->max('created_at'),
+            'name' => User::find($userid)->name,
+            'packetcount' => InPacket::where('userid', $userid)->count(),
+            'packetsum' => InPacket::where('userid', $userid)->sum('income_sum'),
+            'last_time' => strtotime(InPacket::where('userid', $userid)->min('created_at')),
+            'max_time' => strtotime(InPacket::where('userid', $userid)->max('created_at')),
             'message' => ''
         ]);
     }
@@ -252,9 +252,9 @@ class ApiController extends Controller
 //        if ($outpacketentity['status'] == 1) {
 //            return $this->success([],'红包未抢完');
 //        } else {
-            return InPacketResource::collection(
-                InPacket::where('outid', $outid)->orderBy('created_at', 'desc')->get()
-            )->additional(['code' => 200, 'message' => '']);
+        return InPacketResource::collection(
+            InPacket::where('outid', $outid)->orderBy('created_at', 'desc')->get()
+        )->additional(['code' => 200, 'message' => '']);
         //}
     }
 

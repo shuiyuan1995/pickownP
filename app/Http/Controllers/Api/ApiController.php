@@ -163,17 +163,27 @@ class ApiController extends Controller
      */
     public function my_issus_packet(Request $request)
     {
+        $page = $request->input('page',0);
         $userid = $request->input('userid');
         $outpacketsum = OutPacket::where('userid', $userid)->sum('issus_sum');
         $outpacket = OutPacket::where('userid', $userid)->count();
         $chaileicount = TransactionInfo::where('income_userid', $userid)->where('type', 3)->count();
+        $query = OutPacket::where('userid', $userid);
+        if($request->filled('time')){
+            $begin_time = date('Y-m-d 0:0:0',$request->input('time'));
+            $end_time = date('Y-m-d 59:59:59',$request->input('time'));
+            $query->where('created_at','>',$begin_time)->where('created_at','<',$end_time);
+        }
         return OutPacketResource::collection(
-            OutPacket::where('userid', $userid)->orderBy('created_at', 'desc')->limit(30)->get()
+            $query->orderBy('created_at', 'desc')->limit(30)->get()
         )->additional([
             'code' => 200,
             'outpacketcount' => $outpacket,
             'chaileicount' => $chaileicount,
             'outpacketsum' => $outpacketsum,
+            'name'=> User::find($userid)->name,
+            'last_time'=>OutPacket::where('userid',$userid)->min('created_at'),
+            'max_time'=>OutPacket::where('userid',$userid)->max('created_at'),
             'message' => ''
         ]);
     }
@@ -188,27 +198,37 @@ class ApiController extends Controller
      */
     public function my_income_packet(Request $request)
     {
+        $page = $request->input('page',1);
         $userid = $request->input('userid');
         $pairs = InPacket::where('userid', $userid)->where('reward_type', 1)->count();
         $three = InPacket::where('userid', $userid)->where('reward_type', 2)->count();
-        $min = InPacket::where('userid', $userid)->where('reward_type', 3)->count();
-        $int = InPacket::where('userid', $userid)->where('reward_type', 4)->count();
-        $shunzi = InPacket::where('userid', $userid)->where('reward_type', 5)->count();
-        $bomb = InPacket::where('userid', $userid)->where('reward_type', 6)->count();
-        $max = InPacket::where('userid', $userid)->where('reward_type', 7)->count();
+
+        $int = InPacket::where('userid', $userid)->where('reward_type', 3)->count();
+        $shunzi = InPacket::where('userid', $userid)->where('reward_type', 4)->count();
+        $bomb = InPacket::where('userid', $userid)->where('reward_type', 5)->count();
+
         $chailei = InPacket::where('userid', $userid)->where('is_chailei', 1)->count();
+        $query =  InPacket::where('userid', $userid);
+        if($request->filled('time')){
+            $begin_time = date('Y-m-d 0:0:0',$request->input('time'));
+            $end_time = date('Y-m-d 59:59:59',$request->input('time'));
+            $query->where('created_at','>',$begin_time)->where('created_at','<',$end_time);
+        }
         return InPacketResource::collection(
-            InPacket::where('userid', $userid)->orderBy('created_at', 'desc')->limit(30)->get()
+            $query->orderBy('created_at', 'desc')->limit(30)->get()
         )->additional([
             'code' => 200,
             'paris' => $pairs,
             'three' => $three,
-            'min' => $min,
             'int' => $int,
             'shunzi' => $shunzi,
             'bomb' => $bomb,
-            'max' => $max,
             'chailei' => $chailei,
+            'name'=> User::find($userid)->name,
+            'packetcount'=> InPacket::where('userid',$userid)->count(),
+            'packetsum'=>InPacket::where('userid',$userid)->sum('income_sum'),
+            'last_time'=>InPacket::where('userid',$userid)->min('created_at'),
+            'max_time'=>InPacket::where('userid',$userid)->max('created_at'),
             'message' => ''
         ]);
     }
@@ -225,14 +245,12 @@ class ApiController extends Controller
     public function red_packet(Request $request)
     {
         $eosid = $request->input('outid');
-        //dd($request);
         $outpacketentity = OutPacket::where('eosid', $eosid)->first();
-//        dd($eosid);
 
         $outid = $outpacketentity['id'];
 
-//        if ($outpacketentity->status == 1) {
-//            return $this->success([],'红包为抢完');
+//        if ($outpacketentity['status'] == 1) {
+//            return $this->success([],'红包未抢完');
 //        } else {
             return InPacketResource::collection(
                 InPacket::where('outid', $outid)->orderBy('created_at', 'desc')->get()

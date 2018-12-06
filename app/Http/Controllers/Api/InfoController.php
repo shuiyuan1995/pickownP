@@ -130,13 +130,13 @@ class InfoController extends Controller
             if ($request->filled('userid')){
                 $userid = $request->input('userid');
                 $in = InPacket::where('outid',$value['id'])->where('userid',$userid)->get();
-                if (empty($in)){
-                    $data[$item]['isgo'] = true;
+                if (count($in) > 0){
+                    $data[$item]['isgo'] = 1;
                 }else{
-                    $data[$item]['isgo'] = false;
+                    $data[$item]['isgo'] = 0;
                 }
             }else{
-                $data[$item]['isgo'] = true;
+                $data[$item]['isgo'] = 0;
             }
 
 

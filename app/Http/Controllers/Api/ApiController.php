@@ -138,7 +138,7 @@ class ApiController extends Controller
             TransactionInfo::create($data);
         }
         if ($isnone == 'true') {
-            // 红包被抢完后生产发红包对用的抢红包的列表
+            // 红包被抢完后生成发红包对用的抢红包的列表
             $out_in_packet = InPacket::where('outid', $outid)->get();
             $outPacket_entity = OutPacket::find($outid);
             $outPacket_entity->status = 2;

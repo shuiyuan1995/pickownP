@@ -371,6 +371,19 @@ class ApiController extends Controller
             }
         }
         $shengyu_sum = $sum - $tixian_sum;
+        $out_pakcet_count = OutPacket::where('addr',User::find($userid)->name)->get();
+        $out_pakcet_count_data = [];
+        foreach ($out_pakcet_count as $value){
+            $out_pakcet_count_data[] = $value->userid;
+        }
+//        dd($out_pakcet_count_data);
+        $in_pakcet_count = InPacket::where('addr',User::find($userid)->name)->get();
+        $in_pakcet_count_data = [];
+        foreach ($in_pakcet_count as $value){
+            $in_pakcet_count_data[] = $value->userid;
+        }
+        dd(array_keys(array_flip($out_pakcet_count_data) + array_flip($in_pakcet_count_data)));
+        //dd($in_pakcet_count_data);
         return $this->success([
             'sum' => (string)$sum,
             'shengyu_sum' => (string)$shengyu_sum,

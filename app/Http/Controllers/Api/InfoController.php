@@ -222,7 +222,13 @@ class InfoController extends Controller
         $inPacketName = DB::select('SELECT addr, count(addr) AS count FROM in_packets GROUP BY addr');
         //dd($inPacketName);
         $outPacketName = DB::select('SELECT addr, count(addr) AS count FROM out_packets GROUP BY addr');
-        dd($outPacketName);
-
+        //dd($outPacketName);
+        $outPacketName = OutPacket::all();
+//        dd($outPacketName);
+        $data = [];
+        foreach ($outPacketName as $value){
+            //$data[empty($value->addr)? 0:$value->addr]['issus_sum'] += $jiangjingArr[intval($value->issus_sum)];
+        }
+        dd($data);
     }
 }

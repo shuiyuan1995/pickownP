@@ -50,7 +50,7 @@ return [
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
-            'strict' => env('MYSQL_STRICT', true),
+            'strict' => env('MYSQL_STRICT', false),
             'engine' => null,
         ],
 

@@ -147,8 +147,6 @@ class ApiController extends Controller
             $out_in_packet_data = array();
             $reward_data__ = array();
             $chailei_data__ = array();
-            $reward_data = array();
-            $chailei_data = array();
             foreach ($out_in_packet as $item => $value) {
                 $out_in_packet_data[$item]['name'] = User::find($value['userid'])->name;
                 $out_in_packet_data[$item]['income_sum'] = $value['income_sum'];

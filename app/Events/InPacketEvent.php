@@ -35,8 +35,15 @@ class InPacketEvent extends \Event implements ShouldBroadcast
      * @param $index
      * @internal param $rewrd_data
      */
-    public function __construct($reward_data, $out_packe, $chailei_data, $in_packet_data, $name, $type, $index)
-    {
+    public function __construct(
+        $reward_data,
+        $out_packe,
+        $chailei_data,
+        $in_packet_data,
+        $name,
+        $type,
+        $index
+    ) {
         $this->reward_data = $reward_data;
         $this->out_packet = $out_packe;
         $this->chailei_data = $chailei_data;

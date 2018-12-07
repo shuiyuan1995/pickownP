@@ -140,6 +140,10 @@ class ApiController extends Controller
         if ($isnone == 1) {
             // 红包被抢完后生成发红包对用的抢红包的列表
             $out_in_packet = InPacket::where('outid', $outid)->get();
+            $outPacket_entity = OutPacket::find($outid);
+            $outPacket_entity->status = 2;
+            $outPacket_entity->save();
+            $outPacket = $outPacket_entity;
             $out_in_packet_data = [];
             $reward_data = [];
             $chailei_data = [];
@@ -148,6 +152,7 @@ class ApiController extends Controller
                 $out_in_packet_data[$item]['income_sum'] = $value['income_sum'];
                 if ($value['is_chailei'] == 1) {
                     $chailei_data[$item]['name'] = User::find($value['userid'])->name;
+                    $chailei_data[$item]['chailai_sum'] = $outPacket->issus_sum;
                 }
                 if ($value['is_reward'] == 2) {
                     $reward_data[$item]['name'] = User::find($value['userid'])->name;
@@ -158,10 +163,7 @@ class ApiController extends Controller
             }
 
 
-            $outPacket_entity = OutPacket::find($outid);
-            $outPacket_entity->status = 2;
-            $outPacket_entity->save();
-            $outPacket = OutPacket::find($outid);
+
             $name = User::find($outPacket->userid)->name;
             $issus_sum_arr = [
                 0 => -1,

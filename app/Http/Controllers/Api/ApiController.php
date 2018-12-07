@@ -245,14 +245,26 @@ class ApiController extends Controller
         $userid = $request->input('userid');
 
 
-        $pairs = InPacket::where('userid', $userid)->where('reward_type', 1)->count();
-        $three = InPacket::where('userid', $userid)->where('reward_type', 2)->count();
+        $pairs = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
+            $q->where('status', 2);
+        })->where('userid', $userid)->where('reward_type', 1)->count();
+        $three = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
+            $q->where('status', 2);
+        })->where('userid', $userid)->where('reward_type', 2)->count();
 
-        $int = InPacket::where('userid', $userid)->where('reward_type', 3)->count();
-        $shunzi = InPacket::where('userid', $userid)->where('reward_type', 4)->count();
-        $bomb = InPacket::where('userid', $userid)->where('reward_type', 5)->count();
+        $int = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
+            $q->where('status', 2);
+        })->where('userid', $userid)->where('reward_type', 3)->count();
+        $shunzi = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
+            $q->where('status', 2);
+        })->where('userid', $userid)->where('reward_type', 4)->count();
+        $bomb = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
+            $q->where('status', 2);
+        })->where('userid', $userid)->where('reward_type', 5)->count();
 
-        $chailei = InPacket::where('userid', $userid)->where('is_chailei', 1)->count();
+        $chailei = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
+            $q->where('status', 2);
+        })->where('userid', $userid)->where('is_chailei', 1)->count();
 
 
         $query = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
@@ -286,9 +298,11 @@ class ApiController extends Controller
      * 抢了红包的情况
      * @param Request $request
      */
-    public function qian_red_packet(Request $request){
+    public function qian_red_packet(Request $request)
+    {
 
     }
+
     /**
      * 参数值
      * token
@@ -378,15 +392,15 @@ class ApiController extends Controller
             }
         }
         $shengyu_sum = $sum - $tixian_sum;
-        $out_pakcet_count = OutPacket::where('addr',User::find($userid)->name)->get();
+        $out_pakcet_count = OutPacket::where('addr', User::find($userid)->name)->get();
         $out_pakcet_count_data = [];
-        foreach ($out_pakcet_count as $value){
+        foreach ($out_pakcet_count as $value) {
             $out_pakcet_count_data[] = $value->userid;
         }
 //        dd($out_pakcet_count_data);
-        $in_pakcet_count = InPacket::where('addr',User::find($userid)->name)->get();
+        $in_pakcet_count = InPacket::where('addr', User::find($userid)->name)->get();
         $in_pakcet_count_data = [];
-        foreach ($in_pakcet_count as $value){
+        foreach ($in_pakcet_count as $value) {
             $in_pakcet_count_data[] = $value->userid;
         }
         $cc = array_keys(array_flip($out_pakcet_count_data) + array_flip($in_pakcet_count_data));

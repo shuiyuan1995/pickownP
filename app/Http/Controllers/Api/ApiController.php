@@ -283,6 +283,13 @@ class ApiController extends Controller
     }
 
     /**
+     * 抢了红包的情况
+     * @param Request $request
+     */
+    public function qian_red_packet(Request $request){
+
+    }
+    /**
      * 参数值
      * token
      * 发出红包id  outid

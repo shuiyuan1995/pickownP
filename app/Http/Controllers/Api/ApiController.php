@@ -211,11 +211,18 @@ class ApiController extends Controller
         $userid = $request->input('userid');
         $outpacketsum = OutPacket::where('userid', $userid)->where('status', 2)->sum('issus_sum');
         $outpacket = OutPacket::where('userid', $userid)->count();
-        $chaileicount = TransactionInfo::where('income_userid', $userid)->where('type', 3)->count();
+        $sql = 'select count(DISTINCT out_packets.userid) as count from out_packets,in_packets where out_packets.id = in_packets.outid and status = 2 AND out_packets.userid = :userid';
+        $chailei = DB::select($sql,['userid'=>$userid]);
+        $chaileicount = 0;
+        foreach ($chailei as $value){
+            $chaileicount = $value->count;
+        }
+        $chaileicount = $chaileicount;
+//        $chaileicount = TransactionInfo::where('income_userid', $userid)->where('type', 3)->count();
         $query = OutPacket::where('userid', $userid);
         if ($request->filled('time')) {
             $begin_time = date('Y-m-d 0:0:0', $request->input('time'));
-            $end_time = date('Y-m-d 59:59:59', $request->input('time'));
+            $end_time = date('Y-m-d 23:59:59', $request->input('time'));
             $query->where('created_at', '>', $begin_time)->where('created_at', '<', $end_time);
         }
         return OutPacketResource::collection(

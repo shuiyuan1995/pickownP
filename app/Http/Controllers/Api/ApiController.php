@@ -12,6 +12,7 @@ use App\Models\TransactionInfo;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class ApiController extends Controller
@@ -325,19 +326,55 @@ class ApiController extends Controller
             ]);
         }
     }
+
     public function postRewardMoney(Request $request)
     {
         $userid = $request->input('userid');
         $money = $request->input('money');
         $data = [
-            'issus_userid'=>0,
-            'income_userid'=>$userid,
-            'type'=>5,
-            'status'=>1,
-            'eos'=>$money,
-            'addr'=>User::find($userid)->name,
+            'issus_userid' => 0,
+            'income_userid' => $userid,
+            'type' => 5,
+            'status' => 1,
+            'eos' => $money,
+            'addr' => User::find($userid)->name,
         ];
         TransactionInfo::create($data);
-        $this->success([],'发送成功');
+        return $this->getRewardMoney($request);
+    }
+
+    public function getRewardMoney(Request $request)
+    {
+        $jiangjingArr = [
+            1 => 0.0009,
+            5 => 0.0045,
+            10 => 0.009,
+            20 => 0.018,
+            50 => 0.045,
+            100 => 0.09,
+        ];
+        $userid = $request->input('userid');
+        $getRewardCount = DB::select('SELECT addr,income_userid,sum(eos) AS tixian_count FROM transaction_infos WHERE type = 5 AND income_userid = :income_userid',
+            ['income_userid' => $userid]);
+//        dd($getRewardCount);
+        $arr = DB::select('SELECT issus_sum , count(issus_sum) AS count FROM out_packets WHERE addr = :addr GROUP BY issus_sum',
+            ['addr' => User::find($userid)->name]);
+//        dd($arr);
+        $sum = 0;
+        foreach ($arr as $item => $value) {
+            $sum += $jiangjingArr[intval($value->issus_sum)] * $value->count;
+        }
+        $tixian_sum = 0;
+        foreach ($getRewardCount as $value) {
+            if (!empty($value->tixian_count)) {
+                $tixian_sum = $value->tixian_count;
+            }
+        }
+        $shengyu_sum = $sum - $tixian_sum;
+        return $this->success([
+            'sum' => (string)$sum,
+            'shengyu_sum' => (string)$shengyu_sum,
+            'tixian_sum' => (string)$tixian_sum
+        ], '');
     }
 }

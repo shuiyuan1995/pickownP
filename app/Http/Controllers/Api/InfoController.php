@@ -215,10 +215,14 @@ class InfoController extends Controller
             50 => 0.045,
             100 => 0.09,
         ];
-        $sql = 'SELECT addr,income_userid,sum(eos) AS sum_eos FROM transaction_infos WHERE status= 5 GROUP BY income_userid';
+        $sql = 'SELECT addr,income_userid,sum(eos) AS tisum FROM transaction_infos WHERE status= 5 GROUP BY income_userid';
         $tixianArr = DB::select($sql);
+        $packetSql = 'SELECT in_packets.id AS iid,out_packets.id AS oid FROM in_packets JOIN out_packets ON outid = out_packets.id GROUP BY in_packets.userid';
+        //dd(DB::select($packetSql));
+        $inPacketName = DB::select('SELECT addr, count(addr) AS count FROM in_packets GROUP BY addr');
+        //dd($inPacketName);
+        $outPacketName = DB::select('SELECT addr, count(addr) AS count FROM out_packets GROUP BY addr');
+        dd($outPacketName);
 
-        $packetSql = 'select in_packets.id as iid,out_packets.id as oid from in_packets JOIN out_packets ON outid = out_packets.id GROUP BY out_packets.userid';
-        dd(DB::select($packetSql));
     }
 }

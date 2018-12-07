@@ -37,6 +37,7 @@ Route::group(['namespace' => 'Api'], function () {
         ['uses' => 'ApiController@my_income_packet', 'as' => 'api.my_income_packet']);
     Route::post('red_packet',
         ['uses' => 'ApiController@red_packet', 'as' => 'api.red_packet'])->middleware('checktoken');
+    Route::post('get_tixian_info',['uses'=>'ApiController@getRewardMoney','as'=>'api.get_reward_money']);
     Route::post('post_tixian', ['uses' => 'ApiController@postRewardMoney', 'as' => 'api.post_tixian']);
     Route::get('get_info', ['uses' => 'InfoController@getInfo', 'as' => 'api.get_info']);
     Route::get('money_list', ['uses' => 'InfoController@moneyList', 'as' => 'api.money_list']);

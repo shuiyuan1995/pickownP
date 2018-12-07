@@ -209,7 +209,7 @@ class ApiController extends Controller
     {
         $page = $request->input('page', 1);
         $userid = $request->input('userid');
-        $outpacketsum = OutPacket::where('userid', $userid)->sum('issus_sum');
+        $outpacketsum = OutPacket::where('userid', $userid)->where('status', 2)->sum('issus_sum');
         $outpacket = OutPacket::where('userid', $userid)->count();
         $chaileicount = TransactionInfo::where('income_userid', $userid)->where('type', 3)->count();
         $query = OutPacket::where('userid', $userid);
@@ -224,7 +224,7 @@ class ApiController extends Controller
             'code' => 200,
             'outpacketcount' => $outpacket,
             'chaileicount' => $chaileicount,
-            'outpacketsum' => $outpacketsum,
+            'outpacketsum' => empty($outpacketsum) ? 0 : $outpacketsum,
             'name' => User::find($userid)->name,
             'last_time' => strtotime(OutPacket::where('userid', $userid)->min('created_at')),
             'max_time' => strtotime(OutPacket::where('userid', $userid)->max('created_at')),
@@ -287,7 +287,9 @@ class ApiController extends Controller
             'chailei' => $chailei,
             'name' => User::find($userid)->name,
             'packetcount' => InPacket::where('userid', $userid)->count(),
-            'packetsum' => InPacket::where('userid', $userid)->sum('income_sum'),
+            'packetsum' => InPacket::query()->with(['out'])->whereHas('out', function ($q) {
+                $q->where('status', 2);
+            })->where('userid', $userid)->sum('income_sum'),
             'last_time' => strtotime(InPacket::where('userid', $userid)->min('created_at')),
             'max_time' => strtotime(InPacket::where('userid', $userid)->max('created_at')),
             'message' => ''

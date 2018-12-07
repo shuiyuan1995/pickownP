@@ -6,7 +6,7 @@ $factory->define(\App\Models\TransactionInfo::class, function (Faker $faker) {
     return [
         'issus_userid'=> \App\Models\User::inRandomOrder()->first()->id,
         'income_userid'=>\App\Models\User::inRandomOrder()->first()->id,
-        'type'=>random_int(1,3),
+        'type'=>random_int(1,5),
         'status'=>random_int(1,4),
         'eos'=>$faker->randomFloat(),
         'msg'=>$faker->text(255),

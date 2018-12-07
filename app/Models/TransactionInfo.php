@@ -19,7 +19,7 @@ class TransactionInfo extends Model
         'addr'
     ];
 
-    public $typeArr = [1 => '抢红包', 2 => '发红包', 3 => '踩雷', 4 => '中奖'];
+    public $typeArr = [1 => '抢红包', 2 => '发红包', 3 => '踩雷', 4 => '中奖', 5 => '提现'];
     public $statusArr = [1 => '正常', 2 => '失败', 3 => '异常', 4 => '后台修改'];
 
     public function issus_user()

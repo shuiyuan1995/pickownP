@@ -26,7 +26,7 @@ class InPacketResource extends JsonResource
             'income_sum' => $this->income_sum,
             'is_chailei' => $this->is_chailei,
             'is_chailei_value' => $isChaileiArr[$this->is_chailei],
-            'outpacket_sum' => $this->out->issus_sum,
+            'outpacket_sum' => data_get($this, 'out.issus_sum', '0'),
             'is_reward' => $this->is_reward,
             'reward_type' => $this->reward_type,
             'reward_type_value' => $rewardTypeArr[$this->reward_type],

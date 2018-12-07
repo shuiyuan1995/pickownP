@@ -216,7 +216,7 @@ class ApiController extends Controller
             $query->where('created_at', '>', $begin_time)->where('created_at', '<', $end_time);
         }
         return OutPacketResource::collection(
-            $query->where('status', '<>', 1)->orderBy('created_at', 'desc')->limit(30)->get()
+            $query->where('status', '<>', 1)->orderBy('created_at', 'desc')->paginate()
         )->additional([
             'code' => 200,
             'outpacketcount' => $outpacket,
@@ -239,8 +239,9 @@ class ApiController extends Controller
      */
     public function my_income_packet(Request $request)
     {
-        $page = $request->input('page', 1);
         $userid = $request->input('userid');
+
+
         $pairs = InPacket::where('userid', $userid)->where('reward_type', 1)->count();
         $three = InPacket::where('userid', $userid)->where('reward_type', 2)->count();
 
@@ -249,14 +250,18 @@ class ApiController extends Controller
         $bomb = InPacket::where('userid', $userid)->where('reward_type', 5)->count();
 
         $chailei = InPacket::where('userid', $userid)->where('is_chailei', 1)->count();
-        $query = InPacket::where('userid', $userid);
+
+
+        $query = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
+            $q->where('status', '=', 2);
+        })->where('userid', $userid);
         if ($request->filled('time')) {
             $begin_time = date('Y-m-d 0:0:0', $request->input('time'));
             $end_time = date('Y-m-d 59:59:59', $request->input('time'));
             $query->where('created_at', '>', $begin_time)->where('created_at', '<', $end_time);
         }
         return InPacketResource::collection(
-            $query->orderBy('created_at', 'desc')->limit(30)->get()
+            $query->orderBy('created_at', 'desc')->paginate()
         )->additional([
             'code' => 200,
             'paris' => $pairs,
@@ -318,6 +323,19 @@ class ApiController extends Controller
             ]);
         }
     }
-
-
+    public function postRewardMoney(Request $request)
+    {
+        $userid = $request->input('userid');
+        $money = $request->input('money');
+        $addr = $request->input('addr');
+        $data = [
+            'issus_userid'=>0,
+            'income_userid'=>$userid,
+            'type'=>5,
+            'status'=>1,
+            'eos'=>$money,
+            'addr'=>$addr,
+        ];
+        TransactionInfo::create($data);
+    }
 }

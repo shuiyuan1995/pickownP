@@ -17,7 +17,7 @@ class CreateTransactionInfosTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('issus_userid')->comment('发出用户ID');
             $table->unsignedInteger('income_userid')->nullable()->comment('收到用户ID');
-            $table->integer('type')->nullable()->comment('交易信息类型，1-抢红包，2-发红包，3-踩雷');
+            $table->integer('type')->nullable()->comment('交易信息类型，1-抢红包，2-发红包，3-踩雷，4-中奖，5-提现，交易类型为5时，issus_userid=0,income_userid=用户id');
             $table->integer('status')->nullable()->default(1)->comment('状态，1-正常，2-失败，3-异常');
             $table->decimal('eos', 18, 4)->nullable()->default(0)->comment('交易的金额，定点数');
             $table->string('addr',255)->nullable()->comment('平台');

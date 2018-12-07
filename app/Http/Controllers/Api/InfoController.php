@@ -59,12 +59,19 @@ class InfoController extends Controller
     public function getInfo()
     {
         $outPacketCount = OutPacket::count();
-        $transactionInfoCount = TransactionInfo::sum('eos');
+        $outPacketSum = OutPacket::sum('issus_sum');
+        $inPacketSum = InPacket::sum('income_sum');
+        $inPacketCount = InPacket::count();
+        $transactionInfoCount = TransactionInfo::where('status','<',4)->sum('eos');
         $userCount = User::count();
+
         return $this->success([
             'out_packet_count' => $outPacketCount,
             'transaction_info_count' => $transactionInfoCount,
             'user_count' => $userCount,
+            'out_packet_sum'=>$outPacketSum,
+            'in_packet_sum'=>$inPacketSum,
+            'in_packet_count'=>$inPacketCount,
         ]);
     }
 
@@ -127,18 +134,17 @@ class InfoController extends Controller
             $data[$item]['time'] = $value['created_at'];
             $data[$item]['none'] = false;
             $data[$item]['index'] = $indexArr[$value['issus_sum']];
-            if ($request->filled('userid')){
+            if ($request->filled('userid')) {
                 $userid = $request->input('userid');
-                $in = InPacket::where('outid',$value['id'])->where('userid',$userid)->count();
-                if (count($in) > 0){
+                $in = InPacket::where('outid', $value['id'])->where('userid', $userid)->count();
+                if (count($in) > 0) {
                     $data[$item]['isgo'] = 1;
-                }else{
+                } else {
                     $data[$item]['isgo'] = 0;
                 }
-            }else{
+            } else {
                 $data[$item]['isgo'] = 0;
             }
-
 
 
 //            if ($value['issus_sum'] == '1.0000') {
@@ -195,5 +201,11 @@ class InfoController extends Controller
             return $error;
         }
     }
+    /**
+     * 获取奖励排序
+     */
+    public function getRewardCount()
+    {
 
+    }
 }

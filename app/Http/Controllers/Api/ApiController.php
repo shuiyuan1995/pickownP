@@ -144,25 +144,28 @@ class ApiController extends Controller
             $outPacket_entity->status = 2;
             $outPacket_entity->save();
             $outPacket = $outPacket_entity;
-            $out_in_packet_data = [];
-            $reward_data = [];
-            $chailei_data = [];
+            $out_in_packet_data = array();
+            $reward_data__ = array();
+            $chailei_data__ = array();
+            $reward_data = array();
+            $chailei_data = array();
             foreach ($out_in_packet as $item => $value) {
                 $out_in_packet_data[$item]['name'] = User::find($value['userid'])->name;
                 $out_in_packet_data[$item]['income_sum'] = $value['income_sum'];
                 if ($value['is_chailei'] == 1) {
-                    $chailei_data[$item]['name'] = User::find($value['userid'])->name;
-                    $chailei_data[$item]['chailai_sum'] = $outPacket->issus_sum;
+                    $chailei_data__[$item]['name'] = User::find($value['userid'])->name;
+                    $chailei_data__[$item]['chailai_sum'] = $outPacket->issus_sum;
                 }
                 if ($value['is_reward'] == 2) {
-                    $reward_data[$item]['name'] = User::find($value['userid'])->name;
-                    $reward_data[$item]['reward_type'] = $value['reward_type'];
-                    $reward_data[$item]['reward_sum'] = $value['reward_sum'];
+                    $reward_data__[$item]['name'] = User::find($value['userid'])->name;
+                    $reward_data__[$item]['reward_type'] = $value['reward_type'];
+                    $reward_data__[$item]['reward_sum'] = $value['reward_sum'];
                 }
 
             }
 
-
+            $reward_data = array_values($reward_data__);
+            $chailei_data = array_values($chailei_data__);
 
             $name = User::find($outPacket->userid)->name;
             $issus_sum_arr = [

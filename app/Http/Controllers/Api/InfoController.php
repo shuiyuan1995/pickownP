@@ -227,7 +227,7 @@ class InfoController extends Controller
 //        dd($outPacketName);
         $data = [];
         foreach ($outPacketName as $value){
-            //$data[empty($value->addr)? 0:$value->addr]['issus_sum'] += $jiangjingArr[intval($value->issus_sum)];
+            $data[empty($value->addr)? 0:$value->addr]['issus_sum'] += $jiangjingArr[intval($value->issus_sum)];
         }
         dd($data);
     }

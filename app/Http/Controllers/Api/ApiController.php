@@ -382,10 +382,10 @@ class ApiController extends Controller
         foreach ($in_pakcet_count as $value){
             $in_pakcet_count_data[] = $value->userid;
         }
-        dd(array_keys(array_flip($out_pakcet_count_data) + array_flip($in_pakcet_count_data)));
+        $cc = array_keys(array_flip($out_pakcet_count_data) + array_flip($in_pakcet_count_data));
         //dd($in_pakcet_count_data);
         return $this->success([
-            'sum' => (string)$sum,
+            'sum' => (string)count($cc),
             'shengyu_sum' => (string)$shengyu_sum,
             'tixian_sum' => (string)$tixian_sum
         ], '');

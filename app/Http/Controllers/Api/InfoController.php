@@ -49,7 +49,7 @@ class InfoController extends Controller
         ];
         LoginRecord::create($Logindata);
 
-        return $this->success(['data' => ['token' => $token, 'userid' => $list->id]], '访问成功！');
+        return $this->success(['data' => ['token' => $token, 'userid' => $list->id, 'invite' => $list->addr]], '访问成功！');
     }
 
     /**
@@ -62,16 +62,16 @@ class InfoController extends Controller
         $outPacketSum = OutPacket::sum('issus_sum');
         $inPacketSum = InPacket::sum('income_sum');
         $inPacketCount = InPacket::count();
-        $transactionInfoCount = TransactionInfo::where('status','<',4)->sum('eos');
+        $transactionInfoCount = TransactionInfo::where('status', '<', 4)->sum('eos');
         $userCount = User::count();
 
         return $this->success([
             'out_packet_count' => $outPacketCount,
             'transaction_info_count' => $transactionInfoCount,
             'user_count' => $userCount,
-            'out_packet_sum'=>$outPacketSum,
-            'in_packet_sum'=>$inPacketSum,
-            'in_packet_count'=>$inPacketCount,
+            'out_packet_sum' => $outPacketSum,
+            'in_packet_sum' => $inPacketSum,
+            'in_packet_count' => $inPacketCount,
         ]);
     }
 
@@ -137,7 +137,7 @@ class InfoController extends Controller
             if ($request->filled('userid')) {
                 $userid = $request->input('userid');
                 $in = InPacket::where('outid', $value['id'])->where('userid', $userid)->count();
-                if (count($in) > 0) {
+                if ($in > 0) {
                     $data[$item]['isgo'] = 1;
                 } else {
                     $data[$item]['isgo'] = 0;
@@ -201,11 +201,24 @@ class InfoController extends Controller
             return $error;
         }
     }
+
     /**
      * 获取奖励排序
      */
     public function getRewardCount()
     {
+        $jiangjingArr = [
+            1 => 0.0009,
+            5 => 0.0045,
+            10 => 0.009,
+            20 => 0.018,
+            50 => 0.045,
+            100 => 0.09,
+        ];
+        $sql = 'SELECT addr,income_userid,sum(eos) AS sum_eos FROM transaction_infos WHERE status= 5 GROUP BY income_userid';
+        $tixianArr = DB::select($sql);
 
+        $packetSql = 'select in_packets.id as iid,out_packets.id as oid from in_packets JOIN out_packets ON outid = out_packets.id GROUP BY out_packets.userid';
+        dd(DB::select($packetSql));
     }
 }

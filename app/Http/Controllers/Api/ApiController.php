@@ -12,6 +12,7 @@ use App\Models\TransactionInfo;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log;
 
 class ApiController extends Controller
 {
@@ -57,6 +58,7 @@ class ApiController extends Controller
         $transactionInfo->save();
         $username = User::find($userid)->name;
         event(new OutPacketEvent($entity, $issus_sum_arr[$issus_sum], $username));
+        Log::info('');
         return $this->success([
             'code' => 200,
             'token' => $request->input('token'),
@@ -327,15 +329,15 @@ class ApiController extends Controller
     {
         $userid = $request->input('userid');
         $money = $request->input('money');
-        $addr = $request->input('addr');
         $data = [
             'issus_userid'=>0,
             'income_userid'=>$userid,
             'type'=>5,
             'status'=>1,
             'eos'=>$money,
-            'addr'=>$addr,
+            'addr'=>User::find($userid)->name,
         ];
         TransactionInfo::create($data);
+        $this->success([],'发送成功');
     }
 }

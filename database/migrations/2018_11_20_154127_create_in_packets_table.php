@@ -29,6 +29,8 @@ class CreateInPacketsTable extends Migration
             $table->integer('reward_type')->nullable()->defalut(0)->comment('中奖类型,0-无，1-对子,2-三条,3-整数，4-顺子，5-炸弹');
             $table->decimal('reward_sum',18,4)->nullable()->defalut(0)->comment('中奖金额');
             $table->string('addr',255)->nullable()->comment();
+            $table->decimal('own',18,4)->nullable()->comment('挖矿数量');
+            $table->decimal('prize_pool',18,4)->nullable()->commene('当前奖池的数量');
             // 创建时间用于领奖时间
             $table->timestamps();
         });

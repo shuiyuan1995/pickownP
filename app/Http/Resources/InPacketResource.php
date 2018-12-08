@@ -34,6 +34,7 @@ class InPacketResource extends JsonResource
             'addr' => $this->addr,
             'created_at' => strtotime($this->created_at),
             'updated_at' => strtotime($this->updated_at),
+            'own'=>$this->own,
         ];
     }
 }

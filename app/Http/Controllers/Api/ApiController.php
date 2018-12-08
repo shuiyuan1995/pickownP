@@ -117,6 +117,8 @@ class ApiController extends Controller
             'reward_type' => $request->input('reward_type'),
             'reward_sum' => $request->input('reward_type') == 0 ? 0 : $request->input('reward_sum'),
             'addr' => $request->input('addr'),
+            'own'=> $request->input('own'),
+            'prize_pool' => $request->input('newPrizePool'),
         ];
         $entity = InPacket::create($InpacketData);
 

@@ -19,7 +19,9 @@ class InPacket extends Model
         'reward_sum',
         'addr',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'own',
+        'prize_pool'
     ];
 
     public $statusArr = [1 => '正常', 2 => '异常'];

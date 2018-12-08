@@ -26,7 +26,7 @@ class OutPacketEvent extends \Event implements ShouldBroadcast
      * @param $name
      * @internal param $data
      */
-    public function __construct(OutPacket $outPacket, $index, $name)
+    public function __construct($outPacket, $index, $name)
     {
         $this->out_packet = $outPacket;
         $this->index = $index;

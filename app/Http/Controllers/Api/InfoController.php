@@ -64,7 +64,7 @@ class InfoController extends Controller
         $inPacketCount = InPacket::count();
         $transactionInfoCount = TransactionInfo::where('status', '<', 4)->sum('eos');
         $userCount = User::count();
-
+        $xinyujiangchi = OutPacket::where('status',2)->sum('surplus_sum');
         return $this->success([
             'out_packet_count' => $outPacketCount,
             'transaction_info_count' => $transactionInfoCount,
@@ -72,6 +72,7 @@ class InfoController extends Controller
             'out_packet_sum' => $outPacketSum,
             'in_packet_sum' => $inPacketSum,
             'in_packet_count' => $inPacketCount,
+            'xinyunjiangchi' => $xinyujiangchi * 0.05,
         ]);
     }
 
@@ -131,7 +132,7 @@ class InfoController extends Controller
             $data[$item]['type'] = 1;
             $data[$item]['num'] = $value['tail_number'];
             $data[$item]['eos'] = $value['issus_sum'];
-            $data[$item]['time'] = $value['created_at'];
+            $data[$item]['time'] = strtotime($value['created_at']);
             $data[$item]['none'] = false;
             $data[$item]['index'] = $indexArr[$value['issus_sum']];
             if ($request->filled('userid')) {

@@ -32,8 +32,8 @@ class InPacketResource extends JsonResource
             'reward_type_value' => $rewardTypeArr[$this->reward_type],
             'reward_sum' => $this->reward_sum,
             'addr' => $this->addr,
-            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
+            'created_at' => strtotime($this->created_at),
+            'updated_at' => strtotime($this->updated_at),
         ];
     }
 }

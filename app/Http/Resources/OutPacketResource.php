@@ -29,8 +29,8 @@ class OutPacketResource extends JsonResource
             'status' => $this->status,
             'status_value' => $statusArr[$this->status],
             'addr' => $this->addr,
-            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
+            'created_at' => strtotime($this->created_at),
+            'updated_at' => strtotime($this->updated_at),
             'inpacket_sum' => count($this->inpacket),
             'surplus_sum'=> $this->surplus_sum,
         ];

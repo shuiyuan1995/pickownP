@@ -58,7 +58,17 @@ class ApiController extends Controller
         $transactionInfo->addr = $addr;
         $transactionInfo->save();
         $username = User::find($userid)->name;
-        event(new OutPacketEvent($entity, $issus_sum_arr[$issus_sum], $username));
+        $entityaa['addr'] = $entity->addr;
+        $entityaa['blocknumber'] = $entity->blocknumber;
+        $entityaa['count'] = $entity->count;
+        $entityaa['created_at']= strtotime($entity->created_at);
+        $entityaa['eosid'] = $entity->eosid;
+        $entityaa['id'] = $entity->id;
+        $entityaa['issus_sum'] = $entity->issus_sum;
+        $entityaa['surplus_sum'] = empty($entity->surplus_sum)?0:$entity->surplus_sum;
+        $entityaa['tail_number'] = $entity->tail_number;
+        $entityaa['userid'] = $entity->userid;
+        event(new OutPacketEvent($entityaa, $issus_sum_arr[$issus_sum], $username));
         Log::info('');
         return $this->success([
             'code' => 200,

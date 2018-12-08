@@ -28,7 +28,6 @@
                     <th>信息类型</th>
                     <th>状态</th>
                     <th>交易额</th>
-                    <th>发出用户交易后的金额</th>
                     <th>平台</th>
                     <th>时间</th>
                     <th>操作</th>
@@ -43,7 +42,6 @@
                         <td>{{ $item->typeArr[$item->type] }}</td>
                         <td>{{ $item->statusArr[$item->status] }}</td>
                         <td>{{ $item->eos }}</td>
-                        <td>{{ $item->issus_count_sum }}</td>
                         <td>{{ $item->addr }}</td>
                         <td>{{ $item->updated_at }}</td>
                         <td>
@@ -86,9 +84,7 @@
                     <h1 class="page-header"></h1>
                     <label class="control-label">交易额:</label>
                     <p id="eos">...</p>
-                    <h1 class="page-header"></h1>
-                    <label class="control-label">发出用户交易后的金额:</label>
-                    <p id="issus_count_sum">...</p>
+
                     <h1 class="page-header"></h1>
                     <label class="control-label">备注信息:</label>
                     <p id="msg">...</p>
@@ -130,7 +126,6 @@
                     modal.find('#type').text(eneity.type_value);
                     modal.find('#status').text(eneity.status_value);
                     modal.find('#eos').text(eneity.eos);
-                    modal.find('#issus_count_sum').text(eneity.issus_count_sum);
                     modal.find('#msg').text(eneity.msg);
                     modal.find('#created_at').text(eneity.created_at.date);
                     modal.find('#updated_at').text(eneity.updated_at.date);

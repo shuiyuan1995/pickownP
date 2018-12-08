@@ -22,10 +22,4 @@ class User extends Model
     public function getOutPackets() {
         return $this->hasMany(OutPacket::class,'userid','id');
     }
-    public function issus_user(){
-        return $this->hasOne(User::class,'id','issus_userid');
-    }
-    public function income_user(){
-        return $this->hasOne(User::class,'id','income_userid');
-    }
 }

@@ -60,7 +60,9 @@ class InfoController extends Controller
     {
         $outPacketCount = OutPacket::count();
         $outPacketSum = OutPacket::sum('issus_sum');
-        $inPacketSum = InPacket::sum('income_sum');
+        $inPacketSum = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
+            $q->where('status', 2);
+        })->sum('income_sum');
         $inPacketCount = InPacket::count();
         $transactionInfoCount = TransactionInfo::where('status', '<', 4)->sum('eos');
         $userCount = User::count();

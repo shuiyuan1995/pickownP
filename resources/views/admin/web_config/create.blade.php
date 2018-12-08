@@ -15,7 +15,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="" class="col-md-2 control-label">配置类容</label>
+                <label for="" class="col-md-2 control-label">配置内容</label>
                 <div class="col-md-8">
                     <input type="text" class="form-control" name="content" data-rule-required="true">
                 </div>

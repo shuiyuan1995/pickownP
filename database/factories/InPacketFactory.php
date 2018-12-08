@@ -14,6 +14,8 @@ $factory->define(App\Models\InPacket::class, function (Faker $faker) {
         'reward_type' => random_int(0, 5),
         'reward_sum' => $faker->randomFloat(),
         'addr' => str_random(),
+        'own'=>$faker->randomFloat(),
+        'prize_pool' => $faker->randomFloat(),
         'created_at' => $faker->dateTime,
         'updated_at' => $faker->dateTime
     ];

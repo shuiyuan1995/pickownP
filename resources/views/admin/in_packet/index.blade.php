@@ -32,6 +32,7 @@
                     <th>是否中奖</th>
                     <th>中奖类型</th>
                     <th>中奖金额</th>
+                    <th>挖矿数</th>
                     <th>时间</th>
                     {{--<th>操作</th>--}}
                 </tr>
@@ -49,9 +50,10 @@
                         <td>{{ $item->is_reward_arr[$item->is_reward] }}</td>
                         <td>{{ $item->rewardTypeArr[$item->reward_type] }}</td>
                         <td>{{ $item->reward_sum }}</td>
+                        <td>{{ empty($item->own)?0:$item->own }}</td>
                         <td>{{ $item->updated_at }}</td>
                         {{--<td>--}}
-                            {{--<a href="{{route('admin.home_user.edit', $item)}}" class="btn btn-info btn-sm">修改</a>--}}
+                        {{--<a href="{{route('admin.home_user.edit', $item)}}" class="btn btn-info btn-sm">修改</a>--}}
                         {{--</td>--}}
                     </tr>
                 @endforeach

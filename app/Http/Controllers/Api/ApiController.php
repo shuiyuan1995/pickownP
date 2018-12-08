@@ -217,7 +217,6 @@ class ApiController extends Controller
         foreach ($chailei as $value){
             $chaileicount = $value->count;
         }
-        $chaileicount = $chaileicount;
 //        $chaileicount = TransactionInfo::where('income_userid', $userid)->where('type', 3)->count();
         $query = OutPacket::where('userid', $userid);
         if ($request->filled('time')) {

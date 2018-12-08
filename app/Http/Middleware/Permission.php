@@ -39,9 +39,9 @@ class Permission
     protected function cacheMenus()
     {
         $key = self::MENU_CACHE_KEY;
-        if (config('app.debug')) {
+//        if (config('app.debug')) {
             Cache::delete($key);
-        }
+//        }
         if (Cache::has($key)) {
             $list = Cache::get($key);
         } else {

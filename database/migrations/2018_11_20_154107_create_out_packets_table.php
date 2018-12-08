@@ -23,6 +23,7 @@ class CreateOutPacketsTable extends Migration
             $table->string('blocknumber',255)->nullable()->comment('blocknumber');
             $table->string('addr',255)->nullable()->comment();
             $table->integer('status')->nullable()->default(1)->comment('状态(1-未领完，2-已领完，3-退回，4-冻结)');
+            $table->decimal('surplus_sum',18,4)->nullable()->comment('红包抢完后剩余的金额');
             // 创建时间为 发送时间， 更新时间为 领完时间/退回时间
             $table->timestamps();
         });

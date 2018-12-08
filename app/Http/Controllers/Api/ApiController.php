@@ -143,8 +143,10 @@ class ApiController extends Controller
         if ($isnone == 1) {
             // 红包被抢完后生成发红包对用的抢红包的列表
             $out_in_packet = InPacket::where('outid', $outid)->get();
+            $out_in_packet_sum = InPacket::where('outid',$outid)->sum('income_sum');
             $outPacket_entity = OutPacket::find($outid);
             $outPacket_entity->status = 2;
+            $outPacket_entity->surplus_sum = $outPacket_entity->issus_sum - $out_in_packet_sum;
             $outPacket_entity->save();
             $outPacket = $outPacket_entity;
             $out_in_packet_data = array();

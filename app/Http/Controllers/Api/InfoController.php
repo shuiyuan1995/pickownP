@@ -74,7 +74,7 @@ class InfoController extends Controller
             'out_packet_sum' => $outPacketSum,
             'in_packet_sum' => $inPacketSum,
             'in_packet_count' => $inPacketCount,
-            'xinyunjiangchi' => $xinyujiangchi,
+            'xinyunjiangchi' => empty($xinyujiangchi)?0:$xinyujiangchi,
         ]);
     }
 

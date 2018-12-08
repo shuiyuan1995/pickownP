@@ -37,8 +37,8 @@
                 @foreach($list as $item)
                     <tr>
                         <td>{{ $item->id }}</td>
-                        <td>{{ $item->issus_user->name }}</td>
-                        <td>{{ $item->income_user->name }}</td>
+                        <td>{{ data_get($item,'issus_user.name','无') }}</td>
+                        <td>{{ data_get($item,'income_user.name','无') }}</td>
                         <td>{{ $item->typeArr[$item->type] }}</td>
                         <td>{{ $item->statusArr[$item->status] }}</td>
                         <td>{{ $item->eos }}</td>

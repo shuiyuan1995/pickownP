@@ -100,17 +100,17 @@ class ApiController extends Controller
         $outid = OutPacket::where('eosid', $outeosid)->first()->id;
         $user = User::where('name',$request->input('addr',null))->first();
 
-        if(!empty($user)){
-            $qudaojianlidata = [
-                'issus_userid' => 0,
-                'income_userid' => $user->id,
-                'type'=> 6,
-                'status'=>1,
-                'eos'=>$request->input('tuijian',0),
-                'addr'=>User::find($request->input('userid'))->name,
-            ];
-            TransactionInfo::create($qudaojianlidata);
-        }
+//        if(!empty($user)){
+//            $qudaojianlidata = [
+//                'issus_userid' => 0,
+//                'income_userid' => $user->id,
+//                'type'=> 6,
+//                'status'=>1,
+//                'eos'=>$request->input('tuijian',0),
+//                'addr'=>User::find($request->input('userid'))->name,
+//            ];
+//            TransactionInfo::create($qudaojianlidata);
+//        }
         $userid = $request->input('userid');
         $is_chailei = $request->input('is_chailei');
         $is_reward = $request->input('is_reward');
@@ -409,23 +409,23 @@ class ApiController extends Controller
             100 => 0.09,
         ];
         $userid = $request->input('userid');
-//        $getRewardCount = DB::select('SELECT addr,income_userid,sum(eos) AS tixian_count FROM transaction_infos WHERE type = 5 AND income_userid = :income_userid',
-//            ['income_userid' => $userid]);
-////        dd($getRewardCount);
-//        $arr = DB::select('SELECT issus_sum , count(issus_sum) AS count FROM out_packets WHERE addr = :addr GROUP BY issus_sum',
-//            ['addr' => User::find($userid)->name]);
-////        dd($arr);
-//        $sum = 0;
-//        foreach ($arr as $item => $value) {
-//            $sum += $jiangjingArr[intval($value->issus_sum)] * $value->count;
-//        }
+        //$getRewardCount = DB::select('SELECT addr,income_userid,sum(eos) AS tixian_count FROM transaction_infos WHERE type = 5 AND income_userid = :income_userid',
+        //    ['income_userid' => $userid]);
+//        dd($getRewardCount);
+        $arr = DB::select('SELECT issus_sum , count(issus_sum) AS count FROM out_packets WHERE addr = :addr GROUP BY issus_sum',
+            ['addr' => User::find($userid)->name]);
+//        dd($arr);
+        $sum = 0;
+        foreach ($arr as $item => $value) {
+            $sum += $jiangjingArr[intval($value->issus_sum)] * $value->count;
+        }
 //        $tixian_sum = 0;
 //        foreach ($getRewardCount as $value) {
 //            if (!empty($value->tixian_count)) {
 //                $tixian_sum = $value->tixian_count;
 //            }
 //        }
-        $sum = TransactionInfo::where('type',6)->where('income_userid',$userid)->sum('eos');
+        //$sum = TransactionInfo::where('type',6)->where('income_userid',$userid)->sum('eos');
         $tixian_sum = TransactionInfo::where('type',5)->where('income_userid',$userid)->sum('eos');
         $shengyu_sum = $sum - $tixian_sum;
         $out_pakcet_count = OutPacket::where('addr', User::find($userid)->name)->get();

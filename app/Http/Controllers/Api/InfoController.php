@@ -66,7 +66,12 @@ class InfoController extends Controller
         $inPacketCount = InPacket::count();
         $transactionInfoCount = TransactionInfo::where('status', '<', 4)->sum('eos');
         $userCount = User::count();
-        $xinyujiangchi = InPacket::orderBy('created_at','desc')->first()->prize_pool;
+        $xinyujiangchientity = InPacket::orderBy('created_at','desc')->first();
+        $xinyujiangchi = 0;
+        if (!empty($xinyujiangchientity)){
+            $xinyujiangchi = $xinyujiangchientity->prize_pool;
+        }
+
         return $this->success([
             'out_packet_count' => $outPacketCount,
             'transaction_info_count' => $transactionInfoCount,

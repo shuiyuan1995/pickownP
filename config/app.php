@@ -39,7 +39,7 @@ return [
     |
     */
 
-    'debug' => false,//env('APP_DEBUG', false),
+    'debug' => env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------

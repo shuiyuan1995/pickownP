@@ -100,17 +100,17 @@ class ApiController extends Controller
         $outid = OutPacket::where('eosid', $outeosid)->first()->id;
         $user = User::where('name',$request->input('addr',null))->first();
 
-//        if(!empty($user)){
-//            $qudaojianlidata = [
-//                'issus_userid' => 0,
-//                'income_userid' => $user->id,
-//                'type'=> 6,
-//                'status'=>1,
-//                'eos'=>$request->input('tuijian',0),
-//                'addr'=>User::find($request->input('userid'))->name,
-//            ];
-//            TransactionInfo::create($qudaojianlidata);
-//        }
+        if(!empty($user)){
+            $qudaojianlidata = [
+                'issus_userid' => 0,
+                'income_userid' => $user->id,
+                'type'=> 6,
+                'status'=>1,
+                'eos'=>OutPacket::find($outid)->issus_sum,
+                'addr'=>User::find($request->input('userid'))->name,
+            ];
+            TransactionInfo::create($qudaojianlidata);
+        }
         $userid = $request->input('userid');
         $is_chailei = $request->input('is_chailei');
         $is_reward = $request->input('is_reward');

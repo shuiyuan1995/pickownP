@@ -441,9 +441,10 @@ class ApiController extends Controller
         }
         $cc = array_keys(array_flip($out_pakcet_count_data) + array_flip($in_pakcet_count_data));
         //dd($in_pakcet_count_data);
+
         return $this->success([
             'sum' => (string)count($cc),
-            'shengyu_sum' => (string)$shengyu_sum,
+            'shengyu_sum' => (string)($shengyu_sum < 0?0:$shengyu_sum),
             'tixian_sum' => (string)$tixian_sum
         ], '');
     }

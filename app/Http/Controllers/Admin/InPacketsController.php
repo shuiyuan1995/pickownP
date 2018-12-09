@@ -18,9 +18,12 @@ class InPacketsController extends Controller
                 $query->orWhere('userid', 'like', '%' . $name . '%');
             });
         }
-
+        $in = new InPacket();
+        $isChaiLeiArr = $in->is_chailei_arr;
+        $isRewardArr = $in->is_reward_arr;
+        $rewardTypeArr = $in->rewardTypeArr;
         $list = $query->paginate();
-        return view('admin.in_packet.index', compact('list'));
+        return view('admin.in_packet.index', compact('list','isChaiLeiArr','isRewardArr','rewardTypeArr'));
     }
 
     public function edit()

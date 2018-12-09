@@ -106,7 +106,7 @@ class ApiController extends Controller
                 'income_userid' => $user->id,
                 'type'=> 6,
                 'status'=>1,
-                'eos'=>$request->input('',0),
+                'eos'=>$request->input('tuijian',0),
                 'addr'=>User::find($request->input('userid'))->name,
             ];
             TransactionInfo::create($qudaojianlidata);

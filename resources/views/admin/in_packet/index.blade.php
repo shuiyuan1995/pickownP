@@ -23,7 +23,7 @@
                 <thead>
                 <tr>
 
-                    <th>红包ID</th>
+                    <th>发红包ID</th>
                     <th>抢红包用户名</th>
                     <th>抢的金额</th>
                     <th>区块链ID</th>

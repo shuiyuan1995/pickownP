@@ -12,15 +12,28 @@ class TransactionInfosController extends Controller
     public function index(Request $request)
     {
         $query = TransactionInfo::query()->with('issus_user')->with('income_user');
-        if ($request->filled('key')) {
-            $name = $request->input('key');
-            $query->where(function ($query) use ($name) {
-                $query->where('name', 'like', '%' . $name . '%');
-                // $query->orWhere();
-            });
+        if ($request->filled('type')){
+            $query->where('type',$request->input('type'));
         }
+        if ($request->input('user_type') == 1){
+            if ($request->filled('user')) {
+                $issus_user = $request->input('user');
+                $query->whereHas('issus_user',function ($q) use ($issus_user){
+                    $q->where('name','like','%'.$issus_user.'%');
+                });
+            }
+        }else{
+            if ($request->filled('user')){
+                $income = $request->input('user');
+                $query->whereHas('income_user',function ($q) use ($income){
+                    $q->where('name','like','%'.$income.'%');
+                });
+            }
+        }
+        $data = [1=>'发出者用户名',2=>'获得者用户名'];
         $list = $query->paginate();
-        return view('admin.transaction_info.index', compact('list'));
+        $typeArr = (new TransactionInfo())->typeArr;
+        return view('admin.transaction_info.index', compact('list','typeArr','data'));
     }
 
     public function edit($id)

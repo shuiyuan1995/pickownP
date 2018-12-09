@@ -6,8 +6,36 @@
                 <div class="form-group">
                     <div class="col-md-2 control-label">请输入</div>
                     <div class="col-md-2">
-                        <input type="text" class="form-control" name="key" value="{{request('key')}}"
+                        <input type="text" class="form-control" name="name" value="{{request('name')}}"
                                placeholder="用户名">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" name="number" value="{{request('number')}}"
+                               placeholder="尾数">
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-control" name="status">
+                            <option value="">请选择状态</option>
+                            @foreach($statusArr as $item => $value)
+                                <option value="{{$item}}" @if($item == request('status'))selected @endif>{{$value}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-control" name="index">
+                            <option value="">请选择红包金额</option>
+                            @foreach($indexArr as $item => $value)
+                                <option value="{{$item}}" @if($item == request('index'))selected @endif>{{$item}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control datetime" name="begin_time" value="{{request('begin_time')}}"
+                               placeholder="开始时间">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control datetime" name="end_time" value="{{request('end_time')}}"
+                               placeholder="结束时间">
                     </div>
                 </div>
                 <div class="form-group">

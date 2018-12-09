@@ -4,10 +4,26 @@
         <div class="box-header with-border">
             <form action="" class="form-horizontal" autocomplete="off">
                 <div class="form-group">
+
                     <div class="col-md-2 control-label">请输入</div>
                     <div class="col-md-2">
-                        <input type="text" class="form-control" name="key" value="{{request('key')}}"
-                               placeholder="用户名">
+                        <select class="form-control" name="user_type">
+                            @foreach($data as $i => $v)
+                                <option value="{{$i}}" @if($i == request('user_type')) selected @endif>{{$v}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" name="user" value="{{request('user')}}"
+                               placeholder="获得者用户名">
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-control" name="type">
+                            <option value="0">请选择类型</option>
+                            @foreach($typeArr as $item => $value)
+                                <option value="{{$item}}" @if($item == request('type')) selected @endif>{{$value}}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
                 <div class="form-group">

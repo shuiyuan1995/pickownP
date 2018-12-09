@@ -10,6 +10,12 @@
             {{csrf_field()}}
             {{method_field('put')}}
             <div class="form-group">
+                <label for="inputKey" class="control-label col-md-2">配置key*</label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control" name="key" value="{{$web_config->key}}" id="inputKey" data-rule-required="true">
+                </div>
+            </div>
+            <div class="form-group">
                 <label for="inputKey" class="control-label col-md-2">配置名称*</label>
                 <div class="col-md-8">
                     <input type="text" class="form-control" name="name" value="{{$web_config->name}}" id="inputName" data-rule-required="true">

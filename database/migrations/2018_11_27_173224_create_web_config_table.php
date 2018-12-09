@@ -15,8 +15,9 @@ class CreateWebConfigTable extends Migration {
 		Schema::create('web_config', function(Blueprint $table)
 		{
 			$table->integer('id', true);
-			$table->string('name')->comment('配置名称');
-			$table->text('content', 65535)->comment('配置类容');
+			$table->string('key',255)->nullable()->comment('关键字');
+			$table->string('name',255)->nullable()->comment('配置名称');
+			$table->text('content', 65535)->nullable()->comment('配置内容');
 			$table->timestamps();
 		});
 	}

@@ -16,13 +16,13 @@
                         <div class="form-group">
                             <label for="" class="col-md-2 control-label">{{$item->name}}</label>
                             <div class="col-md-6">
-                                <input type="text" name="{{$item->id}}" class="form-control" value="{{$item->content}}">
+                                <input type="text" name="{{$item->id}}" readonly class="form-control" value="{{$item->content}}" title="配置内容">
                             </div>
                             <div class="col-md-1">
                             <a href="{{route('admin.web_config.edit',$item)}}" class="btn btn-default">修改</a>
                             </div>
                             <div class="col-md-1">
-                                <a href="{{route('admin.web_config.destroy',$item)}}" class="btn btn-default">删除</a>
+                                <a href="{{route('admin.web_config.destroy',$item)}}" class="btn btn-default" onclick="return confirm('是否确定？')">删除</a>
                             </div>
                         </div>
                         @endforeach

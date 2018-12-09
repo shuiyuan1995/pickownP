@@ -20,10 +20,12 @@ class WebConfigController extends Controller
 
     public function store(Request $request){
         $request->validate([
+            'key'=>'required',
             'name' => 'required',
             'content' => 'required',
         ]);
         $web_config = new WebConfig();
+        $web_config->key = $request->input('key');
         $web_config->name = $request->input('name');
         $web_config->content = $request->input('content');
         $web_config->save();
@@ -43,13 +45,14 @@ class WebConfigController extends Controller
     {
         //
         $request->validate([
+            'key'=>'required',
             'name' => 'required',
             'content' => 'required',
         ]);
         $web_config = WebConfig::findOrFail($id);
         $web_config->name = $request->input('name');
         $web_config->content = $request->input('content');
-
+        $web_config->key = $request->input('key');
         $web_config->save();
 
         return redirect(route('admin.web_config.index'))->with('flash_message', '修改成功');

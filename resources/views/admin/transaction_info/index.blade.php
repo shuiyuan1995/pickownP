@@ -83,7 +83,9 @@
                 </tbody>
             </table>
         </div>
-
+        <div class="box-footer">
+            当前页共计{{count($list)}}
+        </div>
         <div class="box-footer clearfix">
             {{$list->appends(request()->all())->links()}}
         </div>

@@ -21,13 +21,24 @@
                         <select class="form-control" name="type">
                             <option value="0">请选择类型</option>
                             @foreach($typeArr as $item => $value)
-                                <option value="{{$item}}" @if($item == request('type')) selected @endif>{{$value}}</option>
+                                <option value="{{$item}}"
+                                        @if($item == request('type')) selected @endif>{{$value}}</option>
                             @endforeach
                         </select>
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="col-md-4 pull-right">
+                    <div class="col-md-2 control-label">时间范围</div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control datetime" name="begin_time"
+                               value="{{request('begin_time')}}"
+                               placeholder="开始时间">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control datetime" name="end_time" value="{{request('end_time')}}"
+                               placeholder="结束时间">
+                    </div>
+                    <div class="col-md-6 pull-right">
                         <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Search</button>
                     </div>
                 </div>
@@ -125,8 +136,8 @@
             var button = $(event.relatedTarget); // Button that triggered the modal
             @if(config('app.debug'))
                 console.log(event);
-                console.log(button);
-            @endif
+            console.log(button);
+                    @endif
             var url = button.data('url'); // Extract info from data-* attributes
             var modal = $(this).find('.modal-body');
             $.ajax({

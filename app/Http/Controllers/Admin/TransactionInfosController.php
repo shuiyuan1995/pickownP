@@ -30,6 +30,14 @@ class TransactionInfosController extends Controller
                 });
             }
         }
+        if ($request->filled('begin_time')) {
+            $key = $request->input('begin_time');
+            $query->where('created_at','>=',$key);
+        }
+        if ($request->filled('end_time')) {
+            $key = $request->input('end_time');
+            $query->where('created_at','<=',$key);
+        }
         $data = [1=>'发出者用户名',2=>'获得者用户名'];
         $list = $query->paginate();
         $typeArr = (new TransactionInfo())->typeArr;

@@ -29,6 +29,15 @@ class OutPacketsController extends Controller
             $key = $request->input('index');
             $query->where('issus_sum',$key);
         }
+        if ($request->filled('begin_time')) {
+            $key = $request->input('begin_time');
+            $query->where('created_at','>=',$key);
+        }
+        if ($request->filled('end_time')) {
+            $key = $request->input('end_time');
+            $query->where('created_at','<=',$key);
+        }
+
         $out = new OutPacket();
         $statusArr = $out->statusArr;
         $indexArr = $out->indexArr;

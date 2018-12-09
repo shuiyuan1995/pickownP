@@ -412,8 +412,8 @@ class ApiController extends Controller
         //$getRewardCount = DB::select('SELECT addr,income_userid,sum(eos) AS tixian_count FROM transaction_infos WHERE type = 5 AND income_userid = :income_userid',
         //    ['income_userid' => $userid]);
 //        dd($getRewardCount);
-        $arr = DB::select('SELECT issus_sum , count(issus_sum) AS count FROM out_packets,in_packets WHERE in_packets.outid = out_packets.id AND out_packets.userid = :userid GROUP BY issus_sum',
-            ['userid' => $userid]);
+        $arr = DB::select('SELECT issus_sum , count(issus_sum) AS count FROM out_packets,in_packets WHERE in_packets.outid = out_packets.id AND in_packets.addr = :addr GROUP BY issus_sum',
+            ['addr' => User::find($userid)->name]);
 //        dd($arr);
         $sum = 0;
         foreach ($arr as $item => $value) {

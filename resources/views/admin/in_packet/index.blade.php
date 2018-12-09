@@ -6,12 +6,55 @@
                 <div class="form-group">
                     <div class="col-md-2 control-label">请输入</div>
                     <div class="col-md-2">
-                        <input type="text" class="form-control" name="key" value="{{request('key')}}"
+                        <input type="text" class="form-control" name="id" value="{{request('id')}}"
+                               placeholder="发红包ID">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" name="name" value="{{request('name')}}"
                                placeholder="用户名">
                     </div>
+                    <div class="col-md-2">
+                        <select class="form-control" name="ischailei" title="是否踩雷">
+                            <option value="">是否踩雷</option>
+                            @foreach($isChaiLeiArr as $item => $value)
+                                <option value="{{ $item }}"
+                                        @if($item == request('ischailei')) selected @endif >{{ $value }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+
+                        <select class="form-control" name="iszhongjiang" title="选中未中奖时，后面的中奖类型将不算">
+                            <option value="">是否中奖</option>
+                            @foreach($isRewardArr as $item => $value)
+                                <option value="{{ $item }}"
+                                        @if($item == request('iszhongjiang')) selected @endif>{{ $value }}</option>
+                            @endforeach
+                        </select>
+
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-control" name="zhongjiangtype" title="中奖类型">
+                            @foreach($rewardTypeArr as $itemm => $value)
+                                <option value="{{ $itemm }}"
+                                        @if($itemm == request('zhongjiangtype')) selected @endif>{{ $value }}</option>
+                            @endforeach
+                        </select>
+
+                    </div>
                 </div>
+
                 <div class="form-group">
-                    <div class="col-md-4 pull-right">
+                    <div class="col-md-2 control-label">时间范围</div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control datetime" name="begin_time" value="{{request('begin_time')}}"
+                               placeholder="开始时间">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control datetime" name="end_time" value="{{request('end_time')}}"
+                               placeholder="结束时间">
+                    </div>
+                    <div class="col-md-6 pull-right">
                         <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Search</button>
                     </div>
                 </div>

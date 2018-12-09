@@ -31,11 +31,11 @@ class OutPacketsController extends Controller
         }
         if ($request->filled('begin_time')) {
             $key = $request->input('begin_time');
-            $query->where('created_at','>=',$key);
+            $query->where('updated_at','>=',$key);
         }
         if ($request->filled('end_time')) {
             $key = $request->input('end_time');
-            $query->where('created_at','<=',$key);
+            $query->where('updated_at','<=',$key);
         }
 
         $out = new OutPacket();

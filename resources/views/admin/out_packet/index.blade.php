@@ -14,15 +14,15 @@
                                placeholder="尾数">
                     </div>
                     <div class="col-md-2">
-                        <select class="form-control" name="status">
-                            <option value="">请选择状态</option>
+                        <select class="form-control" name="status" title="红包是否领完">
+                            <option value="">是否领完</option>
                             @foreach($statusArr as $item => $value)
                                 <option value="{{$item}}" @if($item == request('status'))selected @endif>{{$value}}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <select class="form-control" name="index">
+                        <select class="form-control" name="index" title="红包金额">
                             <option value="">请选择红包金额</option>
                             @foreach($indexArr as $item => $value)
                                 <option value="{{$item}}" @if($item == request('index'))selected @endif>{{$item}}</option>

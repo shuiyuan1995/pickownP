@@ -7,7 +7,7 @@
 
                     <div class="col-md-2 control-label">请输入</div>
                     <div class="col-md-2">
-                        <select class="form-control" name="user_type">
+                        <select class="form-control" name="user_type" title="">
                             @foreach($data as $i => $v)
                                 <option value="{{$i}}" @if($i == request('user_type')) selected @endif>{{$v}}</option>
                             @endforeach
@@ -15,10 +15,10 @@
                     </div>
                     <div class="col-md-2">
                         <input type="text" class="form-control" name="user" value="{{request('user')}}"
-                               placeholder="获得者用户名">
+                               placeholder="用户名">
                     </div>
                     <div class="col-md-2">
-                        <select class="form-control" name="type">
+                        <select class="form-control" name="type" title="">
                             <option value="0">请选择类型</option>
                             @foreach($typeArr as $item => $value)
                                 <option value="{{$item}}"

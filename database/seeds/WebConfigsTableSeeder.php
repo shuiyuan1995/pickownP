@@ -19,6 +19,7 @@ class WebConfigsTableSeeder extends Seeder
             ['key'=>'airdrop','name'=>'空投账户','content'=>''],
             ['key'=>'fenhong','name'=>'分红账户','content'=>''],
             ['key'=>'web_switch','name'=>'网站开关','content'=>''],
+            ['key'=>'web_name','name'=>'网站名称','content'=>''],
         ];
         DB::table('web_config')->delete();
         DB::table('web_config')->insert($web_config);

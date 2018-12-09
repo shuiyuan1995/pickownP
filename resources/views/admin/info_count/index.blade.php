@@ -66,7 +66,7 @@
             <span class="info-box-icon bg-yellow"><i class="fa fa-bars"></i></span>
             <div class="info-box-content">
               <span class="info-box-text">发红包数</span>
-              <span class="info-box-number">{{$red_bag_num}}</span>
+              <span class="info-box-number">{{$red_bag_num / 10}}</span>
             </div>
           </div>
         </div>

@@ -94,7 +94,10 @@ class InfoCountController extends Controller
         $xinyunjiangchijian = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
             $q->where('status', 2);
         })->sum('income_sum');
-        $xinyun = ($xinyunjiangchi - $xinyunjiangchijian) * 0.05;
+        $jianqu = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
+            $q->where('status', 2);
+        })->sum('reward_sum');
+        $xinyun = ($xinyunjiangchi - $xinyunjiangchijian) * 0.05 - $jianqu;
         return view(
             'admin.info_count.index',
             compact(

@@ -164,7 +164,7 @@
 
                 <div class="info-box-content">
                     <span class="info-box-text">幸运奖池</span>
-                    <span class="info-box-number">{{$xinyun}}<small>%</small></span>
+                    <span class="info-box-number">{{$xinyun}}<small>eos</small></span>
                 </div>
             </div>
         </div>

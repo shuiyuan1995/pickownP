@@ -315,7 +315,7 @@ class ApiController extends Controller
 
 
         $query = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
-            $q->where('status', '=', 2);
+            //$q->where('status', '=', 2);
         })->where('userid', $userid);
         if ($request->filled('time')) {
             $begin_time = date('Y-m-d 0:0:0', $request->input('time'));

@@ -15,10 +15,16 @@ class HomeUsersController extends Controller
             $name = $request->input('key');
             $query->where(function ($query) use ($name) {
                 $query->where('name', 'like', '%' . $name . '%');
-                $query->orWhere('walletid', 'like', '%' . $name . '%');
             });
         }
-
+        if ($request->filled('begin_time')) {
+            $key = $request->input('begin_time');
+            $query->where('updated_at','>=',$key);
+        }
+        if ($request->filled('end_time')) {
+            $key = $request->input('end_time');
+            $query->where('updated_at','<=',$key);
+        }
         $list = $query->paginate();
         return view('admin.home_user.index', compact('list'));
     }

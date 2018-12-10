@@ -16,9 +16,9 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="inputKey" class="control-label col-md-2">钱包ID</label>
+                <label for="inputKey" class="control-label col-md-2">公钥</label>
                 <div class="col-md-8">
-                    <input type="text" class="form-control" name="walletid" value="{{ $entity->walletid }}" id="inputWalletid" readonly>
+                    <input type="text" class="form-control" name="walletid" value="{{ $entity->publickey }}" id="inputWalletid" readonly>
                 </div>
             </div>
 

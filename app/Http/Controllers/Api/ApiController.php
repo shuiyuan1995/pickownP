@@ -499,4 +499,8 @@ class ApiController extends Controller
             'tixian_sum' => (string)$tixian_sum
         ], '');
     }
+    public function chaxunhongbaozhuangtai(Request $request){
+        $eosid = $request->input('eosid');
+
+    }
 }

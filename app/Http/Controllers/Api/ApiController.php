@@ -179,6 +179,11 @@ class ApiController extends Controller
             foreach ($out_in_packet as $item => $value) {
                 $out_in_packet_data[$item]['name'] = User::find($value['userid'])->name;
                 $out_in_packet_data[$item]['income_sum'] = $value['income_sum'];
+                $out_in_packet_data[$item]['own'] = $value['own'];
+                $out_in_packet_data[$item]['is_chailei'] = $value['is_chailei'];
+                $out_in_packet_data[$item]['is_reward'] = $value['is_reward'];
+                $out_in_packet_data[$item]['reward_type'] = $value['reward_type'];
+                $out_in_packet_data[$item]['reward_sum'] = $value['reward_sum'];
                 if ($value['is_chailei'] == 1) {
                     $chailei_data__[$item]['name'] = User::find($value['userid'])->name;
                     $chailei_data__[$item]['chailai_sum'] = $outPacket->issus_sum;
@@ -205,14 +210,24 @@ class ApiController extends Controller
                 100 => 5
             ];
             $index = $issus_sum_arr[intval($outPacket->issus_sum)];
+            $outPacket_data['id'] = $outPacket->id;
+            $outPacket_data['userid'] = $outPacket->id;
+            $outPacket_data['issus_sum'] = $outPacket->issus_sum;
+            $outPacket_data['tail_number'] = $outPacket->tail_number;
+            $outPacket_data['eosid'] = $outPacket->eosid;
+            $outPacket_data['blocknumber'] = $outPacket->blocknumber;
+            $outPacket_data['status'] = $outPacket->status;
+            $outPacket_data['created_at'] = strtotime($outPacket->created_at);
+            $outPacket_data['updated_at'] = strtotime($outPacket->updated_at);
             event(new InPacketEvent(
                 $reward_data,
-                $outPacket,
+                $outPacket_data,
                 $chailei_data,
                 $out_in_packet_data,
                 $name,
                 2,
                 $index
+
             ));
         }
 

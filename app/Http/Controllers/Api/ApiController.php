@@ -355,6 +355,9 @@ class ApiController extends Controller
             $end_time = date('Y-m-d 59:59:59', $request->input('time'));
             $query->where('created_at', '>', $begin_time)->where('created_at', '<', $end_time);
         }
+
+        $reward_sum_count = InPacket::query()->where('userid', $userid)->sum('reward_sum');
+
         return InPacketResource::collection(
             $query->orderBy('created_at', 'desc')->paginate()
         )->additional([
@@ -369,7 +372,7 @@ class ApiController extends Controller
             'packetcount' => InPacket::where('userid', $userid)->count(),
             'packetsum' => InPacket::query()->with(['out'])->whereHas('out', function ($q) {
 //                $q->where('status', 2);
-            })->where('userid', $userid)->sum('income_sum'),
+            })->where('userid', $userid)->sum('income_sum') + $reward_sum_count,
             'last_time' => strtotime(InPacket::where('userid', $userid)->min('created_at')),
             'max_time' => strtotime(InPacket::where('userid', $userid)->max('created_at')),
             'message' => ''

@@ -31,7 +31,8 @@ class UserBehaviorLogsController extends Controller
             $query->where('updated_at','<=',$key);
         }
         $list = $query->paginate();
-        return view('admin.user_behavior_log.index', compact('list'));
+        $app_path = base_path();
+        return view('admin.user_behavior_log.index', compact('list','app_path'));
     }
 
     public function show($id)

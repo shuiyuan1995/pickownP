@@ -14,7 +14,7 @@ class UserBehaviorLogsController extends Controller
         $query = LoginRecord::query()->with('user');
         if ($request->filled('name')) {
             $name = $request->input('name');
-            $query->where('user',function ($query) use ($name) {
+            $query->whereHas('user',function ($query) use ($name) {
                 $query->where('name', 'like', '%' . $name . '%');
             });
         }

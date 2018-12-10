@@ -268,7 +268,7 @@ class InfoController extends Controller
             $cc = array_keys(array_flip($out_pakcet_count_data) + array_flip($in_pakcet_count_data));
             $data[$valuee->name]['sum'] = $sum;
             $data[$valuee->name]['count'] = count($cc);
-            $data[$valuee->name]['tixian_sum'] = $tixian_sum;
+            $data[$valuee->name]['tixian_sum'] = empty($tixian_sum)?0:$tixian_sum;
             $data[$valuee->name]['shengyu_sum'] = $shengyu_sum < 0?0:$shengyu_sum;
         }
         return $this->success($data);

@@ -33,7 +33,7 @@ Route::group(['namespace' => 'Api'], function () {
     Route::post('issus_packet',
         ['uses' => 'ApiController@issus_packet', 'as' => 'api.issus_packet'])->middleware('checktoken');
     Route::post('income_packet',
-        ['uses' => 'ApiController@income_packet', 'as' => 'api.income_packet']);
+        ['uses' => 'ApiController@income_packet', 'as' => 'api.income_packet'])->middleware('checktoken');
     Route::post('my_issus_packet',
         ['uses' => 'ApiController@my_issus_packet', 'as' => 'api.my_issus_packet'])->middleware('checktoken');
     Route::post('my_income_packet',

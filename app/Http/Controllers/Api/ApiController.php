@@ -68,6 +68,35 @@ class ApiController extends Controller
         $entityaa['surplus_sum'] = empty($entity->surplus_sum) ? 0 : $entity->surplus_sum;
         $entityaa['tail_number'] = $entity->tail_number;
         $entityaa['userid'] = $entity->userid;
+
+
+        $outPacketCount = OutPacket::count();
+        $outPacketSum = OutPacket::sum('issus_sum');
+        $inPacketSum = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
+            $q->where('status', 2);
+        })->sum('income_sum');
+        $inPacketCount = InPacket::count();
+        $transactionInfoCount = TransactionInfo::where('status', '<', 4)->sum('eos');
+        $userCount = User::count();
+        $xinyujiangchientity = InPacket::orderBy('created_at', 'desc')->first();
+        $xinyujiangchi = 0;
+        if (!empty($xinyujiangchientity)) {
+            $xinyujiangchi = $xinyujiangchientity->prize_pool;
+        }
+        $data = [
+            'out_packet_count' => $outPacketCount,
+            'transaction_info_count' => $transactionInfoCount,
+            'user_count' => $userCount,
+            'out_packet_sum' => $outPacketSum,
+            'in_packet_sum' => $inPacketSum,
+            'in_packet_count' => $inPacketCount,
+            'xinyunjiangchi' => empty($xinyujiangchi) ? 0 : $xinyujiangchi,
+        ];
+
+
+
+
+
         event(new OutPacketEvent($entityaa, $issus_sum_arr[$issus_sum], $username));
         Log::info('');
         return $this->success([
@@ -250,7 +279,7 @@ class ApiController extends Controller
     {
         $page = $request->input('page', 1);
         $userid = $request->input('userid');
-        $outpacketsum = OutPacket::where('userid', $userid)->where('status', 2)->sum('issus_sum');
+        $outpacketsum = OutPacket::where('userid', $userid)->sum('issus_sum');
         $outpacket = OutPacket::where('userid', $userid)->count();
         $sql = 'SELECT count(DISTINCT out_packets.userid) AS count FROM out_packets,in_packets WHERE out_packets.id = in_packets.outid AND status = 2 AND out_packets.userid = :userid';
         $chailei = DB::select($sql, ['userid' => $userid]);

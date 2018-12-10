@@ -68,7 +68,8 @@ class InfoCountController extends Controller
         // 转化率
         $zhuanhualv = 0;
         // 活跃度
-        $chufa = User::query()->where('created_at', '>', $start_time)->where('created_at', '<=', $end_time)->count();
+        $chufa = LoginRecord::query()->where('created_at', '>', $start_time)->where('created_at', '<=', $end_time)->count();
+//        dd($chufa);
         $huoyedu = 0;
         if (!empty($chufa)) {
             $huoyedu = $active_users_count[0]->num / $chufa;
@@ -76,8 +77,14 @@ class InfoCountController extends Controller
 
         // 平均每活跃用户收益
         $pingjunmei = 0;
+        if (!empty($active_users_count[0]->num)) {
+            //$pingjunmei = $money / $pingjunmei;
+        }
         // 每付费用户平均收益
         $meifufei = 0;
+        if (!empty($chufa)){
+            $meifufei = $paying_count / $chufa;
+        }
         // 付费率
         $fufeilv = 0;
         // 留存

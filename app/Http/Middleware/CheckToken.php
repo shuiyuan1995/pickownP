@@ -19,10 +19,10 @@ class CheckToken
         if (empty($request->input('token'))) {
             return response()->json(['code'=>2001,'message'=>'token不存在，请登录']);
         }
-        if(Redis::get('userid:'.$request->input('userid').'token') === null){
+        if(Redis::get('userid:'.$request->input('token')) === null){
             return response()->json(['code'=>2002,'message'=>'token过期，请重新登录获取']);
         }
-        if (Redis::get('userid:'.$request->input('userid').'token') != $request->input('token')){
+        if (Redis::get('userid:'.$request->input('token')) != 'userid:'.$request->input('userid').'token' ){
             return response()->json(['code'=>2003,'message'=>'token错误，请重新登录获取']);
         }
         return $next($request);

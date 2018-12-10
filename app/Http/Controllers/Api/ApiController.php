@@ -322,24 +322,24 @@ class ApiController extends Controller
 
 
         $pairs = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
-            $q->where('status', 2);
+            //$q->where('status', 2);
         })->where('userid', $userid)->where('reward_type', 1)->count();
         $three = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
-            $q->where('status', 2);
+            //$q->where('status', 2);
         })->where('userid', $userid)->where('reward_type', 2)->count();
 
         $int = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
-            $q->where('status', 2);
+            //$q->where('status', 2);
         })->where('userid', $userid)->where('reward_type', 3)->count();
         $shunzi = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
-            $q->where('status', 2);
+            //$q->where('status', 2);
         })->where('userid', $userid)->where('reward_type', 4)->count();
         $bomb = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
-            $q->where('status', 2);
+            //$q->where('status', 2);
         })->where('userid', $userid)->where('reward_type', 5)->count();
 
         $chailei = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
-            $q->where('status', 2);
+            //$q->where('status', 2);
         })->where('userid', $userid)->where('is_chailei', 1)->count();
 
 

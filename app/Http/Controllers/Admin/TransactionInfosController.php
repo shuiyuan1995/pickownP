@@ -38,6 +38,7 @@ class TransactionInfosController extends Controller
             $key = $request->input('end_time');
             $query->where('updated_at','<=',$key);
         }
+        $query->orderBy('created_at', 'desc');
         $data = [1=>'发出者',2=>'获得者'];
         $list = $query->paginate();
         $typeArr = (new TransactionInfo())->typeArr;

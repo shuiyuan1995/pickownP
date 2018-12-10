@@ -37,7 +37,7 @@ class OutPacketsController extends Controller
             $key = $request->input('end_time');
             $query->where('updated_at','<=',$key);
         }
-
+        $query->orderBy('created_at', 'desc');
         $out = new OutPacket();
         $statusArr = $out->statusArr;
         $indexArr = $out->indexArr;

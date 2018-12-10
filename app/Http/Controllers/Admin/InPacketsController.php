@@ -40,6 +40,7 @@ class InPacketsController extends Controller
             $key = $request->input('end_time');
             $query->where('updated_at', '<=', $key);
         }
+        $query->orderBy('created_at', 'desc');
         $in = new InPacket();
         $isChaiLeiArr = $in->is_chailei_arr;
         $isRewardArr = $in->is_reward_arr;

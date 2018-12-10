@@ -30,6 +30,7 @@ class UserBehaviorLogsController extends Controller
             $key = $request->input('end_time');
             $query->where('updated_at','<=',$key);
         }
+        $query->orderBy('created_at', 'desc');
         $list = $query->paginate();
         $menuUpdate = str_replace('\\','/',base_path()).'/artisan db:seed --class=MenusTableSeeder';
         $permissonUpdate = str_replace('\\','/',base_path()).'/artisan db:seed --class=PermissionsTableSeeder';

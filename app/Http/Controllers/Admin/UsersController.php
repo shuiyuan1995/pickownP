@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Resources\RoleResource;
 use App\Models\AdminUser;
+use App\Models\Menu;
 use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use App\Http\Middleware\Permission as MenusPermission;
 
 class UsersController extends Controller
 {
@@ -20,8 +23,8 @@ class UsersController extends Controller
         if ($request->filled('name')) {
             $name = $request->input('name');
             $query->where(function ($query) use ($name) {
-                $query->where('name', 'like', '%'.$name.'%');
-                $query->orWhere('username', 'like', '%'.$name.'%');
+                $query->where('name', 'like', '%' . $name . '%');
+                $query->orWhere('username', 'like', '%' . $name . '%');
             });
         }
 
@@ -64,7 +67,15 @@ class UsersController extends Controller
         $user->name = $request->input('name');
         $user->password = Hash::make($request->input('password'));
         $user->save();
-
+        $menuArr = Menu::query()->pluck('id');
+// 更新菜单
+//        if ($request->filled('menus')) {
+            $user->menus()->sync($menuArr);
+            if (auth('admin')->id() == $user->id) {
+// 清空菜单缓存
+                Cache::forget(MenusPermission::MENU_CACHE_KEY);
+            }
+//        }
         $user->syncRoles($request->input('roles'));
 
         return redirect(route('admin.user.index'))->with('flash_message', '添加成功');
@@ -102,6 +113,14 @@ class UsersController extends Controller
             $user->syncPermissions($request->input('permissions'));
         }
 
+        // 更新菜单
+        if ($request->filled('menus')) {
+            $user->menus()->sync($request->input('menus'));
+            if (auth('admin')->id() == $user->id) {
+// 清空菜单缓存
+                Cache::forget(MenusPermission::MENU_CACHE_KEY);
+            }
+        }
         return redirect(route('admin.user.index'))->with('flash_message', '修改成功');
     }
 

@@ -19,9 +19,9 @@ class TransactionInfoResource extends JsonResource
         return [
             'id' => $this->id,
             'issus_userid' => $this->issus_userid,
-            'issus_user' => $this->issus_user->name,
+            'issus_user' => data_get($this,'issus_user.name','无'),
             'income_userid' => $this->income_userid,
-            'income_user' => $this->income_user->name,
+            'income_user' => data_get($this,'income_user.name','无'),
             'type' => $this->type,
             'type_value'=>$type[$this->type],
             'status' => $this->status,

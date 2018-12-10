@@ -9,6 +9,23 @@ class AccountController extends Controller
 {
     public function index()
     {
-        return view('admin.account.index');
+        $contract = 0;
+        $revenue = 0;
+        $reward = 0;
+        $mining = 0;
+        $airdrop = 0;
+        $fenhong = 0;
+
+        return view(
+            'admin.account.index',
+                compact(
+            'contract',
+                'revenue',
+                'reward',
+                'mining',
+                'airdrop',
+                'fenhong'
+            )
+        );
     }
 }

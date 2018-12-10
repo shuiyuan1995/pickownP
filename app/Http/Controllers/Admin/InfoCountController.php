@@ -41,7 +41,7 @@ class InfoCountController extends Controller
         $active_users_count = DB::select("SELECT COUNT(DISTINCT userid) as num FROM login_records WHERE created_at > :start_time AND created_at <= :end_time", ['start_time' => $start_time, 'end_time'=>$end_time]);
         // var_dump($active_users_count);die;
         //发红包数
-        $red_bag_num = OutPacket::where('created_at', '>', $start_time)->where('created_at', '<=', $end_time)->sum('count');
+        $red_bag_num = OutPacket::where('created_at', '>', $start_time)->where('created_at', '<=', $end_time)->count();
         //交易额
         $money = InPacket::where('created_at', '>', $start_time)->where('created_at', '<=', $end_time)->sum('income_sum');
         return view('admin.info_count.index',compact('users_count','paying_count','active_users_count','red_bag_num','money','start_time','end_time'));

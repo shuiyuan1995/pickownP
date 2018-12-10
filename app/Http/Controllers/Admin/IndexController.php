@@ -18,7 +18,7 @@ class IndexController extends Controller
     {
 //        \Debugbar::disable();
 //        return view('admin.iframe');
-        return redirect(route('admin.index.home'));
+        return redirect(route('admin.info_count.index'));
     }
 
     public function home()

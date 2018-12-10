@@ -6,12 +6,26 @@
                 <div class="form-group">
                     <div class="col-md-2 control-label">请输入</div>
                     <div class="col-md-2">
-                        <input type="text" class="form-control" name="key" value="{{request('key')}}"
+                        <input type="text" class="form-control" name="name" value="{{request('name')}}"
                                placeholder="用户名">
                     </div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" name="ip" value="{{request('ip')}}"
+                               placeholder="ip地址">
+                    </div>
                 </div>
+
                 <div class="form-group">
-                    <div class="col-md-4 pull-right">
+                    <div class="col-md-2 control-label">时间范围</div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control datetime" name="begin_time" value="{{request('begin_time')}}"
+                               placeholder="开始时间">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control datetime" name="end_time" value="{{request('end_time')}}"
+                               placeholder="结束时间">
+                    </div>
+                    <div class="col-md-6 pull-right">
                         <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Search</button>
                     </div>
                 </div>
@@ -24,9 +38,8 @@
                 <tr>
                     <th>ID</th>
                     <th>用户名</th>
-                    <th>类型</th>
-                    <th>创建时间</th>
-                    <th>更新时间</th>
+                    <th>ip</th>
+                    <th>时间</th>
                     <th>操作</th>
                 </tr>
                 </thead>
@@ -35,9 +48,8 @@
                     <tr>
                         <td>{{ $item->id }}</td>
                         <td>{{ $item->user->name }}</td>
-                        <td>{{ $item->typeArr[$item->type] }}</td>
+                        <td>{{ $item->ip }}</td>
                         <td>{{ $item->created_at }}</td>
-                        <td>{{ $item->updated_at }}</td>
                         <td>
                             <button type="button" class="btn btn-success" data-toggle="modal"
                                     data-url="{{route('admin.ubi.show', $item)}}"
@@ -50,7 +62,9 @@
                 </tbody>
             </table>
         </div>
-
+        <div class="box-footer clearfix">
+            当前页共计{{count($list)}}
+        </div>
         <div class="box-footer clearfix">
             {{$list->appends(request()->all())->links()}}
         </div>
@@ -67,17 +81,11 @@
                     <label class="control-label">用户名:</label>
                     <p id="user">...</p>
                     <h1 class="page-header"></h1>
-                    <label class="control-label">类型:</label>
-                    <p id="type">...</p>
+                    <label class="control-label">ip:</label>
+                    <p id="ip">...</p>
                     <h1 class="page-header"></h1>
-                    <label class="control-label">信息:</label>
-                    <p id="msg">...</p>
-                    <h1 class="page-header"></h1>
-                    <label class="control-label">创建时间:</label>
+                    <label class="control-label">时间:</label>
                     <p id="created_at">...</p>
-                    <h1 class="page-header"></h1>
-                    <label class="control-label">更新时间:</label>
-                    <p id="updated_at">...</p>
                     <h1 class="page-header"></h1>
                 </div>
                 <div class="modal-footer">
@@ -106,10 +114,8 @@
                         console.log(data);
                     @endif
                     modal.find('#user').text(eneity.user);
-                    modal.find('#type').text(eneity.type_value);
-                    modal.find('#msg').text(eneity.msg);
-                    modal.find('#created_at').text(eneity.created_at.date);
-                    modal.find('#updated_at').text(eneity.updated_at.date);
+                    modal.find('#ip').text(eneity.ip);
+                    modal.find('#created_at').text(eneity.created_at);
                 }
             });
         })

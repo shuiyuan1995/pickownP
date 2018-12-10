@@ -77,6 +77,7 @@
                     <th>中奖金额</th>
                     <th>挖矿数</th>
                     <th>时间</th>
+                    <th>奖池流水</th>
                     {{--<th>操作</th>--}}
                 </tr>
                 </thead>
@@ -95,6 +96,7 @@
                         <td>{{ $item->reward_sum }}</td>
                         <td>{{ empty($item->own)?0:$item->own }}</td>
                         <td>{{ $item->updated_at }}</td>
+                        <td>{{ $item->prize_pool }}</td>
                         {{--<td>--}}
                         {{--<a href="{{route('admin.home_user.edit', $item)}}" class="btn btn-info btn-sm">修改</a>--}}
                         {{--</td>--}}

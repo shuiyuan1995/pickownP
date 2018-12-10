@@ -66,9 +66,9 @@ class InfoController extends Controller
         $inPacketCount = InPacket::count();
         $transactionInfoCount = TransactionInfo::where('status', '<', 4)->sum('eos');
         $userCount = User::count();
-        $xinyujiangchientity = InPacket::orderBy('created_at','desc')->first();
+        $xinyujiangchientity = InPacket::orderBy('created_at', 'desc')->first();
         $xinyujiangchi = 0;
-        if (!empty($xinyujiangchientity)){
+        if (!empty($xinyujiangchientity)) {
             $xinyujiangchi = $xinyujiangchientity->prize_pool;
         }
 
@@ -79,7 +79,7 @@ class InfoController extends Controller
             'out_packet_sum' => $outPacketSum,
             'in_packet_sum' => $inPacketSum,
             'in_packet_count' => $inPacketCount,
-            'xinyunjiangchi' => empty($xinyujiangchi)?0:$xinyujiangchi,
+            'xinyunjiangchi' => empty($xinyujiangchi) ? 0 : $xinyujiangchi,
         ]);
     }
 
@@ -238,24 +238,20 @@ class InfoController extends Controller
 //            $data[empty($value->addr)? 0:$value->addr]['issus_sum'] += $jiangjingArr[intval($value->issus_sum)];
 //        }
         $userAll = User::all();
-        $data  = [];
-        foreach ($userAll as $valuee){
-            $getRewardCount = DB::select('SELECT addr,income_userid,sum(eos) AS tixian_count FROM transaction_infos WHERE type = 5 AND income_userid = :income_userid',
-                ['income_userid' => $valuee->id]);
+        $data = [];
+        foreach ($userAll as $valuee) {
+//            $getRewardCount = DB::select('SELECT addr,income_userid,sum(eos) AS tixian_count FROM transaction_infos WHERE type = 5 AND income_userid = :income_userid',
+//                ['income_userid' => $valuee->id]);
 //        dd($getRewardCount);
-            $arr = DB::select('SELECT issus_sum , count(issus_sum) AS count FROM out_packets WHERE addr = :addr GROUP BY issus_sum',
+            $arr = DB::select('SELECT issus_sum , count(issus_sum) AS count FROM out_packets,in_packets WHERE in_packets.outid = out_packets.id AND in_packets.addr = :addr GROUP BY issus_sum',
                 ['addr' => User::find($valuee->id)->name]);
 //        dd($arr);
             $sum = 0;
             foreach ($arr as $item => $value) {
                 $sum += $jiangjingArr[intval($value->issus_sum)] * $value->count;
             }
-            $tixian_sum = 0;
-            foreach ($getRewardCount as $value) {
-                if (!empty($value->tixian_count)) {
-                    $tixian_sum = $value->tixian_count;
-                }
-            }
+//
+            $tixian_sum = TransactionInfo::where('type', 5)->where('income_userid', $valuee->id)->sum('eos');
             $shengyu_sum = $sum - $tixian_sum;
             $out_pakcet_count = OutPacket::where('addr', User::find($valuee->id)->name)->get();
             $out_pakcet_count_data = [];
@@ -272,7 +268,7 @@ class InfoController extends Controller
             $data[$valuee->name]['sum'] = $sum;
             $data[$valuee->name]['count'] = count($cc);
             $data[$valuee->name]['tixian_sum'] = $tixian_sum;
-            $data[$valuee->name]['shengyu_sum'] = $shengyu_sum;
+            $data[$valuee->name]['shengyu_sum'] = $shengyu_sum < 0 ? 0 : $shengyu_sum;
         }
         return $this->success($data);
     }

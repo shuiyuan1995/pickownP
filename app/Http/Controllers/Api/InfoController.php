@@ -72,6 +72,7 @@ class InfoController extends Controller
             $xinyujiangchi = $xinyujiangchientity->prize_pool;
         }
 
+
         return $this->success([
             'out_packet_count' => $outPacketCount,
             'transaction_info_count' => $transactionInfoCount,

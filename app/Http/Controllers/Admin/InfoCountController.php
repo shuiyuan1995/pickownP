@@ -89,6 +89,12 @@ class InfoCountController extends Controller
         $fufeilv = 0;
         // 留存
         $liucun = 0;
+
+        $xinyunjiangchi = OutPacket::query()->where('status',2)->sum('issus_sum');
+        $xinyunjiangchijian = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
+            $q->where('status', 2);
+        })->sum('income_sum');
+        $xinyun = ($xinyunjiangchi - $xinyunjiangchijian) * 0.05;
         return view(
             'admin.info_count.index',
             compact(
@@ -106,7 +112,8 @@ class InfoCountController extends Controller
                 'pingjunmei',
                 'meifufei',
                 'fufeilv',
-                'liucun'
+                'liucun',
+                'xinyun'
             )
         );
     }

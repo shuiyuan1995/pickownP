@@ -196,6 +196,7 @@ class ApiController extends Controller
             $data['eos'] = $reward_sum;
             TransactionInfo::create($data);
         }
+        $data = $this->getinfo();
         if ($isnone == 1) {
             // 红包被抢完后生成发红包对用的抢红包的列表
             $out_in_packet = InPacket::where('outid', $outid)->get();
@@ -251,7 +252,7 @@ class ApiController extends Controller
             $outPacket_data['status'] = $outPacket->status;
             $outPacket_data['created_at'] = strtotime($outPacket->created_at);
             $outPacket_data['updated_at'] = strtotime($outPacket->updated_at);
-            $data = $this->getinfo();
+
             event(new InPacketEvent(
                 $reward_data,
                 $outPacket_data,
@@ -260,6 +261,17 @@ class ApiController extends Controller
                 $name,
                 2,
                 $index,
+                $data
+            ));
+        }else{
+            event(new InPacketEvent(
+                [],
+                [],
+                [],
+                [],
+                [],
+                3,
+                [],
                 $data
             ));
         }

@@ -61,11 +61,11 @@ class ApiController extends Controller
         $entityaa['addr'] = $entity->addr;
         $entityaa['blocknumber'] = $entity->blocknumber;
         $entityaa['count'] = $entity->count;
-        $entityaa['created_at']= strtotime($entity->created_at);
+        $entityaa['created_at'] = strtotime($entity->created_at);
         $entityaa['eosid'] = $entity->eosid;
         $entityaa['id'] = $entity->id;
         $entityaa['issus_sum'] = $entity->issus_sum;
-        $entityaa['surplus_sum'] = empty($entity->surplus_sum)?0:$entity->surplus_sum;
+        $entityaa['surplus_sum'] = empty($entity->surplus_sum) ? 0 : $entity->surplus_sum;
         $entityaa['tail_number'] = $entity->tail_number;
         $entityaa['userid'] = $entity->userid;
         event(new OutPacketEvent($entityaa, $issus_sum_arr[$issus_sum], $username));
@@ -129,7 +129,7 @@ class ApiController extends Controller
             'reward_type' => $request->input('reward_type'),
             'reward_sum' => $request->input('reward_type') == 0 ? 0 : $request->input('reward_sum'),
             'addr' => $request->input('addr'),
-            'own'=> $request->input('own'),
+            'own' => $request->input('own'),
             'prize_pool' => $request->input('newPrizePool'),
         ];
         $entity = InPacket::create($InpacketData);
@@ -167,7 +167,7 @@ class ApiController extends Controller
         if ($isnone == 1) {
             // 红包被抢完后生成发红包对用的抢红包的列表
             $out_in_packet = InPacket::where('outid', $outid)->get();
-            $out_in_packet_sum = InPacket::where('outid',$outid)->sum('income_sum');
+            $out_in_packet_sum = InPacket::where('outid', $outid)->sum('income_sum');
             $outPacket_entity = OutPacket::find($outid);
             $outPacket_entity->status = 2;
             $outPacket_entity->surplus_sum = $outPacket_entity->issus_sum - $out_in_packet_sum;
@@ -252,10 +252,10 @@ class ApiController extends Controller
         $userid = $request->input('userid');
         $outpacketsum = OutPacket::where('userid', $userid)->where('status', 2)->sum('issus_sum');
         $outpacket = OutPacket::where('userid', $userid)->count();
-        $sql = 'select count(DISTINCT out_packets.userid) as count from out_packets,in_packets where out_packets.id = in_packets.outid and status = 2 AND out_packets.userid = :userid';
-        $chailei = DB::select($sql,['userid'=>$userid]);
+        $sql = 'SELECT count(DISTINCT out_packets.userid) AS count FROM out_packets,in_packets WHERE out_packets.id = in_packets.outid AND status = 2 AND out_packets.userid = :userid';
+        $chailei = DB::select($sql, ['userid' => $userid]);
         $chaileicount = 0;
-        foreach ($chailei as $value){
+        foreach ($chailei as $value) {
             $chaileicount = $value->count;
         }
 //        $chaileicount = TransactionInfo::where('income_userid', $userid)->where('type', 3)->count();
@@ -441,7 +441,7 @@ class ApiController extends Controller
 //            }
 //        }
         //$sum = TransactionInfo::where('type',6)->where('income_userid',$userid)->sum('eos');
-        $tixian_sum = TransactionInfo::where('type',5)->where('income_userid',$userid)->sum('eos');
+        $tixian_sum = TransactionInfo::where('type', 5)->where('income_userid', $userid)->sum('eos');
         $shengyu_sum = $sum - $tixian_sum;
         $out_pakcet_count = OutPacket::where('addr', User::find($userid)->name)->get();
         $out_pakcet_count_data = [];
@@ -459,7 +459,7 @@ class ApiController extends Controller
 
         return $this->success([
             'sum' => (string)count($cc),
-            'shengyu_sum' => (string)($shengyu_sum < 0?0:$shengyu_sum),
+            'shengyu_sum' => (string)($shengyu_sum < 0 ? 0 : $shengyu_sum),
             'tixian_sum' => (string)$tixian_sum
         ], '');
     }

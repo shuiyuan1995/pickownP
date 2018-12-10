@@ -40,7 +40,8 @@ class InfoCountController extends Controller
         $users_count = User::where('created_at', '>', $start_time)->where('created_at', '<=', $end_time)->count();
 
         //付费用户
-        $list = TransactionInfo::query()->where('type','<',3)->where('created_at', '>', $start_time)->where('created_at', '<=',
+        $list = TransactionInfo::query()->where('type', '<', 3)->where('created_at', '>',
+            $start_time)->where('created_at', '<=',
             $end_time)->get();
         $list1 = $list->pluck('issus_userid');
         $list2 = $list->pluck('income_userid');
@@ -51,14 +52,16 @@ class InfoCountController extends Controller
             ['start_time' => $start_time, 'end_time' => $end_time]);
 
         //发红包数
-        $red_bag_num = OutPacket::query()->where('created_at', '>=', $start_time)->where('created_at', '<=', $end_time)->count();
+        $red_bag_num = OutPacket::query()->where('created_at', '>=', $start_time)->where('created_at', '<=',
+            $end_time)->count();
 
         //交易额
         $money = InPacket::query()->where('created_at', '>=', $start_time)->where('created_at', '<=',
             $end_time)->sum('income_sum');
 
         // 发生交易的时间分布
-        $fenbu = TransactionInfo::query()->where('type' ,'<', 3)->where('created_at', '>', $start_time)->where('created_at',
+        $fenbu = TransactionInfo::query()->where('type', '<', 3)->where('created_at', '>',
+            $start_time)->where('created_at',
             '<=', $end_time)->count();
         // 新增用户量
         $xinzeng = User::query()->where('created_at', '>', $start_time)->where('created_at', '<=', $end_time)->count();
@@ -67,7 +70,7 @@ class InfoCountController extends Controller
         // 活跃度
         $chufa = User::query()->where('created_at', '>', $start_time)->where('created_at', '<=', $end_time)->count();
         $huoyedu = 0;
-        if(!empty($chufa)){
+        if (!empty($chufa)) {
             $huoyedu = $active_users_count[0]->num / $chufa;
         }
 
@@ -79,8 +82,15 @@ class InfoCountController extends Controller
         $fufeilv = 0;
         // 留存
         $liucun = 0;
-        return view('admin.info_count.index',
-            compact('users_count', 'paying_count', 'active_users_count', 'red_bag_num', 'money', 'start_time',
+        return view(
+            'admin.info_count.index',
+            compact(
+                'users_count',
+                'paying_count',
+                'active_users_count',
+                'red_bag_num',
+                'money',
+                'start_time',
                 'end_time',
                 'fenbu',
                 'xinzeng',
@@ -89,6 +99,8 @@ class InfoCountController extends Controller
                 'pingjunmei',
                 'meifufei',
                 'fufeilv',
-                'liucun'));
+                'liucun'
+            )
+        );
     }
 }

@@ -22,6 +22,7 @@ class InPacketEvent extends \Event implements ShouldBroadcast
     public $name;
     public $type;
     public $index;
+    public $info;
 
     /**
      * Create a new event instance.
@@ -33,6 +34,7 @@ class InPacketEvent extends \Event implements ShouldBroadcast
      * @param $name
      * @param $type
      * @param $index
+     * @param $info
      * @internal param $rewrd_data
      */
     public function __construct(
@@ -42,7 +44,8 @@ class InPacketEvent extends \Event implements ShouldBroadcast
         $in_packet_data,
         $name,
         $type,
-        $index
+        $index,
+        $info
     ) {
         $this->reward_data = $reward_data;
         $this->out_packet = $out_packe;
@@ -51,6 +54,7 @@ class InPacketEvent extends \Event implements ShouldBroadcast
         $this->name = $name;
         $this->type = $type;
         $this->index = $index;
+        $this->info = $info;
     }
 
     /**

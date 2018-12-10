@@ -17,6 +17,31 @@ use Illuminate\Support\Facades\Log;
 
 class ApiController extends Controller
 {
+    public function getinfo(){
+        $outPacketCount = OutPacket::count();
+        $outPacketSum = OutPacket::sum('issus_sum');
+        $inPacketSum = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
+            $q->where('status', 2);
+        })->sum('income_sum');
+        $inPacketCount = InPacket::count();
+        $transactionInfoCount = TransactionInfo::where('status', '<', 4)->sum('eos');
+        $userCount = User::count();
+        $xinyujiangchientity = InPacket::orderBy('created_at', 'desc')->first();
+        $xinyujiangchi = 0;
+        if (!empty($xinyujiangchientity)) {
+            $xinyujiangchi = $xinyujiangchientity->prize_pool;
+        }
+        $data = [
+            'out_packet_count' => $outPacketCount,
+            'transaction_info_count' => $transactionInfoCount,
+            'user_count' => $userCount,
+            'out_packet_sum' => $outPacketSum,
+            'in_packet_sum' => $inPacketSum,
+            'in_packet_count' => $inPacketCount,
+            'xinyunjiangchi' => empty($xinyujiangchi) ? 0 : $xinyujiangchi,
+        ];
+        return $data;
+    }
     /**
      * 参数值
      * token
@@ -70,32 +95,10 @@ class ApiController extends Controller
         $entityaa['userid'] = $entity->userid;
 
 
-        $outPacketCount = OutPacket::count();
-        $outPacketSum = OutPacket::sum('issus_sum');
-        $inPacketSum = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
-            $q->where('status', 2);
-        })->sum('income_sum');
-        $inPacketCount = InPacket::count();
-        $transactionInfoCount = TransactionInfo::where('status', '<', 4)->sum('eos');
-        $userCount = User::count();
-        $xinyujiangchientity = InPacket::orderBy('created_at', 'desc')->first();
-        $xinyujiangchi = 0;
-        if (!empty($xinyujiangchientity)) {
-            $xinyujiangchi = $xinyujiangchientity->prize_pool;
-        }
-        $data = [
-            'out_packet_count' => $outPacketCount,
-            'transaction_info_count' => $transactionInfoCount,
-            'user_count' => $userCount,
-            'out_packet_sum' => $outPacketSum,
-            'in_packet_sum' => $inPacketSum,
-            'in_packet_count' => $inPacketCount,
-            'xinyunjiangchi' => empty($xinyujiangchi) ? 0 : $xinyujiangchi,
-        ];
 
 
 
-
+        $data = $this->getinfo();
 
         event(new OutPacketEvent($entityaa, $issus_sum_arr[$issus_sum], $username,$data));
         Log::info('');
@@ -248,6 +251,7 @@ class ApiController extends Controller
             $outPacket_data['status'] = $outPacket->status;
             $outPacket_data['created_at'] = strtotime($outPacket->created_at);
             $outPacket_data['updated_at'] = strtotime($outPacket->updated_at);
+            $data = $this->getinfo();
             event(new InPacketEvent(
                 $reward_data,
                 $outPacket_data,
@@ -255,8 +259,8 @@ class ApiController extends Controller
                 $out_in_packet_data,
                 $name,
                 2,
-                $index
-
+                $index,
+                $data
             ));
         }
 

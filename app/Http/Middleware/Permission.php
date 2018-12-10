@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\Menu;
 use Closure;
+use Illuminate\Foundation\Console\ViewClearCommand;
 use Illuminate\Support\Facades\Cache;
 use Spatie\Permission\Exceptions\UnauthorizedException;
 

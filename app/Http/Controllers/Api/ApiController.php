@@ -17,7 +17,8 @@ use Illuminate\Support\Facades\Log;
 
 class ApiController extends Controller
 {
-    public function getinfo(){
+    public function getinfo()
+    {
         $outPacketCount = OutPacket::count();
         $outPacketSum = OutPacket::sum('issus_sum');
         $inPacketSum = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
@@ -42,6 +43,7 @@ class ApiController extends Controller
         ];
         return $data;
     }
+
     /**
      * 参数值
      * token
@@ -95,12 +97,9 @@ class ApiController extends Controller
         $entityaa['userid'] = $entity->userid;
 
 
-
-
-
         $data = $this->getinfo();
 
-        event(new OutPacketEvent($entityaa, $issus_sum_arr[$issus_sum], $username,$data));
+        event(new OutPacketEvent($entityaa, $issus_sum_arr[$issus_sum], $username, $data));
         Log::info('');
         return $this->success([
             'code' => 200,
@@ -263,7 +262,7 @@ class ApiController extends Controller
                 $index,
                 $data
             ));
-        }else{
+        } else {
             event(new InPacketEvent(
                 [],
                 [],
@@ -384,7 +383,7 @@ class ApiController extends Controller
             'packetcount' => InPacket::where('userid', $userid)->count(),
             'packetsum' => InPacket::query()->with(['out'])->whereHas('out', function ($q) {
 //                $q->where('status', 2);
-            })->where('userid', $userid)->sum('income_sum') + $reward_sum_count,
+                })->where('userid', $userid)->sum('income_sum') + $reward_sum_count,
             'last_time' => strtotime(InPacket::where('userid', $userid)->min('created_at')),
             'max_time' => strtotime(InPacket::where('userid', $userid)->max('created_at')),
             'message' => ''
@@ -511,7 +510,9 @@ class ApiController extends Controller
             'tixian_sum' => (string)$tixian_sum
         ], '');
     }
-    public function chaxunhongbaozhuangtai(Request $request){
+
+    public function chaxunhongbaozhuangtai(Request $request)
+    {
         $eosid = $request->input('eosid');
 
     }

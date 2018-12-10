@@ -128,7 +128,7 @@ class ApiController extends Controller
     public function income_packet(Request $request)
     {
         $outeosid = $request->input('outid');
-        $outid = OutPacket::where('eosid', $outeosid)->first()->id;
+        $outid = OutPacket::where('blocknumber', $outeosid)->first()->id;
 //        $user = User::where('name',$request->input('addr',null))->first();
 
 //        if(!empty($user)){
@@ -410,8 +410,8 @@ class ApiController extends Controller
 
     public function red_packet(Request $request)
     {
-        $eosid = $request->input('outid');
-        $outpacketentity = OutPacket::where('eosid', $eosid)->first();
+        $blocknumber = $request->input('outid');
+        $outpacketentity = OutPacket::where('blocknumber', $blocknumber)->first();
         if (empty($outpacketentity)) {
             return response()->json([
                 'data' => [],

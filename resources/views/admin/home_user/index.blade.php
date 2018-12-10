@@ -1,6 +1,6 @@
 @extends('admin.layouts.iframe')
 @section('content')
-    {{dd($app_path)}}
+    {{ $app_path }}
     <div class="box">
         <div class="box-header with-border">
             <form action="" class="form-horizontal" autocomplete="off">

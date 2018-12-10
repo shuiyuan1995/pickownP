@@ -1,6 +1,5 @@
 @extends('admin.layouts.iframe')
 @section('content')
-    {{dd($aa)}}
     <div class="box">
         <div class="box-header with-border">
             <form action="" class="form-horizontal" autocomplete="off">

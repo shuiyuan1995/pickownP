@@ -33,7 +33,7 @@ class UserBehaviorLogsController extends Controller
         $list = $query->paginate();
         $menuUpdate = str_replace('\\','/',base_path()).'/artisan db:seed --class=MenusTableSeeder';
         $permissonUpdate = str_replace('\\','/',base_path()).'/artisan db:seed --class=PermissionsTableSeeder';
-         exec('php '.$permissonUpdate);
+//         exec('php '.$permissonUpdate);
         return view('admin.user_behavior_log.index', compact('list'));
     }
 

@@ -5,11 +5,11 @@
               <div class="form-group">
                   <div class="col-md-2 control-label">开始时间</div>
                   <div class="col-md-2">
-                      <input type="text" class="form-control" name="start_time" value="{{$start_time}}" placeholder="开始时间">
+                      <input type="text" class="form-control datetime" name="start_time" value="{{$start_time}}" placeholder="开始时间">
                   </div>
                   <div class="col-md-2 control-label">结束时间</div>
                   <div class="col-md-2">
-                      <input type="text" class="form-control" name="end_time" value="{{$end_time}}" placeholder="结束时间">
+                      <input type="text" class="form-control datetime" name="end_time" value="{{$end_time}}" placeholder="结束时间">
                   </div>
               </div>
               <div class="form-group">

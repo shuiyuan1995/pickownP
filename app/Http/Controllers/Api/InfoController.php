@@ -122,7 +122,7 @@ class InfoController extends Controller
     public function getMoneyList(Request $request)
     {
         $query = OutPacket::query()->with('user');
-        $list = $query->where('status', 1)->orderBy('created_at', 'asc')->limit(42)->get();
+        $list = $query->where('status', 1)->orderBy('created_at', 'asc')->get();
         $indexArr = [
             '1.0000' => 0,
             '5.0000' => 1,

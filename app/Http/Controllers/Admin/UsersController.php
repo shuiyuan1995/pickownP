@@ -68,14 +68,14 @@ class UsersController extends Controller
         $user->password = Hash::make($request->input('password'));
         $user->save();
         $menuArr = Menu::query()->pluck('id');
-// 更新菜单
-//        if ($request->filled('menus')) {
-            $user->menus()->sync($menuArr);
-            if (auth('admin')->id() == $user->id) {
-// 清空菜单缓存
-                Cache::forget(MenusPermission::MENU_CACHE_KEY);
-            }
-//        }
+        // 更新菜单
+
+        $user->menus()->sync($menuArr);
+        if (auth('admin')->id() == $user->id) {
+            // 清空菜单缓存
+            Cache::forget(MenusPermission::MENU_CACHE_KEY);
+        }
+
         $user->syncRoles($request->input('roles'));
 
         return redirect(route('admin.user.index'))->with('flash_message', '添加成功');
@@ -117,7 +117,7 @@ class UsersController extends Controller
         if ($request->filled('menus')) {
             $user->menus()->sync($request->input('menus'));
             if (auth('admin')->id() == $user->id) {
-// 清空菜单缓存
+                // 清空菜单缓存
                 Cache::forget(MenusPermission::MENU_CACHE_KEY);
             }
         }

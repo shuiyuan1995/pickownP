@@ -30,9 +30,9 @@ class InfoController extends Controller
         if (empty($request->input('publickey', null))) {
             return $this->json([], 2002, 'publickey缺失');
         }
-        if (empty($request->input('addr', null))) {
-            return $this->json([], 2003, '平台缺失');
-        }
+//        if (empty($request->input('addr', null))) {
+//            return $this->json([], 2003, '平台缺失');
+//        }
 
         $token = md5(time());
 

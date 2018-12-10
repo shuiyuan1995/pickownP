@@ -13,7 +13,7 @@ class OutPacketsController extends Controller
         $query = OutPacket::query()->with('user');
         if ($request->filled('name')) {
             $name = $request->input('name');
-            $query->where('user',function ($q) use ($name) {
+            $query->whereHas('user',function ($q) use ($name) {
                 $q->where('name','like','%'.$name.'%');
             });
         }

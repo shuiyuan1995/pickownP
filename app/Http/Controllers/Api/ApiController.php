@@ -381,9 +381,9 @@ class ApiController extends Controller
             'chailei' => $chailei,
             'name' => User::find($userid)->name,
             'packetcount' => InPacket::where('userid', $userid)->count(),
-            'packetsum' => InPacket::query()->with(['out'])->whereHas('out', function ($q) {
+            'packetsum' => (string)(InPacket::query()->with(['out'])->whereHas('out', function ($q) {
 //                $q->where('status', 2);
-                })->where('userid', $userid)->sum('income_sum') + $reward_sum_count,
+                })->where('userid', $userid)->sum('income_sum') + $reward_sum_count),
             'last_time' => strtotime(InPacket::where('userid', $userid)->min('created_at')),
             'max_time' => strtotime(InPacket::where('userid', $userid)->max('created_at')),
             'message' => ''

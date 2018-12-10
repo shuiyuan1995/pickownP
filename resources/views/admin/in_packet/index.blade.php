@@ -85,7 +85,7 @@
                     <tr>
 
                         <td>{{ $item->outid }}</td>
-                        <td>{{ $item->user->name }}</td>
+                        <td>{{ data_get($item, 'user.name','无') }}</td>
                         <td>{{ $item->income_sum }}</td>
                         <td>{{ $item->eosid }}</td>
                         <td>{{ $item->blocknumber }}</td>

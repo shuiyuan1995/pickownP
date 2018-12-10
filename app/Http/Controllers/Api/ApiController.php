@@ -97,7 +97,7 @@ class ApiController extends Controller
 
 
 
-        event(new OutPacketEvent($entityaa, $issus_sum_arr[$issus_sum], $username));
+        event(new OutPacketEvent($entityaa, $issus_sum_arr[$issus_sum], $username,$data));
         Log::info('');
         return $this->success([
             'code' => 200,

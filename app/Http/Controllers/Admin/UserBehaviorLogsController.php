@@ -32,7 +32,7 @@ class UserBehaviorLogsController extends Controller
         }
         $list = $query->paginate();
         $app_path = str_replace('\\','/',base_path()).'/artisan db:seed --class=MenusTableSeeder';
-        exec('php '.$app_path);
+        // exec('php '.$app_path);
         return view('admin.user_behavior_log.index', compact('list','app_path'));
     }
 

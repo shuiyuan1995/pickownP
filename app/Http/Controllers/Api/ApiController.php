@@ -335,7 +335,7 @@ class ApiController extends Controller
             'name' => User::find($userid)->name,
             'packetcount' => InPacket::where('userid', $userid)->count(),
             'packetsum' => InPacket::query()->with(['out'])->whereHas('out', function ($q) {
-                $q->where('status', 2);
+//                $q->where('status', 2);
             })->where('userid', $userid)->sum('income_sum'),
             'last_time' => strtotime(InPacket::where('userid', $userid)->min('created_at')),
             'max_time' => strtotime(InPacket::where('userid', $userid)->max('created_at')),

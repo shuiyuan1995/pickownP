@@ -72,7 +72,7 @@ class InfoCountController extends Controller
 //        dd($chufa);
         $huoyedu = 0;
         if (!empty($chufa)) {
-            $huoyedu = $active_users_count[0]->num / $chufa;
+            $huoyedu = round($active_users_count[0]->num / $chufa,4);
         }
 
         // 平均每活跃用户收益
@@ -83,13 +83,14 @@ class InfoCountController extends Controller
         // 每付费用户平均收益
         $meifufei = 0;
         if (!empty($chufa)){
-            $meifufei = $paying_count / $chufa;
+            $meifufei = round($paying_count / $chufa,4);
         }
         // 付费率
         $fufeilv = 0;
         // 留存
         $liucun = 0;
-
+        $url = 'https://api.eospark.com/api?module=account&action=get_account_balance&apikey=43222c2a30238d8ed72d60c033a7a7e0&account=hongbaogames';
+//        dd(json_encode(request_curl($url,[],false,true)));
         $xinyunjiangchi = OutPacket::query()->where('status',2)->sum('issus_sum');
         $xinyunjiangchijian = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
             $q->where('status', 2);

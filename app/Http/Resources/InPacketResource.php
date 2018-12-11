@@ -23,6 +23,7 @@ class InPacketResource extends JsonResource
             'user' => $this->user->name,
             'eosid' => $this->eosid,
             'blocknumber' => $this->blocknumber,
+            'outblocknumber' => data_get($this,'out.blocknumber',0),
             'income_sum' => $this->income_sum,
             'is_chailei' => $this->is_chailei,
             'is_chailei_value' => $isChaileiArr[$this->is_chailei],

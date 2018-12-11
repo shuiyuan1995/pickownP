@@ -14,7 +14,7 @@ class AccountController extends Controller
         $this->data = WebConfig::pluck('content', 'key');
 
         $contract = 0;
-        $contractname = '';
+        $contractname = 'aa';
         $revenue = 0;
         $revenuename = '';
         $reward = 0;

@@ -133,7 +133,7 @@ class ApiController extends Controller
         $outeosid = $request->input('outid');
         $outentity = OutPacket::where('blocknumber', $outeosid)->first();
         if (empty($outentity)){
-            return $this->json(['code'=>2004,'msg'=>'未收到blocknumber']);
+            return $this->json(['code'=>2004,'msg'=>'未收到blocknumber'],2004,'未收到blocknumber');
         }
         $outid = $outentity->id;
 

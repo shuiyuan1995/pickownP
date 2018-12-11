@@ -89,8 +89,7 @@ class InfoCountController extends Controller
         $fufeilv = 0;
         // 留存
         $liucun = 0;
-        $url = 'https://api.eospark.com/api?module=account&action=get_account_balance&apikey=43222c2a30238d8ed72d60c033a7a7e0&account=hongbaogames';
-//        dd(json_encode(request_curl($url,[],false,true)));
+
         $xinyunjiangchi = OutPacket::query()->where('status',2)->sum('issus_sum');
         $xinyunjiangchijian = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
             $q->where('status', 2);

@@ -3,7 +3,7 @@
 
     <div class="row">
         <div class="col-md-3 col-sm-6 col-xs-12">
-            <a href="https://eospark.com/account/hongbaogames" title="点击查看账户交易详情" target="_blank">
+            <a href="https://eospark.com/account/{{ $contractname }}" title="点击查看账户交易详情" target="_blank">
                 <div class="info-box">
                     <span class="info-box-icon bg-aqua"><i class="fa fa-btc"></i></span>
                     <div class="info-box-content">
@@ -16,7 +16,7 @@
         </div>
 
         <div class="col-md-3 col-sm-6 col-xs-12">
-            <a href="https://eospark.com/account/hongbaogames" title="点击查看账户交易详情" target="_blank">
+            <a href="https://eospark.com/account/{{ $revenuename }}" title="点击查看账户交易详情" target="_blank">
                 <div class="info-box">
                     <span class="info-box-icon bg-red"><i class="fa fa-500px"></i></span>
                     <div class="info-box-content">
@@ -29,7 +29,7 @@
         </div>
 
         <div class="col-md-3 col-sm-6 col-xs-12">
-            <a href="https://eospark.com/account/hongbaogames" title="点击查看账户交易详情" target="_blank">
+            <a href="https://eospark.com/account/{{ $rewardname }}" title="点击查看账户交易详情" target="_blank">
                 <div class="info-box">
                     <span class="info-box-icon bg-green"><i class="fa fa-eur"></i></span>
                     <div class="info-box-content">
@@ -44,7 +44,7 @@
     </div>
     <div class="row">
         <div class="col-md-3 col-sm-6 col-xs-12">
-            <a href="https://eospark.com/account/hongbaogames" title="点击查看账户交易详情" target="_blank">
+            <a href="https://eospark.com/account/{{ $miningname }}" title="点击查看账户交易详情" target="_blank">
                 <div class="info-box">
                     <span class="info-box-icon bg-yellow"><i class="fa fa-try"></i></span>
                     <div class="info-box-content">
@@ -57,7 +57,7 @@
         </div>
 
         <div class="col-md-3 col-sm-6 col-xs-12">
-            <a href="https://eospark.com/account/hongbaogames" title="点击查看账户交易详情" target="_blank">
+            <a href="https://eospark.com/account/{{ $airdropname }}" title="点击查看账户交易详情" target="_blank">
                 <div class="info-box">
                     <span class="info-box-icon bg-purple"><i class="fa fa-usd"></i></span>
 
@@ -71,7 +71,7 @@
         </div>
 
         <div class="col-md-3 col-sm-6 col-xs-12">
-            <a href="https://eospark.com/account/hongbaogames" title="点击查看账户交易详情" target="_blank">
+            <a href="https://eospark.com/account/{{ $fenhongname }}" title="点击查看账户交易详情" target="_blank">
                 <div class="info-box">
                     <span class="info-box-icon bg-blue"><i class="fa fa-money"></i></span>
                     <div class="info-box-content">

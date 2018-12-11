@@ -8,52 +8,96 @@ use App\Http\Controllers\Controller;
 
 class AccountController extends Controller
 {
+    public $data;
     public function index()
     {
-        $data = WebConfig::pluck('content','key');
+        $this->data = WebConfig::pluck('content', 'key');
 
         $contract = 0;
+        $contractname = '';
         $revenue = 0;
+        $revenuename = '';
         $reward = 0;
+        $rewardname = '';
         $mining = 0;
+        $miningname = '';
         $airdrop = 0;
+        $airdropname = '';
         $fenhong = 0;
+        $fenhongname = '';
 
-        if(!empty($data)){
-           if (!empty($data['eos_pack_api_token'])) {
-               if (!empty($data['contract'])){
-                   $d = $this->getEos($data['eos_pack_api_token'],$data['contract']);
-//                   dd($d);
-                   if (!empty($d)){
+        if (!empty($this->data) && !empty($this->data['eos_pack_api_token'])) {
+            $temp = $this->panding('contarct');
+            if (!empty($temp)) {
+                $contract = $temp['index'];
+                $contractname = $temp['name'];
+            }
+            $temp = $this->panding('revenue');
+            if (!empty($temp)) {
+                $revenue = $temp['index'];
+                $revenuename = $temp['name'];
+            }
+            $temp = $this->panding('reward');
+            if (!empty($temp)) {
+                $reward = $temp['index'];
+                $rewardname = $temp['name'];
+            }
+            $temp = $this->panding('mining');
+            if (!empty($temp)) {
+                $mining = $temp['index'];
+                $miningname = $temp['name'];
+            }
+            $temp = $this->panding('airdrop');
+            if (!empty($temp)) {
+                $airdrop = $temp['index'];
+                $airdropname = $temp['name'];
+            }
+            $temp = $this->panding('fenhong');
+            if (!empty($temp)) {
+                $fenhong = $temp['index'];
+                $fenhongname = $temp['name'];
+            }
 
-                       $contract = $d['data']['balance'];
-                   }
-               }
-
-
-
-
-           }
         }
 
         return view(
             'admin.account.index',
-                compact(
-            'contract',
+            compact(
+                'contract',
+                'contractname',
                 'revenue',
+                'revenuename',
                 'reward',
+                'rewardname',
                 'mining',
+                'miningname',
                 'airdrop',
-                'fenhong'
+                'airdropname',
+                'fenhong',
+                'fenhongname'
             )
         );
     }
-    private function getEos($key,$name){
+    private function panding($name){
+        $data = [];
+        if (!empty($this->data[$name])) {
+            $d = $this->getEos($this->data['eos_pack_api_token'], $this->data[$name]);
+            if (!empty($d)) {
+                if (!empty($d['data']['balance'])) {
+                    $data['index'] = $d['data']['balance'];
+                    $data['name'] = $this->data[$name];
+                }
+            }
+        }
+        return $data;
+    }
+    private function getEos($key, $name)
+    {
         $url = "https://api.eospark.com/api?module=account&action=get_account_balance&apikey={$key}&account={$name}";
-        $data = request_curl($url,[],false,true);
-        if(empty($data)){
+        $data = request_curl($url, [], false, true);
+        if (empty($data)) {
             return '';
         }
-        return json_decode($data,true);
+        return json_decode($data, true);
     }
 }

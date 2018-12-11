@@ -32,26 +32,31 @@ class AccountController extends Controller
                 $contract = $temp['index'];
                 $contractname = $temp['name'];
             }
+            $temp = null;
             $temp = $this->panding('revenue');
             if (!empty($temp)) {
                 $revenue = $temp['index'];
                 $revenuename = $temp['name'];
             }
+            $temp = null;
             $temp = $this->panding('reward');
             if (!empty($temp)) {
                 $reward = $temp['index'];
                 $rewardname = $temp['name'];
             }
+            $temp = null;
             $temp = $this->panding('mining');
             if (!empty($temp)) {
                 $mining = $temp['index'];
                 $miningname = $temp['name'];
             }
+            $temp = null;
             $temp = $this->panding('airdrop');
             if (!empty($temp)) {
                 $airdrop = $temp['index'];
                 $airdropname = $temp['name'];
             }
+            $temp = null;
             $temp = $this->panding('fenhong');
             if (!empty($temp)) {
                 $fenhong = $temp['index'];

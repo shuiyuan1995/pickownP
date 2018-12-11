@@ -62,6 +62,9 @@ class ApiController extends Controller
      */
     public function issus_packet(Request $request)
     {
+        if ($request->filled('blocknumber')){
+            return $this->json(['code'=>2004],2004,'blocknumber不存在');
+        }
         $issus_sum_arr = [
             0 => -1,
             1 => 0,

@@ -11,7 +11,6 @@ class AccountController extends Controller
     public $data;
     public function index()
     {
-        dd('aa');
         $this->data = WebConfig::pluck('content', 'key');
 
         $contract = 0;

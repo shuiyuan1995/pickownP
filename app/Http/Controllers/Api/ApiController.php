@@ -128,7 +128,12 @@ class ApiController extends Controller
     public function income_packet(Request $request)
     {
         $outeosid = $request->input('outid');
-        $outid = OutPacket::where('blocknumber', $outeosid)->first()->id;
+        $outentity = OutPacket::where('blocknumber', $outeosid)->first();
+        if (empty($outentity)){
+            return $this->json(['code'=>2004,'msg'=>'未收到blocknumber']);
+        }
+        $outid = $outentity->id;
+
 //        $user = User::where('name',$request->input('addr',null))->first();
 
 //        if(!empty($user)){

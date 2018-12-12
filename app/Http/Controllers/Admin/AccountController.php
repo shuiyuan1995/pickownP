@@ -85,7 +85,11 @@ class AccountController extends Controller
     }
     private function panding($name){
         $data = [];
+
+
+
         if (!empty($this->data[$name])) {
+
             $d = $this->getEos($this->data['eos_pack_api_token'], $this->data[$name]);
             if (!empty($d)) {
                 if (!empty($d['data']['balance'])) {

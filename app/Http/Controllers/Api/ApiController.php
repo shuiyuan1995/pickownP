@@ -131,9 +131,12 @@ class ApiController extends Controller
     public function income_packet(Request $request)
     {
         $outeosid = $request->input('outid');
+        if (!$request->filled('blocknumber')){
+            return $this->json(['code'=>2004,'msg'=>'未收到blocknumber'],2004,'未收到blocknumber');
+        }
         $outentity = OutPacket::where('blocknumber', $outeosid)->first();
         if (empty($outentity)){
-            return $this->json(['code'=>2004,'msg'=>'未收到blocknumber'],2004,'未收到blocknumber');
+            return $this->json(['code'=>2005,'msg'=>'blocknumber对应的红包不存在'],2005,'blocknumber对应的红包不存在');
         }
         $outid = $outentity->id;
 
@@ -300,7 +303,6 @@ class ApiController extends Controller
      */
     public function my_issus_packet(Request $request)
     {
-        $page = $request->input('page', 1);
         $userid = $request->input('userid');
         $outpacketsum = OutPacket::where('userid', $userid)->sum('issus_sum');
         $outpacket = OutPacket::where('userid', $userid)->count();

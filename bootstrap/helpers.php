@@ -19,17 +19,16 @@ if (!function_exists('request_curl')) {
      */
     function request_curl( $url, array $params = [],  $ispost = false,  $https = false)
     {
-        define(
-            'USERAGENT',
+            $USERAGENT=
             'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/' .
             '537.36 (KHTML, like Gecko) Chrome/41.0.2272.118 Safari/537.36'
-        );
+        ;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
         curl_setopt(
             $ch,
             CURLOPT_USERAGENT,
-            USERAGENT
+            $USERAGENT
         );
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);

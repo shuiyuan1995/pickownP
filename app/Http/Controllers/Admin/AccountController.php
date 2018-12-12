@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 class AccountController extends Controller
 {
     public $data;
+
     public function index()
     {
         $this->data = WebConfig::pluck('content', 'key');
@@ -27,7 +28,7 @@ class AccountController extends Controller
         $fenhongname = '';
 
         if (!empty($this->data) && !empty($this->data['eos_pack_api_token'])) {
-            $temp = $this->panding('contarct');
+            $temp = $this->panding('contract');
             if (!empty($temp)) {
                 $contract = $temp['index'];
                 $contractname = $temp['name'];
@@ -83,23 +84,26 @@ class AccountController extends Controller
             )
         );
     }
-    private function panding($name){
+
+    private function panding($name)
+    {
+//        dump($name);
+        //dump($this->data->contract);
         $data = [];
-
-
-
-        if (!empty($this->data[$name])) {
+//        dd(data_get($this->data,$name));
+        if (!empty(data_get($this->data, $name, 0))) {
 
             $d = $this->getEos($this->data['eos_pack_api_token'], $this->data[$name]);
             if (!empty($d)) {
                 if (!empty($d['data']['balance'])) {
                     $data['index'] = $d['data']['balance'];
-                    $data['name'] = $this->data[$name];
+                    $data['name'] = data_get($this->data, $name);
                 }
             }
         }
         return $data;
     }
+
     private function getEos($key, $name)
     {
         $url = "https://api.eospark.com/api?module=account&action=get_account_balance&apikey={$key}&account={$name}";

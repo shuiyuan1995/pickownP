@@ -10,9 +10,21 @@
                                placeholder="发红包ID">
                     </div>
                     <div class="col-md-2">
-                        <input type="text" class="form-control" name="name" value="{{request('name')}}"
-                               placeholder="用户名">
+                        <input type="text" class="form-control" name="issus_name" value="{{request('issus_name')}}"
+                               placeholder="发红包者用户名">
                     </div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" name="tail_number" value="{{request('tail_number')}}"
+                               placeholder="红包尾号">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" name="name" value="{{request('name')}}"
+                               placeholder="抢红包者用户名">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-2 control-label">选项</div>
                     <div class="col-md-2">
                         <select class="form-control" name="ischailei" title="是否踩雷">
                             <option value="">是否踩雷</option>
@@ -67,6 +79,9 @@
                 <tr>
 
                     <th>发红包ID</th>
+                    <th>发红包者用户名</th>
+                    <th>红包尾数</th>
+                    <th>红包金额</th>
                     <th>抢红包用户名</th>
                     <th>抢的金额</th>
                     <th>区块链ID</th>
@@ -86,6 +101,9 @@
                     <tr>
 
                         <td>{{ $item->outid }}</td>
+                        <td>{{ data_get($item,'out.user.name','无')}}</td>
+                        <td>{{ data_get($item,'out.tail_number','无') }}</td>
+                        <td>{{ data_get($item,'out.issus_sum','无') }}</td>
                         <td>{{ data_get($item, 'user.name','无') }}</td>
                         <td>{{ $item->income_sum }}</td>
                         <td>{{ $item->eosid }}</td>
@@ -107,7 +125,7 @@
             </table>
         </div>
         <div class="box-footer">
-            当前页共计{{count($list)}}
+            当前页共计{{count($list)}}个。抢的金额共计{{ $income_sum_count_sum }}。奖励金额共计{{ $jianli_sum_count_sum }}。
         </div>
         <div class="box-footer clearfix">
             {{$list->appends(request()->all())->links()}}

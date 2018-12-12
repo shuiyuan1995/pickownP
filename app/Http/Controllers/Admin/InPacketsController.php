@@ -14,6 +14,20 @@ class InPacketsController extends Controller
         if ($request->filled('id')) {
             $query->where('outid', $request->input('id'));
         }
+        if ($request->filled('issus_name')) {
+            $issus_name = $request->input('issus_name');
+            $query->whereHas('out', function ($query) use ($issus_name) {
+                $query->whereHas('user', function ($query) use ($issus_name) {
+                    $query->where('name', 'like', "%{$issus_name}%");
+                });
+            });
+        }
+        if ($request->filled('tail_number')) {
+            $tail_number = $request->input('tail_number');
+            $query->whereHas('out', function ($query) use ($tail_number) {
+                $query->where('tail_number', $tail_number);
+            });
+        }
         if ($request->filled('name')) {
             $name = $request->input('name');
             $query->whereHas('user', function ($query) use ($name) {
@@ -47,7 +61,20 @@ class InPacketsController extends Controller
         $rewardTypeArr = $in->rewardTypeArr;
 
         $list = $query->paginate();
-        return view('admin.in_packet.index', compact('list', 'isChaiLeiArr', 'isRewardArr', 'rewardTypeArr'));
+        $income_sum_count_sum = 0;
+        $jianli_sum_count_sum = 0;
+        foreach ($list as $value) {
+            $income_sum_count_sum += $value->income_sum;
+            $jianli_sum_count_sum += $value->reward_sum;
+        }
+        return view('admin.in_packet.index', compact(
+            'list',
+            'isChaiLeiArr',
+            'isRewardArr',
+            'rewardTypeArr',
+            'income_sum_count_sum',
+            'jianli_sum_count_sum'
+        ));
     }
 
     public function edit()

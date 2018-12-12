@@ -87,10 +87,7 @@ class AccountController extends Controller
 
     private function panding($name)
     {
-//        dump($name);
-        //dump($this->data->contract);
         $data = [];
-//        dd(data_get($this->data,$name));
         if (!empty(data_get($this->data, $name, 0))) {
 
             $d = $this->getEos($this->data['eos_pack_api_token'], $this->data[$name]);

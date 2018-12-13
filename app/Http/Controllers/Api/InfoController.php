@@ -41,7 +41,7 @@ class InfoController extends Controller
         if (empty($list)) {
             $list = User::create($request->all());
         }
-        Redis::setex('userid:' . $token, 24 * 60 * 60 * 7,
+        Redis::setex('userid:' . $token, 24 * 60 * 60 * 30,
             'userid:' . $list->id . 'token');
         $Logindata = [
             'userid' => $list->id,

@@ -34,7 +34,7 @@ class InfoController extends Controller
 //            return $this->json([], 2003, '平台缺失');
 //        }
 
-        $token = md5(time());
+        $token = md5(microtime());
 
         $publickey = $request->input('publickey', null);
         $list = User::where('publickey', $publickey)->first();

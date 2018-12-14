@@ -174,8 +174,23 @@ class InfoController extends Controller
 //                $data[5][] = $value;
 //            }
         }
-        return $this->json($data);
-    }
+        $data_d = [];
+        foreach ($indexArr as $value){
+            $data_d[$value] = [];
+        }
+        foreach ($data as $i => $v){
+            foreach ($v as $value){
+                array_push($data_d[$i],$value);
+            }
+        }
+        foreach ($data_d as $ii => $vv){
+            if (empty($vv)){
+                unset($data_d[$ii]);
+            }
+        }
+
+        return $this->json($data_d);
+}
 
 
     public static function Curl($url, $data = [], $status = 'GTE', $second = 30)

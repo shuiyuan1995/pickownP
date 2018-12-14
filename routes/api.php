@@ -44,7 +44,8 @@ Route::group(['namespace' => 'Api'], function () {
         ['uses' => 'ApiController@getRewardMoney', 'as' => 'api.get_reward_money'])->middleware('checktoken');
     Route::post('post_tixian',
         ['uses' => 'ApiController@postRewardMoney', 'as' => 'api.post_tixian'])->middleware('checktoken');
-
+    Route::post('close_packet',
+        ['uses'=>'ApiController@close_packet','as'=>'api.close_packet'])->middleware('checktoken');
 
     // Info
     Route::get('get_info', ['uses' => 'InfoController@getInfo', 'as' => 'api.get_info']);

@@ -80,8 +80,8 @@ class ApiController extends Controller
         $issus_sum = $request->input('issus_sum', 0);
         $addr = $request->input('addr', 'pc');
         $transactionInfo = new TransactionInfo();
-        $transactionInfo->issus_userid = $userid;
-        $transactionInfo->income_userid = 0;
+        $transactionInfo->issus_userid = 0;
+        $transactionInfo->income_userid = $userid;
         $transactionInfo->type = 2;
         $transactionInfo->status = 1;
         $transactionInfo->eos = $issus_sum;
@@ -177,11 +177,11 @@ class ApiController extends Controller
         $entity = InPacket::create($InpacketData);
 
 
-        $income_userid = OutPacket::find($outid)->userid;
+        //$income_userid = OutPacket::find($outid)->userid;
         // 抢红包信息
         $data = [
-            'issus_userid' => $userid,
-            'income_userid' => $income_userid,
+            'issus_userid' => 0,
+            'income_userid' => $userid,
             'type' => 1,
             'status' => 1,
             'eos' => $eos,
@@ -191,7 +191,7 @@ class ApiController extends Controller
 
         // 踩雷信息
         if ($is_chailei == 1) {
-            $data['issus_userid'] = $income_userid;
+            $data['issus_userid'] = 0;
             $data['income_userid'] = $userid;
             $data['type'] = 3;
             $data['eos'] = OutPacket::find($outid)->issus_sum;
@@ -201,7 +201,7 @@ class ApiController extends Controller
         // 中奖信息
         if ($is_reward !== 0) {
             $data['issus_userid'] = 0;
-            $data['income_userid'] = $income_userid;
+            $data['income_userid'] = $entity->id;
             $data['type'] = 4;
             $data['eos'] = $reward_sum;
             TransactionInfo::create($data);

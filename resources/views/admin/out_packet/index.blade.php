@@ -60,7 +60,7 @@
                     <th>blocknumber</th>
                     <th>状态</th>
                     <th>更新时间</th>
-                    {{--<th>操作</th>--}}
+                    <th>操作</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -75,9 +75,9 @@
                         <td>{{ $item->blocknumber }}</td>
                         <td>{{ $item->statusArr[$item->status] }}</td>
                         <td>{{ $item->updated_at }}</td>
-                        {{--<td>--}}
-                            {{--<a href="{{route('admin.home_user.edit', $item)}}" class="btn btn-info btn-sm">修改</a>--}}
-                        {{--</td>--}}
+                        <td>
+                            <a href="{{route('admin.out_packet.edit', $item)}}" class="btn btn-info btn-sm">修改</a>
+                        </td>
                     </tr>
                 @endforeach
                 </tbody>

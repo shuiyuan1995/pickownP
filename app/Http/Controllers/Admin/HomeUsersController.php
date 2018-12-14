@@ -39,7 +39,6 @@ class HomeUsersController extends Controller
     {
         $data = User::findOrFail($id);
         $data->status = $request->input('status');
-        $data->last_time = date('Y-m-d H:i:s',time());
         $data->save();
         return redirect(route('admin.home_user.index'))->with('flash_message', '添加成功');
 

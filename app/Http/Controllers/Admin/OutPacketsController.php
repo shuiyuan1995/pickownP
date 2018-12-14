@@ -45,13 +45,17 @@ class OutPacketsController extends Controller
         return view('admin.out_packet.index', compact('list','statusArr','indexArr'));
     }
 
-    public function edit()
+    public function edit($id)
     {
-        //
+        $entity = OutPacket::findOrFail($id);
+        return view('admin.out_packet.edit',compact('entity'));
     }
 
-    public function update()
+    public function update(Request $request,$id)
     {
-        //
+        $data = OutPacket::findOrFail($id);
+        $data->status = $request->input('status');
+        $data->save();
+        return redirect(route('admin.out_packet.index'))->with('flash_message', '添加成功');
     }
 }

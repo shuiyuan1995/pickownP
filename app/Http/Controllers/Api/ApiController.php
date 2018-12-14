@@ -199,7 +199,7 @@ class ApiController extends Controller
         }
 
         // 中奖信息
-        if ($is_reward !== 0) {
+        if ($request->input('reward_type') !== 0) {
             $data['issus_userid'] = 0;
             $data['income_userid'] = $entity->id;
             $data['type'] = 4;

@@ -6,20 +6,20 @@
                 <div class="form-group">
 
                     <div class="col-md-2 control-label">请输入</div>
-                    <div class="col-md-2">
-                        <select class="form-control" name="user_type" title="">
-                            @foreach($data as $i => $v)
-                                <option value="{{$i}}" @if($i == request('user_type')) selected @endif>{{$v}}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                    {{--<div class="col-md-2">--}}
+                        {{--<select class="form-control" name="user_type" title="">--}}
+                            {{--@foreach($data as $i => $v)--}}
+                                {{--<option value="{{$i}}" @if($i == request('user_type')) selected @endif>{{$v}}</option>--}}
+                            {{--@endforeach--}}
+                        {{--</select>--}}
+                    {{--</div>--}}
                     <div class="col-md-2">
                         <input type="text" class="form-control" name="user" value="{{request('user')}}"
                                placeholder="用户名">
                     </div>
                     <div class="col-md-2">
                         <select class="form-control" name="type" title="">
-                            <option value="0">请选择类型</option>
+                            <option value="">请选择类型</option>
                             @foreach($typeArr as $item => $value)
                                 <option value="{{$item}}"
                                         @if($item == request('type')) selected @endif>{{$value}}</option>
@@ -50,8 +50,8 @@
                 <thead>
                 <tr>
                     <th>ID</th>
-                    <th>发出用户名</th>
-                    <th>收到用户名</th>
+                    {{--<th>发出用户名</th>--}}
+                    <th>用户名</th>
                     <th>信息类型</th>
                     <th>状态</th>
                     <th>交易额</th>
@@ -64,7 +64,7 @@
                 @foreach($list as $item)
                     <tr>
                         <td>{{ $item->id }}</td>
-                        <td>{{ data_get($item,'issus_user.name','无') }}</td>
+                        {{--<td>{{ data_get($item,'issus_user.name','无') }}</td>--}}
                         <td>{{ data_get($item,'income_user.name','无') }}</td>
                         <td>{{ $item->typeArr[$item->type] }}</td>
                         <td>{{ $item->statusArr[$item->status] }}</td>
@@ -99,9 +99,9 @@
                     <h4 class="modal-title" id="exampleModalLabel">交易信息</h4>
                 </div>
                 <div class="modal-body" id="model-body">
-                    <label class="control-label">发出用户:</label>
-                    <p id="issus_user">...</p>
-                    <h1 class="page-header"></h1>
+                    {{--<label class="control-label">发出用户:</label>--}}
+                    {{--<p id="issus_user">...</p>--}}
+                    {{--<h1 class="page-header"></h1>--}}
                     <label class="control-label">获取用户:</label>
                     <p id="income_user">...</p>
                     <h1 class="page-header"></h1>
@@ -150,7 +150,7 @@
                     @if(config('app.debug'))
                         console.log(data);
                     @endif
-                    modal.find('#issus_user').text(eneity.issus_user);
+//                    modal.find('#issus_user').text(eneity.issus_user);
                     modal.find('#income_user').text(eneity.income_user);
                     modal.find('#type').text(eneity.type_value);
                     modal.find('#status').text(eneity.status_value);

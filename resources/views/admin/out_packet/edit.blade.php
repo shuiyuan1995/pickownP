@@ -18,9 +18,12 @@
 
             <div class="form-group">
                 <label for="inputName" class="control-label col-md-2">状态</label>
-                <div class="col-md-8">
-                    <label><input type="radio" class="radio-inline" name="status" id="inputStatus" value="1" @if($entity->status == 1) checked @endif>开启</label>&nbsp;&nbsp;
-                    <label><input type="radio" class="radio-inline" name="status" id="inputStatus" value="2" @if($entity->status == 2) checked @endif>关闭</label>
+                <div class="col-md-2">
+                    <select class="form-control" name="status" title="红包是否领完">
+                        @foreach($statusArr as $item => $value)
+                            <option value="{{$item}}" @if($item == $entity->status)selected @endif>{{$value}}</option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
 

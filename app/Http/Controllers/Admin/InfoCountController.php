@@ -68,11 +68,12 @@ class InfoCountController extends Controller
         // 转化率
         $zhuanhualv = 0;
         // 活跃度
-        $chufa = LoginRecord::query()->where('created_at', '>', $start_time)->where('created_at', '<=', $end_time)->count();
+        $chufa = LoginRecord::query()->where('created_at', '>', $start_time)->where('created_at', '<=',
+            $end_time)->count();
 //        dd($chufa);
         $huoyedu = 0;
         if (!empty($chufa)) {
-            $huoyedu = round($active_users_count[0]->num / $chufa,4);
+            $huoyedu = round($active_users_count[0]->num / $chufa, 4);
         }
 
         // 平均每活跃用户收益
@@ -82,22 +83,19 @@ class InfoCountController extends Controller
         }
         // 每付费用户平均收益
         $meifufei = 0;
-        if (!empty($chufa)){
-            $meifufei = round($paying_count / $chufa,4);
+        if (!empty($chufa)) {
+            $meifufei = round($paying_count / $chufa, 4);
         }
         // 付费率
         $fufeilv = 0;
         // 留存
         $liucun = 0;
 
-        $xinyunjiangchi = OutPacket::query()->where('status',2)->sum('issus_sum');
-        $xinyunjiangchijian = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
-            $q->where('status', 2);
-        })->sum('income_sum');
-        $jianqu = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
-            $q->where('status', 2);
-        })->sum('reward_sum');
-        $xinyun = ($xinyunjiangchi - $xinyunjiangchijian) * 0.05 - $jianqu;
+        $xinyujiangchientity = InPacket::orderBy('created_at', 'desc')->first();
+        $xinyun = 0;
+        if (!empty($xinyujiangchientity)) {
+            $xinyun = empty($xinyujiangchientity->prize_pool) ? 0 : $xinyujiangchientity->prize_pool;
+        }
         return view(
             'admin.info_count.index',
             compact(

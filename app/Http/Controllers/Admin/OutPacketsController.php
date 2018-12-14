@@ -48,7 +48,9 @@ class OutPacketsController extends Controller
     public function edit($id)
     {
         $entity = OutPacket::findOrFail($id);
-        return view('admin.out_packet.edit',compact('entity'));
+        $out = new OutPacket();
+        $statusArr = $out->statusArr;
+        return view('admin.out_packet.edit',compact('entity','statusArr'));
     }
 
     public function update(Request $request,$id)
@@ -56,6 +58,6 @@ class OutPacketsController extends Controller
         $data = OutPacket::findOrFail($id);
         $data->status = $request->input('status');
         $data->save();
-        return redirect(route('admin.out_packet.index'))->with('flash_message', '添加成功');
+        return redirect(route('admin.out_packet.index'))->with('flash_message', '修改成功');
     }
 }

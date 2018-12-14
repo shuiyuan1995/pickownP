@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Redis;
 
 class InfoController extends Controller
 {
+
     /**
      * 用户登录接口
      * @param Request $request
@@ -41,7 +42,7 @@ class InfoController extends Controller
         if (empty($list)) {
             $list = User::create($request->all());
         }
-        Redis::setex('userid:' . $token, 24 * 60 * 60 * 30,
+        Redis::setex('userid:' . $token . ':' . $list->id, 24 * 60 * 60 * 30,
             'userid:' . $list->id . 'token');
         $Logindata = [
             'userid' => $list->id,
@@ -50,7 +51,7 @@ class InfoController extends Controller
         ];
         LoginRecord::create($Logindata);
 
-        return $this->success(['data' => ['token' => $token, 'userid' => $list->id, 'invite' => $list->addr]], '访问成功！');
+        return $this->success(['token' => $token . ':' . $list->id], '访问成功！');
     }
 
     /**
@@ -134,26 +135,28 @@ class InfoController extends Controller
             '100.0000' => 5
         ];
         $data = [];
+
         foreach ($list as $item => $value) {
-            $data[$item]['name'] = $value['user']['name'];
-            $data[$item]['packetId'] = $value['eosid'];
-            $data[$item]['txId'] = $value['blocknumber'];
-            $data[$item]['type'] = 1;
-            $data[$item]['num'] = $value['tail_number'];
-            $data[$item]['eos'] = $value['issus_sum'];
-            $data[$item]['time'] = strtotime($value['created_at']);
-            $data[$item]['none'] = false;
-            $data[$item]['index'] = $indexArr[$value['issus_sum']];
-            if ($request->filled('userid')) {
-                $userid = $request->input('userid');
+            $data[$indexArr[$value['issus_sum']]][$item]['name'] = $value['user']['name'];
+            $data[$indexArr[$value['issus_sum']]][$item]['packetId'] = $value['eosid'];
+            $data[$indexArr[$value['issus_sum']]][$item]['txId'] = $value['blocknumber'];
+            $data[$indexArr[$value['issus_sum']]][$item]['type'] = 1;
+            $data[$indexArr[$value['issus_sum']]][$item]['num'] = $value['tail_number'];
+            $data[$indexArr[$value['issus_sum']]][$item]['eos'] = $value['issus_sum'];
+            $data[$indexArr[$value['issus_sum']]][$item]['time'] = strtotime($value['created_at']);
+            $data[$indexArr[$value['issus_sum']]][$item]['none'] = false;
+            $data[$indexArr[$value['issus_sum']]][$item]['index'] = $indexArr[$value['issus_sum']];
+
+            if ($request->header('token')) {
+                $userid = substr($request->header('token'), strripos($request->header('token'), ':') + 1);
                 $in = InPacket::where('outid', $value['id'])->where('userid', $userid)->count();
                 if ($in > 0) {
-                    $data[$item]['isgo'] = 1;
+                    $data[$indexArr[$value['issus_sum']]][$item]['isgo'] = 1;
                 } else {
-                    $data[$item]['isgo'] = 0;
+                    $data[$indexArr[$value['issus_sum']]][$item]['isgo'] = 0;
                 }
             } else {
-                $data[$item]['isgo'] = 0;
+                $data[$indexArr[$value['issus_sum']]][$item]['isgo'] = 0;
             }
 
 

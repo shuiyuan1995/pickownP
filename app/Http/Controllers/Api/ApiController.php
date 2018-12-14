@@ -62,8 +62,8 @@ class ApiController extends Controller
      */
     public function issus_packet(Request $request)
     {
-        if (!$request->filled('blocknumber')){
-            return $this->json(['code'=>2004],2004,'blocknumber不存在');
+        if (!$request->filled('blocknumber')) {
+            return $this->json(['code' => 2004], 2004, 'blocknumber不存在');
         }
         $issus_sum_arr = [
             0 => -1,
@@ -75,8 +75,7 @@ class ApiController extends Controller
             100 => 5
         ];
         $entity = OutPacket::create($request->all());
-
-        $userid = $request->input('userid');
+        $userid = substr($request->header('token'), strripos($request->header('token'), ':') + 1);
         $issus_sum = $request->input('issus_sum', 0);
         $addr = $request->input('addr', 'pc');
         $transactionInfo = new TransactionInfo();
@@ -106,8 +105,6 @@ class ApiController extends Controller
         Log::info('');
         return $this->success([
             'code' => 200,
-            'token' => $request->input('token'),
-            'userid' => $request->input('userid')
         ], '发送成功');
     }
 
@@ -135,8 +132,8 @@ class ApiController extends Controller
 //            return $this->json(['code'=>2004,'msg'=>'未收到blocknumber'],2004,'未收到blocknumber');
 //        }
         $outentity = OutPacket::where('blocknumber', $outeosid)->first();
-        if (empty($outentity)){
-            return $this->json(['code'=>2005,'msg'=>'blocknumber对应的红包不存在'],2005,'blocknumber对应的红包不存在');
+        if (empty($outentity)) {
+            return $this->json(['code' => 2005, 'msg' => 'blocknumber对应的红包不存在'], 2005, 'blocknumber对应的红包不存在');
         }
         $outid = $outentity->id;
 
@@ -153,7 +150,7 @@ class ApiController extends Controller
 //            ];
 //            TransactionInfo::create($qudaojianlidata);
 //        }
-        $userid = $request->input('userid');
+        $userid = substr($request->header('token'),strripos($request->header('token'),':') + 1);
         $is_chailei = $request->input('is_chailei');
         $is_reward = $request->input('is_reward');
         $reward_sum = $request->input('reward_sum');
@@ -287,9 +284,7 @@ class ApiController extends Controller
         }
 
         return $this->success([
-            'code' => 200,
-            'token' => $request->input('token'),
-            'userid' => $request->input('userid')
+            'code' => 200
         ], '发送成功');
     }
 
@@ -303,7 +298,7 @@ class ApiController extends Controller
      */
     public function my_issus_packet(Request $request)
     {
-        $userid = $request->input('userid');
+        $userid = substr($request->header('token'),strripos($request->header('token'),':') + 1);
         $outpacketsum = OutPacket::where('userid', $userid)->sum('issus_sum');
         $outpacket = OutPacket::where('userid', $userid)->count();
         $sql = 'SELECT count(DISTINCT out_packets.userid) AS count FROM out_packets,in_packets WHERE out_packets.id = in_packets.outid AND status = 2 AND out_packets.userid = :userid';
@@ -343,7 +338,7 @@ class ApiController extends Controller
      */
     public function my_income_packet(Request $request)
     {
-        $userid = $request->input('userid');
+        $userid = substr($request->header('token'),strripos($request->header('token'),':') + 1);
 
 
         $pairs = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
@@ -401,15 +396,6 @@ class ApiController extends Controller
     }
 
     /**
-     * 抢了红包的情况
-     * @param Request $request
-     */
-    public function qian_red_packet(Request $request)
-    {
-
-    }
-
-    /**
      * 参数值
      * token
      * 发出红包id  outid
@@ -456,7 +442,7 @@ class ApiController extends Controller
 
     public function postRewardMoney(Request $request)
     {
-        $userid = $request->input('userid');
+        $userid = substr($request->header('token'),strripos($request->header('token'),':') + 1);
         $money = $request->input('money');
         $data = [
             'issus_userid' => 0,
@@ -480,7 +466,7 @@ class ApiController extends Controller
             50 => 0.045,
             100 => 0.09,
         ];
-        $userid = $request->input('userid');
+        $userid = substr($request->header('token'),strripos($request->header('token'),':') + 1);
         //$getRewardCount = DB::select('SELECT addr,income_userid,sum(eos) AS tixian_count FROM transaction_infos WHERE type = 5 AND income_userid = :income_userid',
         //    ['income_userid' => $userid]);
 //        dd($getRewardCount);
@@ -523,7 +509,7 @@ class ApiController extends Controller
 
     public function chaxunhongbaozhuangtai(Request $request)
     {
-        $eosid = $request->input('eosid');
+
 
     }
 }

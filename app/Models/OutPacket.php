@@ -19,7 +19,7 @@ class OutPacket extends Model
         'created_at',
         'updated_at'
     ];
-    public $statusArr = [1 => '未抢完', 2 => '已抢完'];
+    public $statusArr = [1 => '未抢完', 2 => '已抢完',3=>'退回','4'=>'后台关闭'];
     public $indexArr = [
         '1.0000' => 0,
         '5.0000' => 1,

@@ -74,8 +74,20 @@ class ApiController extends Controller
             50 => 4,
             100 => 5
         ];
-        $entity = OutPacket::create($request->all());
         $userid = substr($request->header('token'), strripos($request->header('token'), ':') + 1);
+        $entity_data = [
+            'userid' => $userid,
+            'issus_sum' => $request->input('issus_sum',0),
+            'tail_number'=>$request->input('tail_number'),
+            'count'=>$request->input('count'),
+            'eosid'=>$request->input('eosid'),
+            'blocknumber'=>$request->input('eosid'),
+            'addr'=>$request->input('addr'),
+            'status'=>1,
+            'surplus_sum'=>$request->input('issus_sum')
+        ];
+        $entity = OutPacket::create($entity_data);
+
         $issus_sum = $request->input('issus_sum', 0);
         $addr = $request->input('addr', 'pc');
         $transactionInfo = new TransactionInfo();

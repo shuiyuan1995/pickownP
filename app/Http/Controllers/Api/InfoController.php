@@ -65,7 +65,7 @@ class InfoController extends Controller
             $q->where('status', 2);
         })->sum('income_sum');
         $inPacketCount = InPacket::count();
-        $transactionInfoCount = TransactionInfo::where('status', '<', 4)->sum('eos');
+        $transactionInfoCount = TransactionInfo::where('status', '<', 5)->sum('eos');
         $userCount = User::count();
         $xinyujiangchientity = InPacket::orderBy('created_at', 'desc')->first();
         $xinyujiangchi = 0;

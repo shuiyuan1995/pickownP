@@ -34,11 +34,11 @@ Route::group(['namespace' => 'Api'], function () {
         ['uses' => 'ApiController@issus_packet', 'as' => 'api.issus_packet'])->middleware('checktoken');
     Route::post('income_packet',
         ['uses' => 'ApiController@income_packet', 'as' => 'api.income_packet'])->middleware('checktoken');
-    Route::post('my_issus_packet',
+    Route::get('my_issus_packet',
         ['uses' => 'ApiController@my_issus_packet', 'as' => 'api.my_issus_packet'])->middleware('checktoken');
-    Route::post('my_income_packet',
+    Route::get('my_income_packet',
         ['uses' => 'ApiController@my_income_packet', 'as' => 'api.my_income_packet'])->middleware('checktoken');
-    Route::post('red_packet',
+    Route::get('red_packet',
         ['uses' => 'ApiController@red_packet', 'as' => 'api.red_packet'])->middleware('checktoken');
     Route::post('get_tixian_info',
         ['uses' => 'ApiController@getRewardMoney', 'as' => 'api.get_reward_money'])->middleware('checktoken');

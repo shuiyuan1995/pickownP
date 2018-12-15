@@ -441,7 +441,7 @@ class ApiController extends Controller
             ]);
         } else {
             return InPacketResource::collection(
-                InPacket::where('outid', $outid)->orderBy('created_at', 'desc')->get()
+                InPacket::query()->where('outid', $outid)->orderBy('created_at', 'desc')->get()
             )->additional([
                 'outpacketname' => User::find($outuserid)->name,
                 'outpacketsum' => $outpacketentity->issus_sum,

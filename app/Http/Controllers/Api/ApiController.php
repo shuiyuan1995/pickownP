@@ -423,8 +423,8 @@ class ApiController extends Controller
         if (empty($outpacketentity)) {
             return response()->json([
                 'data' => [],
-                'code' => 2001,
-                'message' => '参数错误'
+                'code' => 2005,
+                'message' => 'blocknumber对应的红包不存在'
             ]);
         }
 
@@ -436,7 +436,7 @@ class ApiController extends Controller
                 'outpacketname' => User::find($outuserid)->name,
                 'outpacketsum' => $outpacketentity->issus_sum,
                 'outpackettailnumber' => $outpacketentity->tail_number,
-                'code' => 2002,
+                'code' => 2010,
                 'message' => '红包未领完'
             ]);
         } else {
@@ -447,7 +447,7 @@ class ApiController extends Controller
                 'outpacketsum' => $outpacketentity->issus_sum,
                 'outpackettailnumber' => $outpacketentity->tail_number,
                 'code' => 200,
-                'message' => ''
+                'message' => '发送成功'
             ]);
         }
     }

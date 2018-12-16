@@ -31,16 +31,16 @@ Route::group(['namespace' => 'Api'], function () {
 
     // Api
     Route::post('issus_packet',
-        ['uses' => 'ApiController@issus_packet', 'as' => 'api.issus_packet'])->middleware('checktoken');
+        ['uses' => 'ApiController@issus_packet', 'as' => 'api.issus_packet']);
     Route::post('income_packet',
-        ['uses' => 'ApiController@income_packet', 'as' => 'api.income_packet'])->middleware('checktoken');
+        ['uses' => 'ApiController@income_packet', 'as' => 'api.income_packet']);
     Route::get('my_issus_packet',
         ['uses' => 'ApiController@my_issus_packet', 'as' => 'api.my_issus_packet'])->middleware('checktoken');
     Route::get('my_income_packet',
         ['uses' => 'ApiController@my_income_packet', 'as' => 'api.my_income_packet'])->middleware('checktoken');
     Route::get('red_packet',
         ['uses' => 'ApiController@red_packet', 'as' => 'api.red_packet'])->middleware('checktoken');
-    Route::post('get_tixian_info',
+    Route::get('get_tixian_info',
         ['uses' => 'ApiController@getRewardMoney', 'as' => 'api.get_reward_money'])->middleware('checktoken');
     Route::post('post_tixian',
         ['uses' => 'ApiController@postRewardMoney', 'as' => 'api.post_tixian'])->middleware('checktoken');

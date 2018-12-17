@@ -158,21 +158,6 @@ class InfoController extends Controller
             } else {
                 $data[$indexArr[$value['issus_sum']]][$item]['isgo'] = 0;
             }
-
-
-//            if ($value['issus_sum'] == '1.0000') {
-//                $data[0][] = $value;
-//            } elseif ($value['issus_sum'] == '5.0000') {
-//                $data[1][] = $value;
-//            } elseif ($value['issus_sum'] == '10.0000') {
-//                $data[2][] = $value;
-//            } elseif ($value['issus_sum'] == '20.0000') {
-//                $data[3][] = $value;
-//            } elseif ($value['issus_sum'] == '50.0000') {
-//                $data[4][] = $value;
-//            } elseif ($value['issus_sum'] == '100.0000') {
-//                $data[5][] = $value;
-//            }
         }
         $data_d = [];
         foreach ($indexArr as $value){

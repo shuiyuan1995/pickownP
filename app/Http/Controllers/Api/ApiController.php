@@ -24,8 +24,13 @@ class ApiController extends Controller
         $inPacketSum = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
             $q->where('status', 2);
         })->sum('income_sum');
+        $diya_sum = DB::select('select sum(issus_sum) as sum from out_packets ,in_packets WHERE in_packets.outid = out_packets.id');
+        $ddiya_jsum = 0;
+        foreach ($diya_sum as $value){
+            $ddiya_jsum = $value->sum;
+        }
         $inPacketCount = InPacket::count();
-        $transactionInfoCount = TransactionInfo::where('type', '<', 5)->sum('eos');
+        $transactionInfoCount = TransactionInfo::where('type', '<', 5)->sum('eos') + $ddiya_jsum;
         $userCount = User::count();
         $xinyujiangchientity = InPacket::orderBy('created_at', 'desc')->first();
         $xinyujiangchi = 0;

@@ -72,12 +72,13 @@ class ApiController extends Controller
         }
         $issus_sum_arr = [
             0 => -1,
-            1 => 0,
-            5 => 1,
-            10 => 2,
-            20 => 3,
-            50 => 4,
-            100 => 5
+            '0.1' => 0,
+            1 => 1,
+            5 => 2,
+            10 => 3,
+            20 => 4,
+            50 => 5,
+            100 => 6
         ];
         $entity = OutPacket::create($request->all());
 
@@ -249,15 +250,16 @@ class ApiController extends Controller
 
             $name = User::find($outPacket->userid)->name;
             $issus_sum_arr = [
-                0 => -1,
-                1 => 0,
-                5 => 1,
-                10 => 2,
-                20 => 3,
-                50 => 4,
-                100 => 5
+                '0.0000' => -1,
+                '0.1000'=>0,
+                '1.0000' => 1,
+                '5.0000' => 2,
+                '10.0000' => 3,
+                '20.0000' => 4,
+                '50.0000' => 5,
+                '100.0000' => 6
             ];
-            $index = $issus_sum_arr[intval($outPacket->issus_sum)];
+            $index = $issus_sum_arr[$outPacket->issus_sum];
             $outPacket_data['id'] = $outPacket->id;
             $outPacket_data['userid'] = $outPacket->id;
             $outPacket_data['issus_sum'] = $outPacket->issus_sum;

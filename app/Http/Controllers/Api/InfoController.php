@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Resources\InPacketResource;
 use App\Http\Resources\OutPacketResource;
 use App\Models\InPacket;
 use App\Models\LoginRecord;
@@ -131,14 +132,30 @@ class InfoController extends Controller
         $query = OutPacket::query()->with('user');
         $list = $query->where('status', 1)->orderBy('created_at', 'asc')->get();
         $indexArr = [
-            '1.0000' => 0,
-            '5.0000' => 1,
-            '10.0000' => 2,
-            '20.0000' => 3,
-            '50.0000' => 4,
-            '100.0000' => 5
+            '0.1000' => 0,
+            '1.0000' => 1,
+            '5.0000' => 2,
+            '10.0000' => 3,
+            '20.0000' => 4,
+            '50.0000' => 5,
+            '100.0000' => 6
         ];
         $data = [];
+        // 已抢完的最新红包
+        $yiqianwanhonbao  = OutPacket::query()->where('status' ,2)
+            ->groupBy('issus_sum')->orderBy('updated_at','desc')->get();
+        // 已抢完的最新红包对应的抢的列表
+        $yiqianwanhonbaolist = [];
+        foreach ($yiqianwanhonbao as $item => $value){
+            $data['out']['index'] = $indexArr[$value['issus_sum']];
+            $data['out']['name'] = $value['name'];
+            $data['out']['time'] = strtotime($value['updated_at']);
+            $data['out']['in_packet_data'] = InPacketResource::collection(
+                InPacket::query()->where('outid',$value['id'])->get()
+            );
+            $data['out']['type'] = 2;
+            $data['out']['isgo'] = 1;
+        }
         foreach ($list as $item => $value) {
             $data[$item]['name'] = $value['user']['name'];
             $data[$item]['packetId'] = $value['eosid'];
@@ -160,7 +177,10 @@ class InfoController extends Controller
             } else {
                 $data[$item]['isgo'] = 0;
             }
+            $data = array_values($data);
+            array_reverse($data);
 
+            //array_unshift($data,$yiqianwanhonbaolist);
 
 //            if ($value['issus_sum'] == '1.0000') {
 //                $data[0][] = $value;

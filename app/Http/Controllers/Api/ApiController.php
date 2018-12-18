@@ -155,19 +155,6 @@ class ApiController extends Controller
         }
         $outid = $outentity->id;
 
-//        $user = User::where('name',$request->input('addr',null))->first();
-
-//        if(!empty($user)){
-//            $qudaojianlidata = [
-//                'issus_userid' => 0,
-//                'income_userid' => $user->id,
-//                'type'=> 6,
-//                'status'=>1,
-//                'eos'=>OutPacket::find($outid)->issus_sum,
-//                'addr'=>User::find($request->input('userid'))->name,
-//            ];
-//            TransactionInfo::create($qudaojianlidata);
-//        }
         $userid = substr($request->header('token'), strripos($request->header('token'), ':') + 1);
 
         $txid = $request->input('txid');
@@ -468,7 +455,7 @@ class ApiController extends Controller
                 'outpacketname' => User::find($outuserid)->name,
                 'outpacketsum' => $outpacketentity->issus_sum,
                 'outpackettailnumber' => $outpacketentity->tail_number,
-                'code' => 2010,
+                'code' => 200,
                 'message' => '红包未领完'
             ]);
         } else {
@@ -503,12 +490,13 @@ class ApiController extends Controller
     public function getRewardMoney(Request $request)
     {
         $jiangjingArr = [
-            1 => 0.0009,
-            5 => 0.0045,
-            10 => 0.009,
-            20 => 0.018,
-            50 => 0.045,
-            100 => 0.09,
+            '0.1000'=>0.0001,
+            '1.0000' => 0.0009,
+            '5.0000' => 0.0045,
+            '10.0000' => 0.009,
+            '20.0000' => 0.018,
+            '50.0000' => 0.045,
+            '100.0000' => 0.09,
         ];
         $userid = substr($request->header('token'), strripos($request->header('token'), ':') + 1);
         //$getRewardCount = DB::select('SELECT addr,income_userid,sum(eos) AS tixian_count FROM transaction_infos WHERE type = 5 AND income_userid = :income_userid',
@@ -519,7 +507,7 @@ class ApiController extends Controller
 //        dd($arr);
         $sum = 0;
         foreach ($arr as $item => $value) {
-            $sum += $jiangjingArr[intval($value->issus_sum)] * $value->count;
+            $sum += $jiangjingArr[$value->issus_sum] * $value->count;
         }
 //        $tixian_sum = 0;
 //        foreach ($getRewardCount as $value) {
@@ -627,7 +615,8 @@ class ApiController extends Controller
             $name,
             2,
             $index,
-            $this->getinfo()
+            $this->getinfo(),
+                []
         ));
         return $this->success(['code' => 200, 'message' => '红包关闭成功'], '红包关闭成功');
     }

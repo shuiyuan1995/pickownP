@@ -18,6 +18,7 @@ class OutPacket extends Model
         'status',
         'created_at',
         'updated_at',
+        'surplus_sum',
         'is_guangbo'
     ];
     public $statusArr = [1 => '未抢完', 2 => '已抢完',3=>'退回','4'=>'后台关闭'];

@@ -32,9 +32,7 @@ class InfoController extends Controller
         if (empty($request->input('publickey', null))) {
             return $this->json([], 2002, 'publickey缺失');
         }
-//        if (empty($request->input('addr', null))) {
-//            return $this->json([], 2003, '平台缺失');
-//        }
+
 
         $token = md5(microtime());
 
@@ -143,87 +141,44 @@ class InfoController extends Controller
             '100.0000' => 6
         ];
         $data = [];
-<<<<<<< HEAD
+
         // 已抢完的最新红包
         $yiqianwanhonbao  = OutPacket::query()->where('status' ,2)
             ->groupBy('issus_sum')->orderBy('updated_at','desc')->get();
         // 已抢完的最新红包对应的抢的列表
         $yiqianwanhonbaolist = [];
         foreach ($yiqianwanhonbao as $item => $value){
-            $data[$value['id']]['index'] = $indexArr[$value['issus_sum']];
-            $data[$value['id']]['name'] = User::find($value['userid'])->name;
-            $data[$value['id']]['time'] = strtotime($value['updated_at']);
-            $data[$value['id']]['tail_number'] = $value['tail_number'];
-            $data[$value['id']]['in_packet_data'] = InPacketResource::collection(
+            $data[$indexArr[$value['issus_sum']]][$value['id']]['index'] = $indexArr[$value['issus_sum']];
+            $data[$indexArr[$value['issus_sum']]][$value['id']]['name'] = User::find($value['userid'])->name;
+            $data[$indexArr[$value['issus_sum']]][$value['id']]['time'] = strtotime($value['updated_at']);
+            $data[$indexArr[$value['issus_sum']]][$value['id']]['tail_number'] = $value['tail_number'];
+            $data[$indexArr[$value['issus_sum']]][$value['id']]['in_packet_data'] = InPacketResource::collection(
                 InPacket::query()->where('outid',$value['id'])->get()
             );
-            $data[$value['id']]['type'] = 2;
-            $data[$value['id']]['isgo'] = 1;
+            $data[$indexArr[$value['issus_sum']]][$value['id']]['type'] = 2;
+            $data[$indexArr[$value['issus_sum']]][$value['id']]['isgo'] = 1;
         }
         foreach ($list as $item => $value) {
-            $data[$value['id']]['name'] = $value['user']['name'];
-            $data[$value['id']]['packetId'] = $value['eosid'];
-            $data[$value['id']]['txId'] = $value['blocknumber'];
-            $data[$value['id']]['type'] = 1;
-            $data[$value['id']]['num'] = $value['tail_number'];
-            $data[$value['id']]['eos'] = $value['issus_sum'];
-            $data[$value['id']]['time'] = strtotime($value['created_at']);
-            $data[$value['id']]['none'] = false;
-            $data[$value['id']]['index'] = $indexArr[$value['issus_sum']];
-            if ($request->filled('userid')) {
-                $userid = $request->input('userid');
-                $in = InPacket::where('outid', $value['id'])->where('userid', $userid)->count();
-                if ($in > 0) {
-                    $data[$value['id']]['isgo'] = 1;
-                } else {
-                    $data[$value['id']]['isgo'] = 0;
-                }
-            } else {
-                $data[$value['id']]['isgo'] = 0;
-            }
-            $data = array_values($data);
-            array_reverse($data);
-
-            //array_unshift($data,$yiqianwanhonbaolist);
-
-//            if ($value['issus_sum'] == '1.0000') {
-//                $data[0][] = $value;
-//            } elseif ($value['issus_sum'] == '5.0000') {
-//                $data[1][] = $value;
-//            } elseif ($value['issus_sum'] == '10.0000') {
-//                $data[2][] = $value;
-//            } elseif ($value['issus_sum'] == '20.0000') {
-//                $data[3][] = $value;
-//            } elseif ($value['issus_sum'] == '50.0000') {
-//                $data[4][] = $value;
-//            } elseif ($value['issus_sum'] == '100.0000') {
-//                $data[5][] = $value;
-//            }
-=======
-
-        foreach ($list as $item => $value) {
-            $data[$indexArr[$value['issus_sum']]][$item]['name'] = $value['user']['name'];
-            $data[$indexArr[$value['issus_sum']]][$item]['packetId'] = $value['eosid'];
-            $data[$indexArr[$value['issus_sum']]][$item]['txId'] = $value['blocknumber'];
-            $data[$indexArr[$value['issus_sum']]][$item]['type'] = 1;
-            $data[$indexArr[$value['issus_sum']]][$item]['num'] = $value['tail_number'];
-            $data[$indexArr[$value['issus_sum']]][$item]['eos'] = $value['issus_sum'];
-            $data[$indexArr[$value['issus_sum']]][$item]['time'] = strtotime($value['created_at']);
-            $data[$indexArr[$value['issus_sum']]][$item]['none'] = false;
-            $data[$indexArr[$value['issus_sum']]][$item]['index'] = $indexArr[$value['issus_sum']];
-
+            $data[$indexArr[$value['issus_sum']]][$value['id']]['name'] = $value['user']['name'];
+            $data[$indexArr[$value['issus_sum']]][$value['id']]['packetId'] = $value['eosid'];
+            $data[$indexArr[$value['issus_sum']]][$value['id']]['txId'] = $value['blocknumber'];
+            $data[$indexArr[$value['issus_sum']]][$value['id']]['type'] = 1;
+            $data[$indexArr[$value['issus_sum']]][$value['id']]['num'] = $value['tail_number'];
+            $data[$indexArr[$value['issus_sum']]][$value['id']]['eos'] = $value['issus_sum'];
+            $data[$indexArr[$value['issus_sum']]][$value['id']]['time'] = strtotime($value['created_at']);
+            $data[$indexArr[$value['issus_sum']]][$value['id']]['none'] = false;
+            $data[$indexArr[$value['issus_sum']]][$value['id']]['index'] = $indexArr[$value['issus_sum']];
             if ($request->header('token')) {
                 $userid = substr($request->header('token'), strripos($request->header('token'), ':') + 1);
                 $in = InPacket::where('outid', $value['id'])->where('userid', $userid)->count();
                 if ($in > 0) {
-                    $data[$indexArr[$value['issus_sum']]][$item]['isgo'] = 1;
+                    $data[$indexArr[$value['issus_sum']]][$value['id']]['isgo'] = 1;
                 } else {
-                    $data[$indexArr[$value['issus_sum']]][$item]['isgo'] = 0;
+                    $data[$indexArr[$value['issus_sum']]][$value['id']]['isgo'] = 0;
                 }
             } else {
-                $data[$indexArr[$value['issus_sum']]][$item]['isgo'] = 0;
+                $data[$indexArr[$value['issus_sum']]][$value['id']]['isgo'] = 0;
             }
->>>>>>> dailipeng-dev-api
         }
         $data_d = [];
         foreach ($indexArr as $value){
@@ -232,11 +187,6 @@ class InfoController extends Controller
         foreach ($data as $i => $v){
             foreach ($v as $value){
                 array_push($data_d[$i],$value);
-            }
-        }
-        foreach ($data_d as $ii => $vv){
-            if (empty($vv)){
-                unset($data_d[$ii]);
             }
         }
 
@@ -287,12 +237,13 @@ class InfoController extends Controller
     public function getRewardCount()
     {
         $jiangjingArr = [
-            1 => 0.0009,
-            5 => 0.0045,
-            10 => 0.009,
-            20 => 0.018,
-            50 => 0.045,
-            100 => 0.09,
+            '0.1000'=>  0.0001,
+            '1.0000' => 0.0009,
+            '5.0000' => 0.0045,
+            '10.0000' => 0.009,
+            '20.0000' => 0.018,
+            '50.0000' => 0.045,
+            '100.0000' => 0.09,
         ];
 //        $sql = 'SELECT addr,income_userid,sum(eos) AS tisum FROM transaction_infos WHERE status = 5 GROUP BY income_userid';
 //        $tixianArr = DB::select($sql);
@@ -319,7 +270,7 @@ class InfoController extends Controller
 //        dd($arr);
             $sum = 0;
             foreach ($arr as $item => $value) {
-                $sum += $jiangjingArr[intval($value->issus_sum)] * $value->count;
+                $sum += $jiangjingArr[$value->issus_sum] * $value->count;
             }
 //
             $tixian_sum = TransactionInfo::where('type', 5)->where('income_userid', $valuee->id)->sum('eos');

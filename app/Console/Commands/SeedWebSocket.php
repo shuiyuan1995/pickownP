@@ -58,7 +58,7 @@ class SeedWebSocket extends Command
             ['Origin' => 'http://localhost'])
             ->then(function (WebSocket $conn) {
                 $conn->on('message', function (MessageInterface $msg) use ($conn) {
-                    $msg = <<<EOP
+                    $msgaa = <<<EOP
 {
   "errno": 0,
   "msg_type": "data",
@@ -79,7 +79,7 @@ class SeedWebSocket extends Command
         ],
         "data": {
           "from": "pickowngames",
-          "memo": "{\"packet_id\":\"52\",\"user\":\"zhouwanyuwan\",\"own_mined\":\"3000\",\"bomb\":\"0\",\"luck\":\"0\",\"prize_amount\":\"0\",\"is_last\":\"1\",\"new_prize_pool\":\"1187\",\"packet_amount\":\"104\",\"txid\":\"76000000\",\"refund\":\"1104\"}",
+          "memo": "{\"packet_id\":\"5\",\"user\":\"brucewc12345\",\"own_mined\":\"3000\",\"bomb\":\"0\",\"luck\":\"0\",\"prize_amount\":\"0\",\"is_last\":\"0\",\"new_prize_pool\":\"1187\",\"packet_amount\":\"104\",\"txid\":\"800\",\"refund\":\"1104\"}",
           "quantity": "0.1104 EOS",
           "to": "zhouwanyuwan"
         },
@@ -91,7 +91,7 @@ class SeedWebSocket extends Command
 }
 
 EOP;
-                    $msgaa = <<<EOP
+                    $msgcc = <<<EOP
 {"errno":0,"msg_type":"data","errmsg":"","data":{"trx_id":"576ce05a26eadbb57419130a112db9f0094949ffa1c12c89be03892039875025","block_num":32727664,"global_action_seq":3016979934,"trx_timestamp":"2018-12-18T10:59:05.500","actions":[{"account":"eosio.token","authorization":[{"actor":"dengxingchun","permission":"active"}],"data":{"from":"dengxingchun","memo":"select:000079:","quantity":"0.1000 EOS","to":"pickowngames"},"hex_data":"3075436cbacea64a8095346c720a91abe80300000000000004454f53000000000e73656c6563743a3030303037393a","name":"transfer"}]}}
 EOP;
                     $msgbb = <<<EOP
@@ -291,14 +291,15 @@ EOP;
                 $name = User::find($outPacket->userid)->name;
                 $issus_sum_arr = [
                     0 => -1,
-                    1 => 0,
-                    5 => 1,
-                    10 => 2,
-                    20 => 3,
-                    50 => 4,
-                    100 => 5
+                    '0.1000'=>0,
+                    '1.0000' => 1,
+                    '5.0000' => 2,
+                    '10.0000' => 3,
+                    '20.0000' => 4,
+                    '50.0000' => 5,
+                    '100.0000' => 6
                 ];
-                $index = $issus_sum_arr[intval($outPacket->issus_sum)];
+                $index = $issus_sum_arr[$outPacket->issus_sum];
                 $outPacket_data['id'] = $outPacket->id;
                 $outPacket_data['userid'] = $outPacket->id;
                 $outPacket_data['issus_sum'] = $outPacket->issus_sum;

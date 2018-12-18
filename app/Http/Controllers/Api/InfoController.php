@@ -143,7 +143,7 @@ class InfoController extends Controller
         $data = [];
         // 已抢完的最新红包
         $yiqianwanhonbao  = OutPacket::query()->where('status' ,2)
-            ->groupBy('issus_sum')->orderBy('updated_at','desc')->get();
+            ->groupBy('issus_sum')->orderBy('updated_at','desc')->limit(1)->get();
         // 已抢完的最新红包对应的抢的列表
         $yiqianwanhonbaolist = [];
         foreach ($yiqianwanhonbao as $item => $value){

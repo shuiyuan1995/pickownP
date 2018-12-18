@@ -150,6 +150,7 @@ class InfoController extends Controller
             $data['out']['index'] = $indexArr[$value['issus_sum']];
             $data['out']['name'] = $value['name'];
             $data['out']['time'] = strtotime($value['updated_at']);
+            $data['out']['tail_number'] = $value['tail_number'];
             $data['out']['in_packet_data'] = InPacketResource::collection(
                 InPacket::query()->where('outid',$value['id'])->get()
             );

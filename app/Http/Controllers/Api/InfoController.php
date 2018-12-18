@@ -143,40 +143,40 @@ class InfoController extends Controller
         $data = [];
         // 已抢完的最新红包
         $yiqianwanhonbao  = OutPacket::query()->where('status' ,2)
-            ->groupBy('issus_sum')->orderBy('updated_at','desc')->limit(1)->get();
+            ->groupBy('issus_sum')->orderBy('updated_at','desc')->get();
         // 已抢完的最新红包对应的抢的列表
         $yiqianwanhonbaolist = [];
         foreach ($yiqianwanhonbao as $item => $value){
-            $data['out']['index'] = $indexArr[$value['issus_sum']];
-            $data['out']['name'] = User::find($value['userid'])->name;
-            $data['out']['time'] = strtotime($value['updated_at']);
-            $data['out']['tail_number'] = $value['tail_number'];
-            $data['out']['in_packet_data'] = InPacketResource::collection(
+            $data[$value['id']]['index'] = $indexArr[$value['issus_sum']];
+            $data[$value['id']]['name'] = User::find($value['userid'])->name;
+            $data[$value['id']]['time'] = strtotime($value['updated_at']);
+            $data[$value['id']]['tail_number'] = $value['tail_number'];
+            $data[$value['id']]['in_packet_data'] = InPacketResource::collection(
                 InPacket::query()->where('outid',$value['id'])->get()
             );
-            $data['out']['type'] = 2;
-            $data['out']['isgo'] = 1;
+            $data[$value['id']]['type'] = 2;
+            $data[$value['id']]['isgo'] = 1;
         }
         foreach ($list as $item => $value) {
-            $data[$item]['name'] = $value['user']['name'];
-            $data[$item]['packetId'] = $value['eosid'];
-            $data[$item]['txId'] = $value['blocknumber'];
-            $data[$item]['type'] = 1;
-            $data[$item]['num'] = $value['tail_number'];
-            $data[$item]['eos'] = $value['issus_sum'];
-            $data[$item]['time'] = strtotime($value['created_at']);
-            $data[$item]['none'] = false;
-            $data[$item]['index'] = $indexArr[$value['issus_sum']];
+            $data[$value['id']]['name'] = $value['user']['name'];
+            $data[$value['id']]['packetId'] = $value['eosid'];
+            $data[$value['id']]['txId'] = $value['blocknumber'];
+            $data[$value['id']]['type'] = 1;
+            $data[$value['id']]['num'] = $value['tail_number'];
+            $data[$value['id']]['eos'] = $value['issus_sum'];
+            $data[$value['id']]['time'] = strtotime($value['created_at']);
+            $data[$value['id']]['none'] = false;
+            $data[$value['id']]['index'] = $indexArr[$value['issus_sum']];
             if ($request->filled('userid')) {
                 $userid = $request->input('userid');
                 $in = InPacket::where('outid', $value['id'])->where('userid', $userid)->count();
                 if ($in > 0) {
-                    $data[$item]['isgo'] = 1;
+                    $data[$value['id']]['isgo'] = 1;
                 } else {
-                    $data[$item]['isgo'] = 0;
+                    $data[$value['id']]['isgo'] = 0;
                 }
             } else {
-                $data[$item]['isgo'] = 0;
+                $data[$value['id']]['isgo'] = 0;
             }
             $data = array_values($data);
             array_reverse($data);

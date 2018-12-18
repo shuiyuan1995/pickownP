@@ -125,6 +125,7 @@ class ApiController extends Controller
      * userid 用户id
      * eosid 区块链id
      * blocknumber 区块链号
+     * txid 抢红包的唯一表
      * income_sum 抢中金额
      * is_chailei 是否踩雷
      * is_reward 是否中奖
@@ -182,6 +183,7 @@ class ApiController extends Controller
             'addr' => $request->input('addr'),
             'own' => $request->input('own'),
             'prize_pool' => $request->input('newPrizePool'),
+            'txid'=>$request->input('txid'),
         ];
         $entity = InPacket::create($InpacketData);
 

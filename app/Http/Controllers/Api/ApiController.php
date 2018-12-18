@@ -38,6 +38,7 @@ class ApiController extends Controller
         if (!empty($xinyujiangchientity)) {
             $xinyujiangchi = $xinyujiangchientity->prize_pool;
         }
+
         $data = [
             'out_packet_count' => (string)$outPacketCount,
             'transaction_info_count' => (string)$transactionInfoCount,

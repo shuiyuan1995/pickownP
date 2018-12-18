@@ -1,0 +1,345 @@
+<?php
+
+namespace App\Console\Commands;
+
+use App\Events\InPacketEvent;
+use App\Models\InPacket;
+use App\Models\OutPacket;
+use App\Models\TransactionInfo;
+use App\Models\User;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Ratchet\Client\WebSocket;
+use Ratchet\RFC6455\Messaging\MessageInterface;
+use React\EventLoop\Factory;
+use React\Socket\Connector;
+
+class SeedWebSocket extends Command
+{
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'seed:websocket';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = '监听网站';
+
+    /**
+     * Create a new command instance.
+     *
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function handle()
+    {
+        $loop = Factory::create();
+        $reactConnector = new Connector($loop, [
+            'dns' => '8.8.8.8',
+            'timeout' => 10
+        ]);
+        $connector = new \Ratchet\Client\Connector($loop, $reactConnector);
+
+        $connector('wss://ws.eospark.com/v1/ws?apikey=43222c2a30238d8ed72d60c033a7a7e0', [],
+            ['Origin' => 'http://localhost'])
+            ->then(function (WebSocket $conn) {
+                $conn->on('message', function (MessageInterface $msg) use ($conn) {
+                    $msg = <<<EOP
+{
+  "errno": 0,
+  "msg_type": "data",
+  "errmsg": "",
+  "data": {
+    "trx_id": "f2ed6414c1ddd2c8d96b6d500ca1890d3eee436830607233e75a72600c895737",
+    "block_num": 32691027,
+    "global_action_seq": 3010998871,
+    "trx_timestamp": "2018-12-18T05:52:48.000",
+    "actions": [
+      {
+        "account": "eosio.token",
+        "authorization": [
+          {
+            "actor": "pickowngames",
+            "permission": "active"
+          }
+        ],
+        "data": {
+          "from": "pickowngames",
+          "memo": "{\"packet_id\":\"52\",\"user\":\"zhouwanyuwan\",\"own_mined\":\"3000\",\"bomb\":\"0\",\"luck\":\"0\",\"prize_amount\":\"0\",\"is_last\":\"1\",\"new_prize_pool\":\"1187\",\"packet_amount\":\"104\",\"txid\":\"76000000\",\"refund\":\"1104\"}",
+          "quantity": "0.1104 EOS",
+          "to": "zhouwanyuwan"
+        },
+        "hex_data": "8095346c720a91ab300dd77e1aae69fb500400000000000004454f5300000000c2017b227061636b65745f6964223a223736222c2275736572223a227a686f7577616e797577616e222c226f776e5f6d696e6564223a2233303030222c22626f6d62223a2230222c226c75636b223a2230222c227072697a655f616d6f756e74223a2230222c2269735f6c617374223a2230222c226e65775f7072697a655f706f6f6c223a2231313837222c227061636b65745f616d6f756e74223a22313034222c2274786964223a223736303030303030222c22726566756e64223a2231313034227d",
+        "name": "transfer"
+      }
+    ]
+  }
+}
+
+EOP;
+                    $msgaa = <<<EOP
+{"errno":0,"msg_type":"data","errmsg":"","data":{"trx_id":"576ce05a26eadbb57419130a112db9f0094949ffa1c12c89be03892039875025","block_num":32727664,"global_action_seq":3016979934,"trx_timestamp":"2018-12-18T10:59:05.500","actions":[{"account":"eosio.token","authorization":[{"actor":"dengxingchun","permission":"active"}],"data":{"from":"dengxingchun","memo":"select:000079:","quantity":"0.1000 EOS","to":"pickowngames"},"hex_data":"3075436cbacea64a8095346c720a91abe80300000000000004454f53000000000e73656c6563743a3030303037393a","name":"transfer"}]}}
+EOP;
+                    $msgbb = <<<EOP
+{"errno":0,"msg_type":"data","errmsg":"","data":{"trx_id":"576ce05a26eadbb57419130a112db9f0094949ffa1c12c89be03892039875025","block_num":32727664,"global_action_seq":3016979940,"trx_timestamp":"2018-12-18T10:59:05.500","actions":[{"account":"pickowntoken","authorization":[{"actor":"pickowngames","permission":"active"}],"data":{"from":"pickowngames","memo":"Pickown mining reward.","quantity":"0.3000 OWN","to":"dengxingchun"},"hex_data":"8095346c720a91ab3075436cbacea64ab80b000000000000044f574e00000000165069636b6f776e206d696e696e67207265776172642e","name":"transfer"}]}}
+EOP;
+
+
+                    $data = json_decode($msg, true);
+                    if ($data['msg_type'] == 'subscribe_account') {
+                        echo "账户订阅成功\n";
+                    } elseif ($data['msg_type'] == 'heartbeat') {
+                        echo "心跳数据，时间：{$data['data']['heart_beat']}\n";
+                        //Log::error($msg);
+                    } elseif ($data['msg_type'] == 'data') {
+                        echo "抢红包数据\n";
+//                        Log::info($msg);
+                        $this->manipulationData($data);
+                    }
+                });
+
+                $conn->on('close', function ($code = null, $reason = null) {
+                    echo "Connection closed ({$code} - {$reason})\n";
+                });
+
+                $conn->send('{"msg_type": "subscribe_account","name": "pickowngames"}');
+            }, function (\Exception $e) use ($loop) {
+                echo "Could not connect: {$e->getMessage()}\n";
+                $loop->stop();
+            });
+        $loop->run();
+        return;
+    }
+
+    // 数据处理
+
+    /**
+     * @param $data
+     * @return string
+     */
+    public function manipulationData($data)
+    {
+        /**
+         * dd_data数据样例
+         * array:4 [
+         * "from" => "pickowngames"
+         * "memo" => "{"packet_id":"76","user":"zhouwanyuwan","own_mined":"3000","bomb":"0","luck":"0","prize_amount":"0","is_last":"0","new_
+         * prize_pool":"1187","packet_amount":"104","txid":"76000000","refund":"1104"}"
+         * "quantity" => "0.1104 EOS"
+         * "to" => "zhouwanyuwan"
+         * ]
+         */
+        $dd_data = $data['data']['actions'][0]['data'];
+        // 发送账号
+        $from = $dd_data['from'];
+        // 接收账号 抢红包账号
+        $to = $dd_data['to'];
+        // 金额 无用
+        $quantity = $dd_data['quantity'];
+        // memo信息
+        $memo = $dd_data['memo'];
+
+        $memo_arr = json_decode($memo, true);
+        if (json_last_error() == JSON_ERROR_SYNTAX){
+            echo '编码错误'."\n";
+            return '';
+        }
+        // 发红包id
+        $packet_id = $memo_arr['packet_id'];
+        $outpacketModel = OutPacket::query()->where('eosid', $packet_id)->first();
+        $outid = $outpacketModel->id;
+        // 用户名
+        $user = $memo_arr['user'];
+        $userModel = User::query()->where('name', $user)->first();
+        $userid = $userModel->id;
+        // 挖矿
+        $own_mined = $memo_arr['own_mined'];
+        // 是否踩雷
+        $bomb = $memo_arr['bomb'];
+        // 奖金种类
+        $luck = $memo_arr['luck'];
+        // 奖金额
+        $prize_amount = $memo_arr['prize_amount'];
+        // 是否最后 0 - 不是，1 - 是
+        $is_last = $memo_arr['is_last'];
+        // 幸运奖池
+        $new_prize_pool = $memo_arr['new_prize_pool'];
+        // 红包金额
+        $packet_amount = $memo_arr['packet_amount'];
+        // 抢红包唯一标示
+        $txid = $memo_arr['txid'];
+        // 退款 - 无用
+        $refund = $memo_arr['refund'];
+        try {
+            \DB::beginTransaction();
+            // 检查此条抢红包记录是否存在
+            $jiancha_in_packet = InPacket::query()->where('txid', $txid)->first();
+            $entity = null;
+            if (!empty($jiancha_in_packet)) {
+                $jiancha_in_packet->outid = $outid;
+                $jiancha_in_packet->userid = $userid;
+                $jiancha_in_packet->eosid = $packet_id;
+                $jiancha_in_packet->income_sum = $packet_amount / 10000;
+                $jiancha_in_packet->is_chailei = !empty($bomb) ? 1 : 2;
+                $jiancha_in_packet->is_reward = $luck > 0 ? 2 : 1;
+                $jiancha_in_packet->reward_type = $luck;
+                $jiancha_in_packet->reward_sum = $prize_amount / 10000;
+                $jiancha_in_packet->own = $own_mined / 10000;
+                $jiancha_in_packet->prize_pool = $new_prize_pool / 10000;
+                $jiancha_in_packet->save();
+                $entity = $jiancha_in_packet;
+                DB::commit();
+                echo '抢红包记录已存在，修改中'."\n";
+            } else {
+                $inPacket = [
+                    'outid' => $outid,
+                    'userid' => $userid,
+                    'eosid' => $packet_id,
+                    'income_sum' => $packet_amount / 10000,
+                    'is_chailei' => !empty($bomb) ? 1 : 2,
+                    'is_reward' => $luck > 0 ? 2 : 1,
+                    'reward_type' => $luck,
+                    'reward_sum' => $prize_amount / 10000,
+                    'own' => $own_mined / 10000,
+                    'prize_pool' => $new_prize_pool / 10000,
+                    'txid' => $txid
+                ];
+                $entity = InPacket::create($inPacket);
+
+                OutPacket::find($outid)->userid;
+                // 抢红包信息
+                $data = [
+                    'issus_userid' => 0,
+                    'income_userid' => $userid,
+                    'type' => 1,
+                    'status' => 1,
+                    'eos' => $entity->income_sum,
+                    'addr' => '',
+                ];
+                TransactionInfo::create($data);
+
+                // 踩雷信息
+                if ($bomb > 0) {
+                    $data['issus_userid'] = 0;
+                    $data['income_userid'] = $userid;
+                    $data['type'] = 3;
+                    $data['eos'] = OutPacket::find($outid)->issus_sum;
+                    TransactionInfo::create($data);
+                }
+
+                // 中奖信息
+                if ($luck !== 0) {
+                    $data['issus_userid'] = 0;
+                    $data['income_userid'] = $userid;
+                    $data['type'] = 4;
+                    $data['eos'] = $prize_amount;
+                    TransactionInfo::create($data);
+                }
+                DB::commit();
+                echo '抢红包记录创建'."\n";
+            }
+            if ($is_last > 0) {
+                // 红包被抢完后生成发红包对用的抢红包的列表
+                $out_in_packet = InPacket::query()->where('outid', $outid)->get();
+                $out_in_packet_sum = InPacket::query()->where('outid', $outid)->sum('income_sum');
+                $outPacket_entity = OutPacket::find($outid);
+                $outPacket_entity->status = 2;
+                $outPacket_entity->surplus_sum = $outPacket_entity->issus_sum - $out_in_packet_sum;
+                $outPacket_entity->save();
+                $outPacket = $outPacket_entity;
+                $out_in_packet_data = array();
+                $reward_data__ = array();
+                $chailei_data__ = array();
+                foreach ($out_in_packet as $item => $value) {
+                    $out_in_packet_data[$item]['name'] = User::find($value['userid'])->name;
+                    $out_in_packet_data[$item]['income_sum'] = $value['income_sum'];
+                    $out_in_packet_data[$item]['own'] = $value['own'];
+                    $out_in_packet_data[$item]['is_chailei'] = $value['is_chailei'];
+                    $out_in_packet_data[$item]['is_reward'] = $value['is_reward'];
+                    $out_in_packet_data[$item]['reward_type'] = $value['reward_type'];
+                    $out_in_packet_data[$item]['txid'] = $value['txid'];
+                    $out_in_packet_data[$item]['reward_sum'] = $value['reward_sum'];
+                    if ($value['is_chailei'] == 1) {
+                        $chailei_data__[$item]['name'] = User::find($value['userid'])->name;
+                        $chailei_data__[$item]['chailai_sum'] = $outPacket->issus_sum;
+                    }
+                    if ($value['is_reward'] == 2) {
+                        $reward_data__[$item]['name'] = User::find($value['userid'])->name;
+                        $reward_data__[$item]['reward_type'] = $value['reward_type'];
+                        $reward_data__[$item]['reward_sum'] = $value['reward_sum'];
+                    }
+
+                }
+
+                $reward_data = array_values($reward_data__);
+                $chailei_data = array_values($chailei_data__);
+
+                $name = User::find($outPacket->userid)->name;
+                $issus_sum_arr = [
+                    0 => -1,
+                    1 => 0,
+                    5 => 1,
+                    10 => 2,
+                    20 => 3,
+                    50 => 4,
+                    100 => 5
+                ];
+                $index = $issus_sum_arr[intval($outPacket->issus_sum)];
+                $outPacket_data['id'] = $outPacket->id;
+                $outPacket_data['userid'] = $outPacket->id;
+                $outPacket_data['issus_sum'] = $outPacket->issus_sum;
+                $outPacket_data['tail_number'] = $outPacket->tail_number;
+                $outPacket_data['eosid'] = $outPacket->eosid;
+                $outPacket_data['blocknumber'] = $outPacket->blocknumber;
+                $outPacket_data['status'] = $outPacket->status;
+                $outPacket_data['created_at'] = strtotime($outPacket->created_at);
+                $outPacket_data['updated_at'] = strtotime($outPacket->updated_at);
+
+                event(new InPacketEvent(
+                    [],
+                    $outPacket_data,
+                    [],
+                    $out_in_packet_data,
+                    $name,
+                    2,
+                    $index,
+                    $data,
+                    $entity
+                ));
+                $out = OutPacket::find($outid);
+                $out->is_guangbo = 1;
+                $out->save();
+            } else {
+                event(new InPacketEvent(
+                    [],
+                    [],
+                    [],
+                    [],
+                    [],
+                    3,
+                    [],
+                    $data,
+                    $entity
+                ));
+            }
+
+        } catch (\Exception $exception) {
+            DB::rollBack();
+        }
+        return '';
+    }
+}

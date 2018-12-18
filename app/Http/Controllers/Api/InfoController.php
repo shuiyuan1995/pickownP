@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Redis;
 
 class InfoController extends Controller
 {
+
     /**
      * 用户登录接口
      * @param Request $request
@@ -38,11 +39,12 @@ class InfoController extends Controller
         $token = md5(microtime());
 
         $publickey = $request->input('publickey', null);
-        $list = User::where('publickey', $publickey)->first();
+        $list = User::query()->where('name',$request->input('name'))
+            ->first();
         if (empty($list)) {
             $list = User::create($request->all());
         }
-        Redis::setex('userid:' . $token, 24 * 60 * 60 * 30,
+        Redis::setex('userid:' . $token . ':' . $list->id, 24 * 60 * 60 * 30,
             'userid:' . $list->id . 'token');
         $Logindata = [
             'userid' => $list->id,
@@ -51,7 +53,7 @@ class InfoController extends Controller
         ];
         LoginRecord::create($Logindata);
 
-        return $this->success(['data' => ['token' => $token, 'userid' => $list->id, 'invite' => $list->addr]], '访问成功！');
+        return $this->success(['token' => $token . ':' . $list->id], '访问成功！');
     }
 
     /**
@@ -141,6 +143,7 @@ class InfoController extends Controller
             '100.0000' => 6
         ];
         $data = [];
+<<<<<<< HEAD
         // 已抢完的最新红包
         $yiqianwanhonbao  = OutPacket::query()->where('status' ,2)
             ->groupBy('issus_sum')->orderBy('updated_at','desc')->get();
@@ -196,9 +199,49 @@ class InfoController extends Controller
 //            } elseif ($value['issus_sum'] == '100.0000') {
 //                $data[5][] = $value;
 //            }
+=======
+
+        foreach ($list as $item => $value) {
+            $data[$indexArr[$value['issus_sum']]][$item]['name'] = $value['user']['name'];
+            $data[$indexArr[$value['issus_sum']]][$item]['packetId'] = $value['eosid'];
+            $data[$indexArr[$value['issus_sum']]][$item]['txId'] = $value['blocknumber'];
+            $data[$indexArr[$value['issus_sum']]][$item]['type'] = 1;
+            $data[$indexArr[$value['issus_sum']]][$item]['num'] = $value['tail_number'];
+            $data[$indexArr[$value['issus_sum']]][$item]['eos'] = $value['issus_sum'];
+            $data[$indexArr[$value['issus_sum']]][$item]['time'] = strtotime($value['created_at']);
+            $data[$indexArr[$value['issus_sum']]][$item]['none'] = false;
+            $data[$indexArr[$value['issus_sum']]][$item]['index'] = $indexArr[$value['issus_sum']];
+
+            if ($request->header('token')) {
+                $userid = substr($request->header('token'), strripos($request->header('token'), ':') + 1);
+                $in = InPacket::where('outid', $value['id'])->where('userid', $userid)->count();
+                if ($in > 0) {
+                    $data[$indexArr[$value['issus_sum']]][$item]['isgo'] = 1;
+                } else {
+                    $data[$indexArr[$value['issus_sum']]][$item]['isgo'] = 0;
+                }
+            } else {
+                $data[$indexArr[$value['issus_sum']]][$item]['isgo'] = 0;
+            }
+>>>>>>> dailipeng-dev-api
         }
-        return $this->json($data);
-    }
+        $data_d = [];
+        foreach ($indexArr as $value){
+            $data_d[$value] = [];
+        }
+        foreach ($data as $i => $v){
+            foreach ($v as $value){
+                array_push($data_d[$i],$value);
+            }
+        }
+        foreach ($data_d as $ii => $vv){
+            if (empty($vv)){
+                unset($data_d[$ii]);
+            }
+        }
+
+        return $this->json($data_d);
+}
 
 
     public static function Curl($url, $data = [], $status = 'GTE', $second = 30)

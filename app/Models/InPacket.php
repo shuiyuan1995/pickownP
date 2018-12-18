@@ -21,7 +21,8 @@ class InPacket extends Model
         'created_at',
         'updated_at',
         'own',
-        'prize_pool'
+        'prize_pool',
+        'txid'
     ];
 
     public $statusArr = [1 => '正常', 2 => '异常'];

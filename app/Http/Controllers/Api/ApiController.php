@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Mockery\Exception;
 
 class ApiController extends Controller
 {
@@ -67,8 +68,8 @@ class ApiController extends Controller
      */
     public function issus_packet(Request $request)
     {
-        if (!$request->filled('blocknumber')){
-            return $this->json(['code'=>2004],2004,'blocknumber不存在');
+        if (!$request->filled('blocknumber')) {
+            return $this->json(['code' => 2004, 'message' => 'blocknumber不存在'], 2004, 'blocknumber不存在');
         }
         $issus_sum_arr = [
             0 => -1,
@@ -80,9 +81,21 @@ class ApiController extends Controller
             50 => 5,
             100 => 6
         ];
-        $entity = OutPacket::create($request->all());
+        $userid = substr($request->header('token'), strripos($request->header('token'), ':') + 1);
+        $entity_data = [
+            'userid' => $userid,
+            'issus_sum' => $request->input('issus_sum', 0),
+            'tail_number' => $request->input('tail_number'),
+            'count' => $request->input('count'),
+            'eosid' => $request->input('eosid'),
+            'blocknumber' => $request->input('eosid'),
+            'addr' => $request->input('addr'),
+            'status' => 1,
+            'surplus_sum' => $request->input('issus_sum'),
+            'is_guangbo' => 0
+        ];
+        $entity = OutPacket::create($entity_data);
 
-        $userid = $request->input('userid');
         $issus_sum = $request->input('issus_sum', 0);
         $addr = $request->input('addr', 'pc');
         $transactionInfo = new TransactionInfo();
@@ -109,11 +122,8 @@ class ApiController extends Controller
         $data = $this->getinfo();
 
         event(new OutPacketEvent($entityaa, $issus_sum_arr[$issus_sum], $username, $data));
-        Log::info('');
         return $this->success([
             'code' => 200,
-            'token' => $request->input('token'),
-            'userid' => $request->input('userid')
         ], '发送成功');
     }
 
@@ -122,6 +132,7 @@ class ApiController extends Controller
      * userid 用户id
      * eosid 区块链id
      * blocknumber 区块链号
+     * txid 抢红包的唯一标志
      * income_sum 抢中金额
      * is_chailei 是否踩雷
      * is_reward 是否中奖
@@ -137,12 +148,10 @@ class ApiController extends Controller
     public function income_packet(Request $request)
     {
         $outeosid = $request->input('outid');
-//        if (!$request->filled('blocknumber')){
-//            return $this->json(['code'=>2004,'msg'=>'未收到blocknumber'],2004,'未收到blocknumber');
-//        }
-        $outentity = OutPacket::where('blocknumber', $outeosid)->first();
-        if (empty($outentity)){
-            return $this->json(['code'=>2005,'msg'=>'blocknumber对应的红包不存在'],2005,'blocknumber对应的红包不存在');
+
+        $outentity = OutPacket::query()->where('blocknumber', $outeosid)->first();
+        if (empty($outentity)) {
+            return $this->json(['code' => 2005, 'message' => 'blocknumber对应的红包不存在'], 2005, 'blocknumber对应的红包不存在');
         }
         $outid = $outentity->id;
 
@@ -159,7 +168,21 @@ class ApiController extends Controller
 //            ];
 //            TransactionInfo::create($qudaojianlidata);
 //        }
-        $userid = $request->input('userid');
+        $userid = substr($request->header('token'), strripos($request->header('token'), ':') + 1);
+
+        $txid = $request->input('txid');
+        try{
+            DB::beginTransaction();
+            // 查询数据是否在表中存在
+            $cunzai_inpacket = InPacket::query()->where('txid', $txid)->lockForUpdate()->first();
+            if (!empty($cunzai_inpacket)) {
+
+                DB::commit();
+                return $this->success([],'抢红包记录已存在');
+            }
+
+
+
         $is_chailei = $request->input('is_chailei');
         $is_reward = $request->input('is_reward');
         $reward_sum = $request->input('reward_sum');
@@ -179,6 +202,7 @@ class ApiController extends Controller
             'addr' => $request->input('addr'),
             'own' => $request->input('own'),
             'prize_pool' => $request->input('newPrizePool'),
+            'txid' => $request->input('txid'),
         ];
         $entity = InPacket::create($InpacketData);
 
@@ -215,8 +239,8 @@ class ApiController extends Controller
         $data = $this->getinfo();
         if ($isnone == 1) {
             // 红包被抢完后生成发红包对用的抢红包的列表
-            $out_in_packet = InPacket::where('outid', $outid)->get();
-            $out_in_packet_sum = InPacket::where('outid', $outid)->sum('income_sum');
+            $out_in_packet = InPacket::query()->where('outid', $outid)->get();
+            $out_in_packet_sum = InPacket::query()->where('outid', $outid)->sum('income_sum');
             $outPacket_entity = OutPacket::find($outid);
             $outPacket_entity->status = 2;
             $outPacket_entity->surplus_sum = $outPacket_entity->issus_sum - $out_in_packet_sum;
@@ -232,6 +256,7 @@ class ApiController extends Controller
                 $out_in_packet_data[$item]['is_chailei'] = $value['is_chailei'];
                 $out_in_packet_data[$item]['is_reward'] = $value['is_reward'];
                 $out_in_packet_data[$item]['reward_type'] = $value['reward_type'];
+                $out_in_packet_data[$item]['txid'] = $value['txid'];
                 $out_in_packet_data[$item]['reward_sum'] = $value['reward_sum'];
                 if ($value['is_chailei'] == 1) {
                     $chailei_data__[$item]['name'] = User::find($value['userid'])->name;
@@ -278,8 +303,12 @@ class ApiController extends Controller
                 $name,
                 2,
                 $index,
-                $data
+                $data,
+                    $entity
             ));
+            $out = OutPacket::find($outid);
+            $out->is_guangbo = 1;
+            $out->save();
         } else {
             event(new InPacketEvent(
                 [],
@@ -289,15 +318,18 @@ class ApiController extends Controller
                 [],
                 3,
                 [],
-                $data
+                $data,
+                $entity
             ));
         }
-
+        DB::commit();
         return $this->success([
-            'code' => 200,
-            'token' => $request->input('token'),
-            'userid' => $request->input('userid')
+            'code' => 200
         ], '发送成功');
+        }catch (\Exception $exception){
+            DB::rollBack();
+            return $this->json([],2013,'查询失败');
+        }
     }
 
     /**
@@ -310,9 +342,9 @@ class ApiController extends Controller
      */
     public function my_issus_packet(Request $request)
     {
-        $userid = $request->input('userid');
-        $outpacketsum = OutPacket::where('userid', $userid)->sum('issus_sum');
-        $outpacket = OutPacket::where('userid', $userid)->count();
+        $userid = substr($request->header('token'), strripos($request->header('token'), ':') + 1);
+        $outpacketsum = OutPacket::query()->where('userid', $userid)->sum('issus_sum');
+        $outpacket = OutPacket::query()->where('userid', $userid)->count();
         $sql = 'SELECT count(DISTINCT out_packets.userid) AS count FROM out_packets,in_packets WHERE out_packets.id = in_packets.outid AND status = 2 AND out_packets.userid = :userid';
         $chailei = DB::select($sql, ['userid' => $userid]);
         $chaileicount = 0;
@@ -320,7 +352,7 @@ class ApiController extends Controller
             $chaileicount = $value->count;
         }
 //        $chaileicount = TransactionInfo::where('income_userid', $userid)->where('type', 3)->count();
-        $query = OutPacket::where('userid', $userid);
+        $query = OutPacket::query()->where('userid', $userid);
         if ($request->filled('time')) {
             $begin_time = date('Y-m-d 0:0:0', $request->input('time'));
             $end_time = date('Y-m-d 23:59:59', $request->input('time'));
@@ -334,9 +366,9 @@ class ApiController extends Controller
             'chaileicount' => $chaileicount,
             'outpacketsum' => empty($outpacketsum) ? 0 : $outpacketsum,
             'name' => User::find($userid)->name,
-            'last_time' => strtotime(OutPacket::where('userid', $userid)->min('created_at')),
-            'max_time' => strtotime(OutPacket::where('userid', $userid)->max('created_at')),
-            'message' => ''
+            'last_time' => strtotime(OutPacket::query()->where('userid', $userid)->min('updated_at')),
+            'max_time' => strtotime(OutPacket::query()->where('userid', $userid)->max('updated_at')),
+            'message' => '发红包列表'
         ]);
     }
 
@@ -350,7 +382,7 @@ class ApiController extends Controller
      */
     public function my_income_packet(Request $request)
     {
-        $userid = $request->input('userid');
+        $userid = substr($request->header('token'), strripos($request->header('token'), ':') + 1);
 
 
         $pairs = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
@@ -397,23 +429,14 @@ class ApiController extends Controller
             'bomb' => $bomb,
             'chailei' => $chailei,
             'name' => User::find($userid)->name,
-            'packetcount' => InPacket::where('userid', $userid)->count(),
+            'packetcount' => InPacket::query()->where('userid', $userid)->count(),
             'packetsum' => (string)(InPacket::query()->with(['out'])->whereHas('out', function ($q) {
 //                $q->where('status', 2);
                 })->where('userid', $userid)->sum('income_sum') + $reward_sum_count),
-            'last_time' => strtotime(InPacket::where('userid', $userid)->min('created_at')),
-            'max_time' => strtotime(InPacket::where('userid', $userid)->max('created_at')),
-            'message' => ''
+            'last_time' => strtotime(InPacket::query()->where('userid', $userid)->min('created_at')),
+            'max_time' => strtotime(InPacket::query()->where('userid', $userid)->max('created_at')),
+            'message' => '抢红包列表'
         ]);
-    }
-
-    /**
-     * 抢了红包的情况
-     * @param Request $request
-     */
-    public function qian_red_packet(Request $request)
-    {
-
     }
 
     /**
@@ -428,12 +451,12 @@ class ApiController extends Controller
     public function red_packet(Request $request)
     {
         $blocknumber = $request->input('outid');
-        $outpacketentity = OutPacket::where('blocknumber', $blocknumber)->first();
+        $outpacketentity = OutPacket::query()->where('blocknumber', $blocknumber)->first();
         if (empty($outpacketentity)) {
             return response()->json([
                 'data' => [],
-                'code' => 2001,
-                'message' => '参数错误'
+                'code' => 2005,
+                'message' => 'blocknumber对应的红包不存在'
             ]);
         }
 
@@ -445,25 +468,25 @@ class ApiController extends Controller
                 'outpacketname' => User::find($outuserid)->name,
                 'outpacketsum' => $outpacketentity->issus_sum,
                 'outpackettailnumber' => $outpacketentity->tail_number,
-                'code' => 2002,
+                'code' => 2010,
                 'message' => '红包未领完'
             ]);
         } else {
             return InPacketResource::collection(
-                InPacket::where('outid', $outid)->orderBy('created_at', 'desc')->get()
+                InPacket::query()->where('outid', $outid)->orderBy('created_at', 'desc')->get()
             )->additional([
                 'outpacketname' => User::find($outuserid)->name,
                 'outpacketsum' => $outpacketentity->issus_sum,
                 'outpackettailnumber' => $outpacketentity->tail_number,
                 'code' => 200,
-                'message' => ''
+                'message' => '发送成功'
             ]);
         }
     }
 
     public function postRewardMoney(Request $request)
     {
-        $userid = $request->input('userid');
+        $userid = substr($request->header('token'), strripos($request->header('token'), ':') + 1);
         $money = $request->input('money');
         $data = [
             'issus_userid' => 0,
@@ -487,7 +510,7 @@ class ApiController extends Controller
             50 => 0.045,
             100 => 0.09,
         ];
-        $userid = $request->input('userid');
+        $userid = substr($request->header('token'), strripos($request->header('token'), ':') + 1);
         //$getRewardCount = DB::select('SELECT addr,income_userid,sum(eos) AS tixian_count FROM transaction_infos WHERE type = 5 AND income_userid = :income_userid',
         //    ['income_userid' => $userid]);
 //        dd($getRewardCount);
@@ -505,15 +528,15 @@ class ApiController extends Controller
 //            }
 //        }
         //$sum = TransactionInfo::where('type',6)->where('income_userid',$userid)->sum('eos');
-        $tixian_sum = TransactionInfo::where('type', 5)->where('income_userid', $userid)->sum('eos');
+        $tixian_sum = TransactionInfo::query()->where('type', 5)->where('income_userid', $userid)->sum('eos');
         $shengyu_sum = $sum - $tixian_sum;
-        $out_pakcet_count = OutPacket::where('addr', User::find($userid)->name)->get();
+        $out_pakcet_count = OutPacket::query()->where('addr', User::find($userid)->name)->get();
         $out_pakcet_count_data = [];
         foreach ($out_pakcet_count as $value) {
             $out_pakcet_count_data[] = $value->userid;
         }
 //        dd($out_pakcet_count_data);
-        $in_pakcet_count = InPacket::where('addr', User::find($userid)->name)->get();
+        $in_pakcet_count = InPacket::query()->where('addr', User::find($userid)->name)->get();
         $in_pakcet_count_data = [];
         foreach ($in_pakcet_count as $value) {
             $in_pakcet_count_data[] = $value->userid;
@@ -530,7 +553,82 @@ class ApiController extends Controller
 
     public function chaxunhongbaozhuangtai(Request $request)
     {
-        $eosid = $request->input('eosid');
 
+
+    }
+
+    public function close_packet(Request $request)
+    {
+        $blocknumber = $request->input('outid');
+        $outpacket = OutPacket::query()->where('blocknumber', $blocknumber)->first();
+        if (empty($outpacket)) {
+            $this->json(['code' => 2005, 'message' => 'blocknumber对应的红包不存在'], 2005, 'blocknumber对应的红包不存在');
+        }
+        // 红包被抢完后生成发红包对用的抢红包的列表
+        $out_in_packet = InPacket::query()->where('outid', $outpacket->id)->get();
+        $out_in_packet_sum = InPacket::query()->where('outid', $outpacket->id)->sum('income_sum');
+        $outPacket_entity = OutPacket::query()->find($outpacket->id);
+        $outPacket_entity->status = 2;
+        $outPacket_entity->surplus_sum = $outPacket_entity->issus_sum - $out_in_packet_sum;
+        $outPacket_entity->save();
+        $outPacket = $outPacket_entity;
+        $out_in_packet_data = array();
+        $reward_data__ = array();
+        $chailei_data__ = array();
+        foreach ($out_in_packet as $item => $value) {
+            $out_in_packet_data[$item]['name'] = User::find($value['userid'])->name;
+            $out_in_packet_data[$item]['income_sum'] = $value['income_sum'];
+            $out_in_packet_data[$item]['own'] = $value['own'];
+            $out_in_packet_data[$item]['is_chailei'] = $value['is_chailei'];
+            $out_in_packet_data[$item]['is_reward'] = $value['is_reward'];
+            $out_in_packet_data[$item]['reward_type'] = $value['reward_type'];
+            $out_in_packet_data[$item]['reward_sum'] = $value['reward_sum'];
+            if ($value['is_chailei'] == 1) {
+                $chailei_data__[$item]['name'] = User::find($value['userid'])->name;
+                $chailei_data__[$item]['chailai_sum'] = $outPacket->issus_sum;
+            }
+            if ($value['is_reward'] == 2) {
+                $reward_data__[$item]['name'] = User::find($value['userid'])->name;
+                $reward_data__[$item]['reward_type'] = $value['reward_type'];
+                $reward_data__[$item]['reward_sum'] = $value['reward_sum'];
+            }
+
+        }
+
+        $reward_data = array_values($reward_data__);
+        $chailei_data = array_values($chailei_data__);
+
+        $name = User::find($outPacket->userid)->name;
+        $issus_sum_arr = [
+            0 => -1,
+            1 => 0,
+            5 => 1,
+            10 => 2,
+            20 => 3,
+            50 => 4,
+            100 => 5
+        ];
+        $index = $issus_sum_arr[intval($outPacket->issus_sum)];
+        $outPacket_data['id'] = $outPacket->id;
+        $outPacket_data['userid'] = $outPacket->id;
+        $outPacket_data['issus_sum'] = $outPacket->issus_sum;
+        $outPacket_data['tail_number'] = $outPacket->tail_number;
+        $outPacket_data['eosid'] = $outPacket->eosid;
+        $outPacket_data['blocknumber'] = $outPacket->blocknumber;
+        $outPacket_data['status'] = $outPacket->status;
+        $outPacket_data['created_at'] = strtotime($outPacket->created_at);
+        $outPacket_data['updated_at'] = strtotime($outPacket->updated_at);
+
+        event(new InPacketEvent(
+            $reward_data,
+            $outPacket_data,
+            $chailei_data,
+            $out_in_packet_data,
+            $name,
+            2,
+            $index,
+            $this->getinfo()
+        ));
+        return $this->success(['code' => 200, 'message' => '红包关闭成功'], '红包关闭成功');
     }
 }

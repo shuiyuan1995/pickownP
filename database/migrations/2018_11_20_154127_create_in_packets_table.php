@@ -31,6 +31,7 @@ class CreateInPacketsTable extends Migration
             $table->string('addr',255)->nullable()->comment();
             $table->decimal('own',18,4)->nullable()->comment('挖矿数量');
             $table->decimal('prize_pool',18,4)->nullable()->commene('当前奖池的数量');
+            $table->string('txid',255)->nullable()->comment('抢红包的唯一标志');
             // 创建时间用于领奖时间
             $table->timestamps();
         });

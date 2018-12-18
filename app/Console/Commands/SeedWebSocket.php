@@ -114,11 +114,13 @@ EOP;
 
                 $conn->on('close', function ($code = null, $reason = null) {
                     echo "Connection closed ({$code} - {$reason})\n";
+                    Log::warning('websocket关闭:' . "Connection closed ({$code} - {$reason})\n");
                 });
 
                 $conn->send('{"msg_type": "subscribe_account","name": "pickowngames"}');
             }, function (\Exception $e) use ($loop) {
                 echo "Could not connect: {$e->getMessage()}\n";
+                Log::error('websocket无法连接:' . "Could not connect: {$e->getMessage()}\n");
                 $loop->stop();
             });
         $loop->run();
@@ -154,8 +156,8 @@ EOP;
         $memo = $dd_data['memo'];
 
         $memo_arr = json_decode($memo, true);
-        if (json_last_error() == JSON_ERROR_SYNTAX){
-            echo '编码错误'."\n";
+        if (json_last_error() == JSON_ERROR_SYNTAX) {
+            echo '编码错误' . "\n";
             return '';
         }
         // 发红包id
@@ -203,7 +205,7 @@ EOP;
                 $jiancha_in_packet->save();
                 $entity = $jiancha_in_packet;
                 DB::commit();
-                echo '抢红包记录已存在，修改中'."\n";
+                echo '抢红包记录已存在，修改中' . "\n";
             } else {
                 $inPacket = [
                     'outid' => $outid,
@@ -250,7 +252,7 @@ EOP;
                     TransactionInfo::create($data);
                 }
                 DB::commit();
-                echo '抢红包记录创建'."\n";
+                echo '抢红包记录创建' . "\n";
             }
             if ($is_last > 0) {
                 // 红包被抢完后生成发红包对用的抢红包的列表
@@ -291,7 +293,7 @@ EOP;
                 $name = User::find($outPacket->userid)->name;
                 $issus_sum_arr = [
                     0 => -1,
-                    '0.1000'=>0,
+                    '0.1000' => 0,
                     '1.0000' => 1,
                     '5.0000' => 2,
                     '10.0000' => 3,
@@ -343,6 +345,7 @@ EOP;
         }
         return '';
     }
+
     public function getinfo()
     {
         $outPacketCount = OutPacket::count();
@@ -350,9 +353,9 @@ EOP;
         $inPacketSum = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
             $q->where('status', 2);
         })->sum('income_sum');
-        $diya_sum = DB::select('select sum(issus_sum) as sum from out_packets ,in_packets WHERE in_packets.outid = out_packets.id');
+        $diya_sum = DB::select('SELECT sum(issus_sum) AS sum FROM out_packets ,in_packets WHERE in_packets.outid = out_packets.id');
         $ddiya_jsum = 0;
-        foreach ($diya_sum as $value){
+        foreach ($diya_sum as $value) {
             $ddiya_jsum = $value->sum;
         }
         $inPacketCount = InPacket::count();

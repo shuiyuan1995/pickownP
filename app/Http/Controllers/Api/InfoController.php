@@ -37,7 +37,7 @@ class InfoController extends Controller
         $token = md5(microtime());
 
         $publickey = $request->input('publickey', null);
-        $list = User::query()->where('name',$request->input('name'))
+        $list = User::query()->where('name', $request->input('name'))
             ->first();
         if (empty($list)) {
             $list = User::create($request->all());
@@ -66,9 +66,9 @@ class InfoController extends Controller
             $q->where('status', 2);
         })->sum('income_sum');
         $inPacketCount = InPacket::count();
-        $diya_sum = DB::select('select sum(issus_sum) as sum from out_packets ,in_packets WHERE in_packets.outid = out_packets.id');
+        $diya_sum = DB::select('SELECT sum(issus_sum) AS sum FROM out_packets ,in_packets WHERE in_packets.outid = out_packets.id');
         $ddiya_jsum = 0;
-        foreach ($diya_sum as $value){
+        foreach ($diya_sum as $value) {
             $ddiya_jsum = $value->sum;
         }
         $transactionInfoCount = TransactionInfo::where('type', '<', 5)->sum('eos') + $ddiya_jsum;
@@ -82,10 +82,10 @@ class InfoController extends Controller
 
         return $this->success([
             'out_packet_count' => $outPacketCount,
-            'transaction_info_count' => $transactionInfoCount,
+            'transaction_info_count' => (string)$transactionInfoCount,
             'user_count' => $userCount,
-            'out_packet_sum' => $outPacketSum,
-            'in_packet_sum' => $inPacketSum,
+            'out_packet_sum' => (string)$outPacketSum,
+            'in_packet_sum' => (string)$inPacketSum,
             'in_packet_count' => $inPacketCount,
             'xinyunjiangchi' => empty($xinyujiangchi) ? 0 : $xinyujiangchi,
         ]);
@@ -143,17 +143,17 @@ class InfoController extends Controller
         $data = [];
 
         // 已抢完的最新红包
-        $yiqianwanhonbao  = OutPacket::query()->where('status' ,2)
-            ->groupBy('issus_sum')->orderBy('updated_at','desc')->get();
+        $yiqianwanhonbao = OutPacket::query()->where('status', 2)
+            ->groupBy('issus_sum')->orderBy('updated_at', 'desc')->get();
         // 已抢完的最新红包对应的抢的列表
         $yiqianwanhonbaolist = [];
-        foreach ($yiqianwanhonbao as $item => $value){
+        foreach ($yiqianwanhonbao as $item => $value) {
             $data[$indexArr[$value['issus_sum']]][$value['id']]['index'] = $indexArr[$value['issus_sum']];
             $data[$indexArr[$value['issus_sum']]][$value['id']]['name'] = User::find($value['userid'])->name;
             $data[$indexArr[$value['issus_sum']]][$value['id']]['time'] = strtotime($value['updated_at']);
             $data[$indexArr[$value['issus_sum']]][$value['id']]['tail_number'] = $value['tail_number'];
             $data[$indexArr[$value['issus_sum']]][$value['id']]['in_packet_data'] = InPacketResource::collection(
-                InPacket::query()->where('outid',$value['id'])->get()
+                InPacket::query()->where('outid', $value['id'])->get()
             );
             $data[$indexArr[$value['issus_sum']]][$value['id']]['type'] = 2;
             $data[$indexArr[$value['issus_sum']]][$value['id']]['isgo'] = 1;
@@ -181,17 +181,17 @@ class InfoController extends Controller
             }
         }
         $data_d = [];
-        foreach ($indexArr as $value){
+        foreach ($indexArr as $value) {
             $data_d[$value] = [];
         }
-        foreach ($data as $i => $v){
-            foreach ($v as $value){
-                array_push($data_d[$i],$value);
+        foreach ($data as $i => $v) {
+            foreach ($v as $value) {
+                array_push($data_d[$i], $value);
             }
         }
 
         return $this->json($data_d);
-}
+    }
 
 
     public static function Curl($url, $data = [], $status = 'GTE', $second = 30)
@@ -237,7 +237,7 @@ class InfoController extends Controller
     public function getRewardCount()
     {
         $jiangjingArr = [
-            '0.1000'=>  0.0001,
+            '0.1000' => 0.0001,
             '1.0000' => 0.0009,
             '5.0000' => 0.0045,
             '10.0000' => 0.009,

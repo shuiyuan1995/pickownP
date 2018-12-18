@@ -39,11 +39,11 @@ class ApiController extends Controller
             $xinyujiangchi = $xinyujiangchientity->prize_pool;
         }
         $data = [
-            'out_packet_count' => $outPacketCount,
-            'transaction_info_count' => $transactionInfoCount,
+            'out_packet_count' => (string)$outPacketCount,
+            'transaction_info_count' => (string)$transactionInfoCount,
             'user_count' => $userCount,
-            'out_packet_sum' => $outPacketSum,
-            'in_packet_sum' => $inPacketSum,
+            'out_packet_sum' => (string)$outPacketSum,
+            'in_packet_sum' => (string)$inPacketSum,
             'in_packet_count' => $inPacketCount,
             'xinyunjiangchi' => empty($xinyujiangchi) ? 0 : $xinyujiangchi,
         ];

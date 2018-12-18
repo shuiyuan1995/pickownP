@@ -620,4 +620,38 @@ class ApiController extends Controller
         ));
         return $this->success(['code' => 200, 'message' => '红包关闭成功'], '红包关闭成功');
     }
+
+    //获取当天的排行榜
+    public function getDayUserRankList()
+    {
+        //获取当天活跃用户总数
+        $num = 1;
+        // $active_users_count = DB::select("SELECT COUNT(DISTINCT userid) AS num FROM login_records WHERE created_at > :start_time AND created_at <= :end_time", ['start_time' => $start_time, 'end_time' => $end_time]);
+        // $num = $active_users_count[0]->num;
+        
+        $url = 'https://eospro.pickown.com/v1/chain/get_table_rows';
+
+        $array = [
+            "scope"=>"pickowngames",
+            "code"=>"pickowngames",
+            "table"=>"userboard",
+            "table_key"=>"username",
+            "json"=>true,
+            "limit"=>$num,
+            "index_position"=>"2",
+            "key_type"=>"name",
+            "encode_type"=>"dec"
+        ];
+
+        $data = request_curl($url, $array, true, false);
+        $infoRes = json_decode($data);
+        //打印排行榜
+        $rankList = array_sort(infoRes['rows'], 'balance', 'desc');
+        dd($rankList);
+
+        //获取空投奖池的金额
+        $rankList = '';
+
+        return $this->success();
+    }
 }

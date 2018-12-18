@@ -170,6 +170,7 @@ class ApiController extends Controller
             // 查询数据是否在表中存在
             $cunzai_inpacket = InPacket::query()->where('txid', $txid)->lockForUpdate()->first();
             if (!empty($cunzai_inpacket)) {
+
                 DB::commit();
                 return $this->success([],'抢红包记录已存在');
             }
@@ -249,6 +250,7 @@ class ApiController extends Controller
                 $out_in_packet_data[$item]['is_chailei'] = $value['is_chailei'];
                 $out_in_packet_data[$item]['is_reward'] = $value['is_reward'];
                 $out_in_packet_data[$item]['reward_type'] = $value['reward_type'];
+                $out_in_packet_data[$item]['txid'] = $value['txid'];
                 $out_in_packet_data[$item]['reward_sum'] = $value['reward_sum'];
                 if ($value['is_chailei'] == 1) {
                     $chailei_data__[$item]['name'] = User::find($value['userid'])->name;
@@ -294,7 +296,8 @@ class ApiController extends Controller
                 $name,
                 2,
                 $index,
-                $data
+                $data,
+                    $entity
             ));
             $out = OutPacket::find($outid);
             $out->is_guangbo = 1;
@@ -308,7 +311,8 @@ class ApiController extends Controller
                 [],
                 3,
                 [],
-                $data
+                $data,
+                $entity
             ));
         }
         DB::commit();

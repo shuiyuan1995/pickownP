@@ -39,7 +39,7 @@ class InfoController extends Controller
 
         $publickey = $request->input('publickey', null);
         $list = User::query()->where('name',$request->input('name'))
-            ->where('publickey', $publickey)->first();
+            ->first();
         if (empty($list)) {
             $list = User::create($request->all());
         }

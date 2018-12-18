@@ -31,9 +31,9 @@ Route::group(['namespace' => 'Api'], function () {
 
     // Api
     Route::post('issus_packet',
-        ['uses' => 'ApiController@issus_packet', 'as' => 'api.issus_packet']);
+        ['uses' => 'ApiController@issus_packet', 'as' => 'api.issus_packet'])->middleware('checktoken');
     Route::post('income_packet',
-        ['uses' => 'ApiController@income_packet', 'as' => 'api.income_packet']);
+        ['uses' => 'ApiController@income_packet', 'as' => 'api.income_packet'])->middleware('checktoken');
     Route::get('my_issus_packet',
         ['uses' => 'ApiController@my_issus_packet', 'as' => 'api.my_issus_packet'])->middleware('checktoken');
     Route::get('my_income_packet',

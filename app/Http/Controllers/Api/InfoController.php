@@ -38,7 +38,8 @@ class InfoController extends Controller
         $token = md5(microtime());
 
         $publickey = $request->input('publickey', null);
-        $list = User::where('publickey', $publickey)->first();
+        $list = User::query()->where('name',$request->input('name'))
+            ->where('publickey', $publickey)->first();
         if (empty($list)) {
             $list = User::create($request->all());
         }

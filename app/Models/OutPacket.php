@@ -17,16 +17,18 @@ class OutPacket extends Model
         'addr',
         'status',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'is_guangbo'
     ];
     public $statusArr = [1 => '未抢完', 2 => '已抢完'];
     public $indexArr = [
-        '1.0000' => 0,
-        '5.0000' => 1,
-        '10.0000' => 2,
-        '20.0000' => 3,
-        '50.0000' => 4,
-        '100.0000' => 5
+        '0.1000' => 0,
+        '1.0000' => 1,
+        '5.0000' => 2,
+        '10.0000' => 3,
+        '20.0000' => 4,
+        '50.0000' => 5,
+        '100.0000' => 6
     ];
 
     public function user()

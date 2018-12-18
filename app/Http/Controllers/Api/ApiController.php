@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Mockery\Exception;
 
 class ApiController extends Controller
 {
@@ -84,7 +85,8 @@ class ApiController extends Controller
             'blocknumber' => $request->input('eosid'),
             'addr' => $request->input('addr'),
             'status' => 1,
-            'surplus_sum' => $request->input('issus_sum')
+            'surplus_sum' => $request->input('issus_sum'),
+            'is_guangbo' => 0
         ];
         $entity = OutPacket::create($entity_data);
 
@@ -114,7 +116,6 @@ class ApiController extends Controller
         $data = $this->getinfo();
 
         event(new OutPacketEvent($entityaa, $issus_sum_arr[$issus_sum], $username, $data));
-        Log::info('');
         return $this->success([
             'code' => 200,
         ], '发送成功');
@@ -125,7 +126,7 @@ class ApiController extends Controller
      * userid 用户id
      * eosid 区块链id
      * blocknumber 区块链号
-     * txid 抢红包的唯一表
+     * txid 抢红包的唯一标志
      * income_sum 抢中金额
      * is_chailei 是否踩雷
      * is_reward 是否中奖
@@ -141,9 +142,7 @@ class ApiController extends Controller
     public function income_packet(Request $request)
     {
         $outeosid = $request->input('outid');
-//        if (!$request->filled('blocknumber')){
-//            return $this->json(['code'=>2004,'msg'=>'未收到blocknumber'],2004,'未收到blocknumber');
-//        }
+
         $outentity = OutPacket::query()->where('blocknumber', $outeosid)->first();
         if (empty($outentity)) {
             return $this->json(['code' => 2005, 'message' => 'blocknumber对应的红包不存在'], 2005, 'blocknumber对应的红包不存在');
@@ -164,6 +163,19 @@ class ApiController extends Controller
 //            TransactionInfo::create($qudaojianlidata);
 //        }
         $userid = substr($request->header('token'), strripos($request->header('token'), ':') + 1);
+
+        $txid = $request->input('txid');
+        try{
+            DB::beginTransaction();
+            // 查询数据是否在表中存在
+            $cunzai_inpacket = InPacket::query()->where('txid', $txid)->lockForUpdate()->first();
+            if (!empty($cunzai_inpacket)) {
+                DB::commit();
+                return $this->success([],'抢红包记录已存在');
+            }
+
+
+
         $is_chailei = $request->input('is_chailei');
         $is_reward = $request->input('is_reward');
         $reward_sum = $request->input('reward_sum');
@@ -183,7 +195,7 @@ class ApiController extends Controller
             'addr' => $request->input('addr'),
             'own' => $request->input('own'),
             'prize_pool' => $request->input('newPrizePool'),
-            'txid'=>$request->input('txid'),
+            'txid' => $request->input('txid'),
         ];
         $entity = InPacket::create($InpacketData);
 
@@ -284,6 +296,9 @@ class ApiController extends Controller
                 $index,
                 $data
             ));
+            $out = OutPacket::find($outid);
+            $out->is_guangbo = 1;
+            $out->save();
         } else {
             event(new InPacketEvent(
                 [],
@@ -296,10 +311,14 @@ class ApiController extends Controller
                 $data
             ));
         }
-
+        DB::commit();
         return $this->success([
             'code' => 200
         ], '发送成功');
+        }catch (\Exception $exception){
+            DB::rollBack();
+            return $this->json([],2013,'查询失败');
+        }
     }
 
     /**

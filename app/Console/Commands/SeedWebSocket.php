@@ -3,6 +3,10 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Ratchet\Client\WebSocket;
+use Ratchet\RFC6455\Messaging\MessageInterface;
+use React\EventLoop\Factory;
+use React\Socket\Connector;
 
 class SeedWebSocket extends Command
 {
@@ -23,7 +27,6 @@ class SeedWebSocket extends Command
     /**
      * Create a new command instance.
      *
-     * @return void
      */
     public function __construct()
     {
@@ -37,17 +40,20 @@ class SeedWebSocket extends Command
      */
     public function handle()
     {
-        $loop = \React\EventLoop\Factory::create();
-        $reactConnector = new \React\Socket\Connector($loop, [
+        $loop = Factory::create();
+        $reactConnector = new Connector($loop, [
             'dns' => '8.8.8.8',
-            'timeout' => 8
+            'timeout' => 10
         ]);
         $connector = new \Ratchet\Client\Connector($loop, $reactConnector);
 
         $connector('wss://ws.eospark.com/v1/ws?apikey=43222c2a30238d8ed72d60c033a7a7e0', [], ['Origin' => 'http://localhost'])
-            ->then(function(\Ratchet\Client\WebSocket $conn) {
-                $conn->on('message', function(\Ratchet\RFC6455\Messaging\MessageInterface $msg) use ($conn) {
-                    echo "Received: {$msg}\n";
+            ->then(function(WebSocket $conn) {
+                $conn->on('message', function(MessageInterface $msg) use ($conn) {
+                    $data = json_decode($msg,true);
+                    foreach ($data as $item => $v){
+                        echo $item."\n";
+                    }
                 });
 
                 $conn->on('close', function($code = null, $reason = null) {

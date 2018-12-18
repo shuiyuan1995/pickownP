@@ -161,11 +161,11 @@ class ApiController extends Controller
      */
     public function income_packet(Request $request)
     {
-        $outeosid = $request->input('packet_id');
+        $outeosid = $request->input('packetId');
 
         $outentity = OutPacket::query()->where('eosid', $outeosid)->first();
         if (empty($outentity)) {
-            return $this->json(['code' => 2005, 'message' => '红包不存在'], 2005, 'blocknumber对应的红包不存在');
+            return $this->json(['code' => 2005, 'message' => '红包不存在'], 2005, '红包不存在');
         }
         $outid = $outentity->id;
 

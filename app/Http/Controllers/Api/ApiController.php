@@ -89,7 +89,7 @@ class ApiController extends Controller
             'tail_number' => $request->input('tail_number'),
             'count' => $request->input('count'),
             'eosid' => $request->input('eosid'),
-            'blocknumber' => $request->input('eosid'),
+            'blocknumber' => $request->input('blocknumber'),
             'addr' => $request->input('addr'),
             'status' => 1,
             'surplus_sum' => $request->input('issus_sum'),

@@ -164,6 +164,11 @@ EOP;
             echo '编码错误' . "\n";
             return '';
         }
+        if (!isset($memo_arr['user'])) {
+            echo '该条不是抢红包记录';
+            Log::error('该条不是抢红包记录：' . $msg);
+            return '';
+        }
         // 发红包id
         $packet_id = $memo_arr['packet_id'];
         $outpacketModel = OutPacket::query()->where('eosid', $packet_id)->first();

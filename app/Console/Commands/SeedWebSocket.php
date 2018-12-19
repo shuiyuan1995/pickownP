@@ -58,6 +58,7 @@ class SeedWebSocket extends Command
             ['Origin' => 'http://localhost'])
             ->then(function (WebSocket $conn) {
                 $conn->on('message', function (MessageInterface $msg) use ($conn) {
+                    // 数据样例1
                     $msgaa = <<<EOP
 {
   "errno": 0,
@@ -91,9 +92,11 @@ class SeedWebSocket extends Command
 }
 
 EOP;
+                    // 数据样例2
                     $msgcc = <<<EOP
 {"errno":0,"msg_type":"data","errmsg":"","data":{"trx_id":"576ce05a26eadbb57419130a112db9f0094949ffa1c12c89be03892039875025","block_num":32727664,"global_action_seq":3016979934,"trx_timestamp":"2018-12-18T10:59:05.500","actions":[{"account":"eosio.token","authorization":[{"actor":"dengxingchun","permission":"active"}],"data":{"from":"dengxingchun","memo":"select:000079:","quantity":"0.1000 EOS","to":"pickowngames"},"hex_data":"3075436cbacea64a8095346c720a91abe80300000000000004454f53000000000e73656c6563743a3030303037393a","name":"transfer"}]}}
 EOP;
+                    // 数据样例3
                     $msgbb = <<<EOP
 {"errno":0,"msg_type":"data","errmsg":"","data":{"trx_id":"576ce05a26eadbb57419130a112db9f0094949ffa1c12c89be03892039875025","block_num":32727664,"global_action_seq":3016979940,"trx_timestamp":"2018-12-18T10:59:05.500","actions":[{"account":"pickowntoken","authorization":[{"actor":"pickowngames","permission":"active"}],"data":{"from":"pickowngames","memo":"Pickown mining reward.","quantity":"0.3000 OWN","to":"dengxingchun"},"hex_data":"8095346c720a91ab3075436cbacea64ab80b000000000000044f574e00000000165069636b6f776e206d696e696e67207265776172642e","name":"transfer"}]}}
 EOP;
@@ -108,7 +111,7 @@ EOP;
                     } elseif ($data['msg_type'] == 'data') {
                         echo "抢红包数据\n";
 //                        Log::info($msg);
-                        $this->manipulationData($data);
+                        $this->manipulationData($data, $msg);
                     }
                 });
 
@@ -131,9 +134,10 @@ EOP;
 
     /**
      * @param $data
+     * @param $msg
      * @return string
      */
-    public function manipulationData($data)
+    public function manipulationData($data, $msg)
     {
         /**
          * dd_data数据样例
@@ -163,10 +167,20 @@ EOP;
         // 发红包id
         $packet_id = $memo_arr['packet_id'];
         $outpacketModel = OutPacket::query()->where('eosid', $packet_id)->first();
+        if (empty($outpacketModel)) {
+            echo "红包未找到";
+            Log::error('红包记录未找到，信息为：' . $msg);
+            return '';
+        }
         $outid = $outpacketModel->id;
         // 用户名
         $user = $memo_arr['user'];
         $userModel = User::query()->where('name', $user)->first();
+        if (empty($userModel)) {
+            echo '用户未找到';
+            Log::error('用户未找到，信息为：' . $msg);
+            return '';
+        }
         $userid = $userModel->id;
         // 挖矿
         $own_mined = $memo_arr['own_mined'];
@@ -221,39 +235,39 @@ EOP;
                     'txid' => $txid
                 ];
                 $entity = InPacket::create($inPacket);
-
-                OutPacket::find($outid)->userid;
-                // 抢红包信息
-                $data = [
-                    'issus_userid' => 0,
-                    'income_userid' => $userid,
-                    'type' => 1,
-                    'status' => 1,
-                    'eos' => $entity->income_sum,
-                    'addr' => '',
-                ];
-                TransactionInfo::create($data);
-
-                // 踩雷信息
-                if ($bomb > 0) {
-                    $data['issus_userid'] = 0;
-                    $data['income_userid'] = $userid;
-                    $data['type'] = 3;
-                    $data['eos'] = OutPacket::find($outid)->issus_sum;
-                    TransactionInfo::create($data);
-                }
-
-                // 中奖信息
-                if ($luck !== 0) {
-                    $data['issus_userid'] = 0;
-                    $data['income_userid'] = $userid;
-                    $data['type'] = 4;
-                    $data['eos'] = $prize_amount;
-                    TransactionInfo::create($data);
-                }
-                DB::commit();
-                echo '抢红包记录创建' . "\n";
             }
+            OutPacket::find($outid)->userid;
+            // 抢红包信息
+            $data = [
+                'issus_userid' => 0,
+                'income_userid' => $userid,
+                'type' => 1,
+                'status' => 1,
+                'eos' => $entity->income_sum,
+                'addr' => '',
+            ];
+            TransactionInfo::create($data);
+
+            // 踩雷信息
+            if ($bomb > 0) {
+                $data['issus_userid'] = 0;
+                $data['income_userid'] = $userid;
+                $data['type'] = 3;
+                $data['eos'] = OutPacket::find($outid)->issus_sum;
+                TransactionInfo::create($data);
+            }
+
+            // 中奖信息
+            if ($luck !== 0) {
+                $data['issus_userid'] = 0;
+                $data['income_userid'] = $userid;
+                $data['type'] = 4;
+                $data['eos'] = $prize_amount;
+                TransactionInfo::create($data);
+            }
+            DB::commit();
+            echo '抢红包记录创建' . "\n";
+
             if ($is_last > 0) {
                 // 红包被抢完后生成发红包对用的抢红包的列表
                 $out_in_packet = InPacket::query()->where('outid', $outid)->get();
@@ -264,8 +278,6 @@ EOP;
                 $outPacket_entity->save();
                 $outPacket = $outPacket_entity;
                 $out_in_packet_data = array();
-                $reward_data__ = array();
-                $chailei_data__ = array();
                 foreach ($out_in_packet as $item => $value) {
                     $out_in_packet_data[$item]['name'] = User::find($value['userid'])->name;
                     $out_in_packet_data[$item]['income_sum'] = $value['income_sum'];
@@ -275,20 +287,7 @@ EOP;
                     $out_in_packet_data[$item]['reward_type'] = $value['reward_type'];
                     $out_in_packet_data[$item]['txid'] = $value['txid'];
                     $out_in_packet_data[$item]['reward_sum'] = $value['reward_sum'];
-                    if ($value['is_chailei'] == 1) {
-                        $chailei_data__[$item]['name'] = User::find($value['userid'])->name;
-                        $chailei_data__[$item]['chailai_sum'] = $outPacket->issus_sum;
-                    }
-                    if ($value['is_reward'] == 2) {
-                        $reward_data__[$item]['name'] = User::find($value['userid'])->name;
-                        $reward_data__[$item]['reward_type'] = $value['reward_type'];
-                        $reward_data__[$item]['reward_sum'] = $value['reward_sum'];
-                    }
-
                 }
-
-                $reward_data = array_values($reward_data__);
-                $chailei_data = array_values($chailei_data__);
 
                 $name = User::find($outPacket->userid)->name;
                 $issus_sum_arr = [

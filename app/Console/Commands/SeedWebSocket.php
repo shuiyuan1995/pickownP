@@ -52,7 +52,7 @@ class SeedWebSocket extends Command
             $loop = Factory::create();
             $reactConnector = new Connector($loop, [
                 'dns' => '8.8.8.8',
-                'timeout' => 10
+                'timeout' => 20
             ]);
             $connector = new \Ratchet\Client\Connector($loop, $reactConnector);
 

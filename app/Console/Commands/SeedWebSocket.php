@@ -47,19 +47,21 @@ class SeedWebSocket extends Command
      */
     public function handle()
     {
-        $loop = Factory::create();
-        $reactConnector = new Connector($loop, [
-            'dns' => '8.8.8.8',
-            'timeout' => 10
-        ]);
-        $connector = new \Ratchet\Client\Connector($loop, $reactConnector);
+        $i = 0;
+        while (true) {
+            $loop = Factory::create();
+            $reactConnector = new Connector($loop, [
+                'dns' => '8.8.8.8',
+                'timeout' => 10
+            ]);
+            $connector = new \Ratchet\Client\Connector($loop, $reactConnector);
 
-        $connector('wss://ws.eospark.com/v1/ws?apikey=43222c2a30238d8ed72d60c033a7a7e0', [],
-            ['Origin' => 'http://localhost'])
-            ->then(function (WebSocket $conn) {
-                $conn->on('message', function (MessageInterface $msg) use ($conn) {
-                    // 数据样例1
-                    $msgaa = <<<EOP
+            $connector('wss://ws.eospark.com/v1/ws?apikey=0b7e39507b38e764f85b6b9976850a49', [],
+                ['Origin' => 'http://localhost'])
+                ->then(function (WebSocket $conn) {
+                    $conn->on('message', function (MessageInterface $msg) use ($conn) {
+                        // 数据样例1
+                        $msgaa = <<<EOP
 {
   "errno": 0,
   "msg_type": "data",
@@ -92,41 +94,46 @@ class SeedWebSocket extends Command
 }
 
 EOP;
-                    // 数据样例2
-                    $msgcc = <<<EOP
+                        // 数据样例2
+                        $msgcc = <<<EOP
 {"errno":0,"msg_type":"data","errmsg":"","data":{"trx_id":"576ce05a26eadbb57419130a112db9f0094949ffa1c12c89be03892039875025","block_num":32727664,"global_action_seq":3016979934,"trx_timestamp":"2018-12-18T10:59:05.500","actions":[{"account":"eosio.token","authorization":[{"actor":"dengxingchun","permission":"active"}],"data":{"from":"dengxingchun","memo":"select:000079:","quantity":"0.1000 EOS","to":"pickowngames"},"hex_data":"3075436cbacea64a8095346c720a91abe80300000000000004454f53000000000e73656c6563743a3030303037393a","name":"transfer"}]}}
 EOP;
-                    // 数据样例3
-                    $msgbb = <<<EOP
+                        // 数据样例3
+                        $msgbb = <<<EOP
 {"errno":0,"msg_type":"data","errmsg":"","data":{"trx_id":"576ce05a26eadbb57419130a112db9f0094949ffa1c12c89be03892039875025","block_num":32727664,"global_action_seq":3016979940,"trx_timestamp":"2018-12-18T10:59:05.500","actions":[{"account":"pickowntoken","authorization":[{"actor":"pickowngames","permission":"active"}],"data":{"from":"pickowngames","memo":"Pickown mining reward.","quantity":"0.3000 OWN","to":"dengxingchun"},"hex_data":"8095346c720a91ab3075436cbacea64ab80b000000000000044f574e00000000165069636b6f776e206d696e696e67207265776172642e","name":"transfer"}]}}
 EOP;
 
 
-                    $data = json_decode($msg, true);
-                    if ($data['msg_type'] == 'subscribe_account') {
-                        echo "账户订阅成功\n";
-                    } elseif ($data['msg_type'] == 'heartbeat') {
-                        echo "心跳数据，时间：{$data['data']['heart_beat']}\n";
-                        //Log::error($msg);
-                    } elseif ($data['msg_type'] == 'data') {
-                        echo "抢红包数据\n";
+                        $data = json_decode($msg, true);
+                        if ($data['msg_type'] == 'subscribe_account') {
+                            echo "账户订阅成功\n";
+                        } elseif ($data['msg_type'] == 'heartbeat') {
+                            echo "心跳数据，时间：{$data['data']['heart_beat']}\n";
+                            //Log::error($msg);
+                        } elseif ($data['msg_type'] == 'data') {
+                            echo "抢红包数据\n";
 //                        Log::info($msg);
-                        $this->manipulationData($data, $msg);
-                    }
-                });
+                            $this->manipulationData($data, $msg);
+                        }
+                    });
 
-                $conn->on('close', function ($code = null, $reason = null) {
-                    echo "Connection closed ({$code} - {$reason})\n";
-                    Log::warning('websocket关闭:' . "Connection closed ({$code} - {$reason})\n");
-                });
+                    $conn->on('close', function ($code = null, $reason = null) {
+                        echo "Connection closed ({$code} - {$reason})\n";
+                        Log::warning('websocket关闭:' . "Connection closed ({$code} - {$reason})\n");
+                    });
 
-                $conn->send('{"msg_type": "subscribe_account","name": "pickowngames"}');
-            }, function (\Exception $e) use ($loop) {
-                echo "Could not connect: {$e->getMessage()}\n";
-                Log::error('websocket无法连接:' . "Could not connect: {$e->getMessage()}\n");
-                $loop->stop();
-            });
-        $loop->run();
+                    $conn->send('{"msg_type": "subscribe_account","name": "pickowngames"}');
+                }, function (\Exception $e) use ($loop) {
+                    echo "Could not connect: {$e->getMessage()}\n";
+                    Log::error('websocket无法连接:' . "Could not connect: {$e->getMessage()}\n");
+                    $loop->stop();
+                });
+            $loop->run();
+            $i++;
+            sleep(20);
+            echo 'websocket失败的次数。' . $i . "\n";
+
+        }
         return;
     }
 

@@ -141,22 +141,23 @@ class InfoController extends Controller
             '100.0000' => 6
         ];
         $data = [];
-
+        $jieguo = OutPacket::query()->where('status', 2)
+            ->orderBy('updated_at', 'desc')->get();
         // 已抢完的最新红包
-        $yiqianwanhonbao = OutPacket::query()->where('status', 2)
-            ->groupBy('issus_sum')->orderBy('updated_at', 'desc')->get();
-        // 已抢完的最新红包对应的抢的列表
-        $yiqianwanhonbaolist = [];
+        $yiqianwanhonbao = [];
+        foreach ($jieguo->groupBy('issus_sum') as $v) {
+            $yiqianwanhonbao[] = $v->first();
+        }
         foreach ($yiqianwanhonbao as $item => $value) {
-            $data[$indexArr[$value['issus_sum']]][$value['id']]['index'] = $indexArr[$value['issus_sum']];
-            $data[$indexArr[$value['issus_sum']]][$value['id']]['name'] = User::find($value['userid'])->name;
-            $data[$indexArr[$value['issus_sum']]][$value['id']]['time'] = strtotime($value['updated_at']);
-            $data[$indexArr[$value['issus_sum']]][$value['id']]['tail_number'] = $value['tail_number'];
-            $data[$indexArr[$value['issus_sum']]][$value['id']]['in_packet_data'] = InPacketResource::collection(
-                InPacket::query()->where('outid', $value['id'])->get()
+            $data[$indexArr[$value->issus_sum]][$value->id]['index'] = $indexArr[$value->issus_sum];
+            $data[$indexArr[$value->issus_sum]][$value->id]['name'] = User::find($value->userid)->name;
+            $data[$indexArr[$value->issus_sum]][$value->id]['time'] = strtotime($value->updated_at);
+            $data[$indexArr[$value->issus_sum]][$value->id]['tail_number'] = $value->tail_number;
+            $data[$indexArr[$value->issus_sum]][$value->id]['in_packet_data'] = InPacketResource::collection(
+                InPacket::query()->where('outid', $value->id)->get()
             );
-            $data[$indexArr[$value['issus_sum']]][$value['id']]['type'] = 2;
-            $data[$indexArr[$value['issus_sum']]][$value['id']]['isgo'] = 1;
+            $data[$indexArr[$value->issus_sum]][$value->id]['type'] = 2;
+            $data[$indexArr[$value->issus_sum]][$value->id]['isgo'] = 1;
         }
         foreach ($list as $item => $value) {
             $data[$indexArr[$value['issus_sum']]][$value['id']]['name'] = $value['user']['name'];

@@ -135,16 +135,29 @@ class InfoController extends Controller
             '0.1000' => 0,
             '1.0000' => 1,
             '5.0000' => 2,
-            '10.0000' => 3,
-            '20.0000' => 4,
-            '50.0000' => 5,
+//            '10.0000' => 3,
+//            '20.0000' => 4,
+//            '50.0000' => 5,
             '100.0000' => 6
         ];
         $data = [];
+        $indexArrSwitch = (new OutPacket())->indexArrSwitch;
+        $yiqianwanhonbao = [];
+//        foreach ($indexArrSwitch as $i => $v) {
+//            if ($v === true) {
+//                $ooooentity = OutPacket::query()->where('status', 2)
+//                    ->where('issus_sum', $i)
+//                    ->orderBy('updated_at', 'desc')->first();
+//                if (!empty($ooooentity)) {
+//                    $yiqianwanhonbao[$indexArr[$i]] = $ooooentity;
+//                }
+//                //dump($ooooentity);
+//            }
+//        }
         $jieguo = OutPacket::query()->where('status', 2)
             ->orderBy('updated_at', 'desc')->get();
         // 已抢完的最新红包
-        $yiqianwanhonbao = [];
+
         foreach ($jieguo->groupBy('issus_sum') as $v) {
             $yiqianwanhonbao[] = $v->first();
         }
@@ -192,10 +205,11 @@ class InfoController extends Controller
         }
         foreach ($data_d as $item => $value) {
             if (empty($data_d[$item])) {
-                unset($data_d[$item]);
+//                unset($data_d[$item]);
             }
         }
-        return $this->json($data_d);
+        $data_dd = array_values($data_d);
+        return $this->json($data_dd);
     }
 
 

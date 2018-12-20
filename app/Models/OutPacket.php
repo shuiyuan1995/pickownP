@@ -41,6 +41,15 @@ class OutPacket extends Model
         '50.0000' => 50,
         '100.0000' => 100
     ];
+    public $indexArrSwitch = [
+        '0.1000' => false,
+        '1.0000' => true,
+        '5.0000' => true,
+        '10.0000' => false,
+        '20.0000' => false,
+        '50.0000' => false,
+        '100.0000' => true
+    ];
     public function user()
     {
         return $this->hasOne(User::class, 'id', 'userid');

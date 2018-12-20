@@ -229,6 +229,12 @@ EOP;
         $txid = $memo_arr['txid'];
         // 退款 - 无用
         $refund = $memo_arr['refund'];
+        // 平台利润问题
+        $platform_reserve = 0;
+        if (isset($memo_arr['platform_reserve'])){
+            $platform_reserve = $memo_arr['platform_reserve'];
+        }
+
         try {
             \DB::beginTransaction();
             // 检查此条抢红包记录是否存在
@@ -303,7 +309,7 @@ EOP;
                 $out_in_packet_sum = InPacket::query()->where('outid', $outid)->sum('income_sum');
                 $outPacket_entity = OutPacket::find($outid);
                 $outPacket_entity->status = 2;
-                $outPacket_entity->surplus_sum = $outPacket_entity->issus_sum - $out_in_packet_sum;
+                $outPacket_entity->surplus_sum = $platform_reserve;
                 $outPacket_entity->save();
                 $outPacket = $outPacket_entity;
                 $out_in_packet_data = array();

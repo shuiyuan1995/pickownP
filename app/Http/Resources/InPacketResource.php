@@ -26,18 +26,18 @@ class InPacketResource extends JsonResource
             'eosid' => $this->eosid,
             'blocknumber' => $this->blocknumber,
             'outblocknumber' => data_get($this,'out.blocknumber',0),
-            'income_sum' => $this->income_sum,
+            'income_sum' => (string)$this->income_sum,
             'is_chailei' => $this->is_chailei,
             'is_chailei_value' => $isChaileiArr[$this->is_chailei],
-            'outpacket_sum' => data_get($this, 'out.issus_sum', '0'),
+            'outpacket_sum' => (string)data_get($this, 'out.issus_sum', '0'),
             'is_reward' => $this->is_reward,
             'reward_type' => $this->reward_type,
             'reward_type_value' => $rewardTypeArr[$this->reward_type],
-            'reward_sum' => $this->reward_sum,
+            'reward_sum' => (string)$this->reward_sum,
             'addr' => $this->addr,
             'created_at' => strtotime($this->created_at),
             'updated_at' => strtotime($this->updated_at),
-            'own'=>$this->own,
+            'own'=>(string)$this->own,
             'txid'=>$this->txid
         ];
     }

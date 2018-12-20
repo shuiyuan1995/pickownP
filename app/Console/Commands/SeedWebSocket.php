@@ -64,6 +64,7 @@ class SeedWebSocket extends Command
                 ->then(function (WebSocket $conn) {
                     $conn->on('message', function (MessageInterface $msg) use ($conn) {
                         // 数据样例1
+
                         $msgaa = <<<EOP
 {
   "errno": 0,

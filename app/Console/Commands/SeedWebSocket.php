@@ -232,7 +232,7 @@ EOP;
         // 平台利润问题
         $platform_reserve = 0;
         if (isset($memo_arr['platform_reserve'])){
-            $platform_reserve = $memo_arr['platform_reserve'];
+            $platform_reserve = $memo_arr['platform_reserve'] / 10000;
         }
 
         try {

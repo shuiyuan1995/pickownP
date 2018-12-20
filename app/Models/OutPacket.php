@@ -31,7 +31,7 @@ class OutPacket extends Model
         '50.0000' => 5,
         '100.0000' => 6
     ];
-    public static $iidexArr = [
+    public $iidexArr = [
         0 => -1,
         '0.1000' => 0,
         '1.0000' => 1,

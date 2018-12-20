@@ -236,7 +236,7 @@ class ApiController extends Controller
                 $chailei_data = array_values($chailei_data__);
 
                 $name = User::find($outPacket->userid)->name;
-                $issus_sum_arr = OutPacket::$iidexArr;
+                $issus_sum_arr = (new OutPacket())->iidexArr;
                 $index = $issus_sum_arr[$outPacket->issus_sum];
                 $outPacket_data['id'] = $outPacket->id;
                 $outPacket_data['userid'] = $outPacket->id;
@@ -559,7 +559,7 @@ class ApiController extends Controller
         $chailei_data = array_values($chailei_data__);
 
         $name = User::find($outPacket->userid)->name;
-        $issus_sum_arr = OutPacket::$iidexArr;
+        $issus_sum_arr = (new OutPacket())->iidexArr;
         $index = $issus_sum_arr[$outPacket->issus_sum];
         $outPacket_data['id'] = $outPacket->id;
         $outPacket_data['userid'] = $outPacket->id;

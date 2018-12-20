@@ -108,6 +108,8 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
+    'eospark_key' => env('EOSPARK_KEY','43222c2a30238d8ed72d60c033a7a7e0'),
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers

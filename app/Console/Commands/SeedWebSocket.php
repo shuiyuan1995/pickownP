@@ -48,6 +48,8 @@ class SeedWebSocket extends Command
     public function handle()
     {
         $i = 0;
+        $eospark_key = config('app.eospark_key');
+        $url = 'wss://ws.eospark.com/v1/ws?apikey=' . $eospark_key;
         while (true) {
             $loop = Factory::create();
             $reactConnector = new Connector($loop, [
@@ -56,7 +58,7 @@ class SeedWebSocket extends Command
             ]);
             $connector = new \Ratchet\Client\Connector($loop, $reactConnector);
 
-            $connector('wss://ws.eospark.com/v1/ws?apikey=0b7e39507b38e764f85b6b9976850a49', [],
+            $connector($url, [],
                 ['Origin' => 'http://localhost'])
                 ->then(function (WebSocket $conn) {
                     $conn->on('message', function (MessageInterface $msg) use ($conn) {
@@ -82,7 +84,7 @@ class SeedWebSocket extends Command
         ],
         "data": {
           "from": "pickowngames",
-          "memo": "{\"packet_id\":\"5\",\"user\":\"brucewc12345\",\"own_mined\":\"3000\",\"bomb\":\"0\",\"luck\":\"0\",\"prize_amount\":\"0\",\"is_last\":\"0\",\"new_prize_pool\":\"1187\",\"packet_amount\":\"104\",\"txid\":\"800\",\"refund\":\"1104\"}",
+          "memo": "{\"packet_id\":\"5\",\"user\":\"shuiyuan2345\",\"own_mined\":\"3000\",\"bomb\":\"0\",\"luck\":\"0\",\"prize_amount\":\"0\",\"is_last\":\"1\",\"new_prize_pool\":\"1187\",\"packet_amount\":\"104\",\"txid\":\"800\",\"refund\":\"1104\"}",
           "quantity": "0.1104 EOS",
           "to": "zhouwanyuwan"
         },
@@ -132,7 +134,10 @@ EOP;
             $i++;
             sleep(20);
             echo 'websocket失败的次数。' . $i . "\n";
-
+            Log::warning(date('Y-m-d H:i:s', time()) . 'websocket失败的次数：' . $i . "\n");
+            if ($i > 1000000000000) {
+                $i = 0;
+            }
         }
         return;
     }
@@ -190,10 +195,21 @@ EOP;
         $userModel = User::query()->where('name', $user)->first();
         if (empty($userModel)) {
             echo '用户未找到';
+            $userData = [
+                'name' => $user,
+                'publickey' => '',
+                'walletid' => '',
+                'addr' => '',
+                'invite' => '',
+                'status' => 1
+            ];
+            $createUser = User::create($userData);
+            $userid = $createUser->id;
             Log::error('用户未找到，信息为：' . $msg);
-            return '';
+        } else {
+            $userid = $userModel->id;
         }
-        $userid = $userModel->id;
+
         // 挖矿
         $own_mined = $memo_arr['own_mined'];
         // 是否踩雷
@@ -322,7 +338,7 @@ EOP;
                 $outPacket_data['status'] = $outPacket->status;
                 $outPacket_data['created_at'] = strtotime($outPacket->created_at);
                 $outPacket_data['updated_at'] = strtotime($outPacket->updated_at);
-
+                //if (OutPacket::find($outid)->is_guangbo < 1){
                 event(new InPacketEvent(
                     [],
                     $outPacket_data,
@@ -337,6 +353,7 @@ EOP;
                 $out = OutPacket::find($outid);
                 $out->is_guangbo = 1;
                 $out->save();
+                //}
             } else {
                 event(new InPacketEvent(
                     [],

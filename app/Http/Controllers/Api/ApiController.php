@@ -261,7 +261,7 @@ class ApiController extends Controller
                 [],
                 $outPacket_data,
                 [],
-                $out_in_packet_data,
+                [],// $out_in_packet_data,
                 $name,
                 2,
                 $index,

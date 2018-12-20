@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Events\InPacketEvent;
+use App\Http\Resources\InPacketResource;
 use App\Models\InPacket;
 use App\Models\OutPacket;
 use App\Models\TransactionInfo;
@@ -348,7 +349,7 @@ EOP;
                     2,
                     $index,
                     $this->getinfo(),
-                    $entity
+                    InPacketResource::make($entity)
                 ));
                 $out = OutPacket::find($outid);
                 $out->is_guangbo = 1;
@@ -364,7 +365,7 @@ EOP;
                     3,
                     [],
                     $this->getinfo(),
-                    $entity
+                    InPacketResource::make($entity)
                 ));
             }
 

@@ -266,7 +266,7 @@ class ApiController extends Controller
                 2,
                 $index,
                 $data,
-                    $entity
+                    InPacketResource::make($entity)
             ));
             $out = OutPacket::find($outid);
             $out->is_guangbo = 1;

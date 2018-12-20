@@ -31,7 +31,16 @@ class OutPacket extends Model
         '50.0000' => 5,
         '100.0000' => 6
     ];
-
+    public static $iidexArr = [
+        0 => -1,
+        '0.1000' => 0,
+        '1.0000' => 1,
+        '5.0000' => 2,
+        '10.0000' => 3,
+        '20.0000' => 4,
+        '50.0000' => 5,
+        '100.0000' => 6
+    ];
     public function user()
     {
         return $this->hasOne(User::class, 'id', 'userid');

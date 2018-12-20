@@ -51,7 +51,6 @@ class SeedWebSocket extends Command
         $i = 0;
         $eospark_key = config('app.eospark_key');
         $url = 'wss://ws.eospark.com/v1/ws?apikey=' . $eospark_key;
-        $url = 'wss://ws.eospark.com/test/v1/ws?apikey=ac45a8b9a11e4ec1d7a994b76f7c6f17';
         while (true) {
             $loop = Factory::create();
             $reactConnector = new Connector($loop, [
@@ -86,7 +85,7 @@ class SeedWebSocket extends Command
         ],
         "data": {
           "from": "pickowngames",
-          "memo": "{\"packet_id\":\"5\",\"user\":\"shuiyuan2345\",\"own_mined\":\"3000\",\"bomb\":\"0\",\"luck\":\"0\",\"prize_amount\":\"0\",\"is_last\":\"1\",\"new_prize_pool\":\"1187\",\"packet_amount\":\"104\",\"txid\":\"800\",\"refund\":\"1104\"}",
+          "memo": "{\"packet_id\":\"765\",\"user\":\"shuiyuan2345\",\"own_mined\":\"3000\",\"bomb\":\"0\",\"luck\":\"0\",\"prize_amount\":\"0\",\"is_last\":\"1\",\"new_prize_pool\":\"1187\",\"packet_amount\":\"104\",\"txid\":\"800\",\"refund\":\"1104\"}",
           "quantity": "0.1104 EOS",
           "to": "zhouwanyuwan"
         },
@@ -164,14 +163,13 @@ EOP;
          * ]
          */
         $dd_data = $data['data']['actions'][0]['data'];
-        // 发送账号
-        $from = $dd_data['from'];
-        // 接收账号 抢红包账号
-        $to = $dd_data['to'];
-        // 金额 无用
-        $quantity = $dd_data['quantity'];
+
         // memo信息
         $memo = $dd_data['memo'];
+        if (!isset($dd_data['memo'])) {
+            Log::error('未解析到memo：' . $msg);
+            return '';
+        }
 
         $memo_arr = json_decode($memo, true);
         if (json_last_error() == JSON_ERROR_SYNTAX) {
@@ -233,7 +231,7 @@ EOP;
         $refund = $memo_arr['refund'];
         // 平台利润问题
         $platform_reserve = 0;
-        if (isset($memo_arr['platform_reserve'])){
+        if (isset($memo_arr['platform_reserve'])) {
             $platform_reserve = $memo_arr['platform_reserve'] / 10000;
         }
 
@@ -327,16 +325,7 @@ EOP;
                 }
 
                 $name = User::find($outPacket->userid)->name;
-                $issus_sum_arr = [
-                    0 => -1,
-                    '0.1000' => 0.1,
-                    '1.0000' => 1,
-                    '5.0000' => 5,
-                    '10.0000' => 10,
-                    '20.0000' => 20,
-                    '50.0000' => 50,
-                    '100.0000' => 100
-                ];
+                $issus_sum_arr = OutPacket::$iidexArr;
                 $index = $issus_sum_arr[$outPacket->issus_sum];
                 $outPacket_data['id'] = $outPacket->id;
                 $outPacket_data['userid'] = $outPacket->id;

@@ -236,16 +236,7 @@ class ApiController extends Controller
                 $chailei_data = array_values($chailei_data__);
 
                 $name = User::find($outPacket->userid)->name;
-                $issus_sum_arr = [
-                    '0.0000' => -1,
-                    '0.1000' => 0.1,
-                    '1.0000' => 1,
-                    '5.0000' => 5,
-                    '10.0000' => 10,
-                    '20.0000' => 20,
-                    '50.0000' => 50,
-                    '100.0000' => 100
-                ];
+                $issus_sum_arr = OutPacket::$iidexArr;
                 $index = $issus_sum_arr[$outPacket->issus_sum];
                 $outPacket_data['id'] = $outPacket->id;
                 $outPacket_data['userid'] = $outPacket->id;
@@ -521,6 +512,11 @@ class ApiController extends Controller
 
     }
 
+    /**
+     * 关闭红包接口
+     * @param Request $request
+     * @return $this
+     */
     public function close_packet(Request $request)
     {
         $blocknumber = $request->input('outid');
@@ -563,15 +559,7 @@ class ApiController extends Controller
         $chailei_data = array_values($chailei_data__);
 
         $name = User::find($outPacket->userid)->name;
-        $issus_sum_arr = [
-            0 => -1,
-            '0.1000' => 0.1,
-            '1.0000' => 1,
-            '5.0000' => 5,
-            '10.0000' => 10,
-            '50.0000' => 50,
-            '100.0000' => 100
-        ];
+        $issus_sum_arr = OutPacket::$iidexArr;
         $index = $issus_sum_arr[$outPacket->issus_sum];
         $outPacket_data['id'] = $outPacket->id;
         $outPacket_data['userid'] = $outPacket->id;

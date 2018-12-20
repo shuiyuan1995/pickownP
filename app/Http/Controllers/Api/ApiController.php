@@ -289,6 +289,7 @@ class ApiController extends Controller
             'code' => 200
         ], '发送成功');
         }catch (\Exception $exception){
+            Log::error($exception);
             DB::rollBack();
             return $this->json([],2013,'查询失败');
         }

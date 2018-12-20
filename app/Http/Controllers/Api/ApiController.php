@@ -281,7 +281,7 @@ class ApiController extends Controller
                 3,
                 [],
                 $data,
-                []
+                InPacketResource::make($entity)
             ));
         }
         DB::commit();

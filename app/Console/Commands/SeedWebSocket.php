@@ -85,7 +85,7 @@ class SeedWebSocket extends Command
         ],
         "data": {
           "from": "pickowngames",
-          "memo": "{\"packet_id\":\"765\",\"user\":\"shuiyuan2345\",\"own_mined\":\"3000\",\"bomb\":\"0\",\"luck\":\"0\",\"prize_amount\":\"0\",\"is_last\":\"1\",\"new_prize_pool\":\"1187\",\"packet_amount\":\"104\",\"txid\":\"800\",\"refund\":\"1104\"}",
+          "memo": "{\"packet_id\":\"343\",\"user\":\"shuiyuan2345\",\"own_mined\":\"3000\",\"bomb\":\"0\",\"luck\":\"0\",\"prize_amount\":\"0\",\"is_last\":\"1\",\"new_prize_pool\":\"1187\",\"packet_amount\":\"104\",\"txid\":\"800\",\"refund\":\"1104\"}",
           "quantity": "0.1104 EOS",
           "to": "zhouwanyuwan"
         },

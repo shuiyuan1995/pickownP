@@ -266,7 +266,7 @@ class ApiController extends Controller
                 2,
                 $index,
                 $data,
-                    InPacketResource::make($entity)
+                json_decode(json_encode(InPacketResource::make($entity)))
             ));
             $out = OutPacket::find($outid);
             $out->is_guangbo = 1;
@@ -281,7 +281,7 @@ class ApiController extends Controller
                 3,
                 [],
                 $data,
-                InPacketResource::make($entity)
+                json_decode(json_encode(InPacketResource::make($entity)))
             ));
         }
         DB::commit();

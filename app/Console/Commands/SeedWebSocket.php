@@ -64,7 +64,7 @@ class SeedWebSocket extends Command
                 ->then(function (WebSocket $conn) {
                     $conn->on('message', function (MessageInterface $msg) use ($conn) {
                         // 数据样例1
-                        $msgaa = <<<EOP
+                        $msg = <<<EOP
 {
   "errno": 0,
   "msg_type": "data",
@@ -349,7 +349,7 @@ EOP;
                     2,
                     $index,
                     $this->getinfo(),
-                    InPacketResource::make($entity)
+                    json_decode(json_encode(InPacketResource::make($entity)))
                 ));
                 $out = OutPacket::find($outid);
                 $out->is_guangbo = 1;
@@ -365,7 +365,7 @@ EOP;
                     3,
                     [],
                     $this->getinfo(),
-                    InPacketResource::make($entity)
+                    json_decode(json_encode(InPacketResource::make($entity)))
                 ));
             }
 

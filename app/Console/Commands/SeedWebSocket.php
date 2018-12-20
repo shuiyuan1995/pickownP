@@ -51,6 +51,7 @@ class SeedWebSocket extends Command
         $i = 0;
         $eospark_key = config('app.eospark_key');
         $url = 'wss://ws.eospark.com/v1/ws?apikey=' . $eospark_key;
+        $url = 'wss://ws.eospark.com/test/v1/ws?apikey=ac45a8b9a11e4ec1d7a994b76f7c6f17';
         while (true) {
             $loop = Factory::create();
             $reactConnector = new Connector($loop, [
@@ -225,6 +226,7 @@ EOP;
         $new_prize_pool = $memo_arr['new_prize_pool'];
         // 红包金额
         $packet_amount = $memo_arr['packet_amount'];
+
         // 抢红包唯一标示
         $txid = $memo_arr['txid'];
         // 退款 - 无用
@@ -327,13 +329,13 @@ EOP;
                 $name = User::find($outPacket->userid)->name;
                 $issus_sum_arr = [
                     0 => -1,
-                    '0.1000' => 0,
+                    '0.1000' => 0.1,
                     '1.0000' => 1,
-                    '5.0000' => 2,
-                    '10.0000' => 3,
-                    '20.0000' => 4,
-                    '50.0000' => 5,
-                    '100.0000' => 6
+                    '5.0000' => 5,
+                    '10.0000' => 10,
+                    '20.0000' => 20,
+                    '50.0000' => 50,
+                    '100.0000' => 100
                 ];
                 $index = $issus_sum_arr[$outPacket->issus_sum];
                 $outPacket_data['id'] = $outPacket->id;

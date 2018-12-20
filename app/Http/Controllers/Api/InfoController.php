@@ -190,7 +190,11 @@ class InfoController extends Controller
                 array_push($data_d[$i], $value);
             }
         }
-
+        foreach ($data_d as $item => $value) {
+            if (empty($data_d[$item])) {
+                unset($data_d[$item]);
+            }
+        }
         return $this->json($data_d);
     }
 

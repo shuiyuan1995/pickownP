@@ -130,37 +130,44 @@ class InfoController extends Controller
     public function getMoneyList(Request $request)
     {
         $query = OutPacket::query()->with('user');
-        $list = $query->where('status', 1)->orderBy('created_at', 'asc')->get();
+        $query->where('status', 1);
+        $indexArrSwitch = (new OutPacket())->indexArrSwitch;
+//        foreach ($indexArrSwitch as $i => $v){
+//            if ($v){
+//                $query->where('issus_sum',$i);
+//            }
+//        }
+        $list = $query->orderBy('created_at', 'asc')->get();
         $indexArr = [
             '0.1000' => 0,
             '1.0000' => 1,
             '5.0000' => 2,
-//            '10.0000' => 3,
-//            '20.0000' => 4,
-//            '50.0000' => 5,
+            '10.0000' => 3,
+            '20.0000' => 4,
+            '50.0000' => 5,
             '100.0000' => 6
         ];
         $data = [];
-        $indexArrSwitch = (new OutPacket())->indexArrSwitch;
-        $yiqianwanhonbao = [];
-//        foreach ($indexArrSwitch as $i => $v) {
-//            if ($v === true) {
-//                $ooooentity = OutPacket::query()->where('status', 2)
-//                    ->where('issus_sum', $i)
-//                    ->orderBy('updated_at', 'desc')->first();
-//                if (!empty($ooooentity)) {
-//                    $yiqianwanhonbao[$indexArr[$i]] = $ooooentity;
-//                }
-//                //dump($ooooentity);
-//            }
-//        }
-        $jieguo = OutPacket::query()->where('status', 2)
-            ->orderBy('updated_at', 'desc')->get();
-        // 已抢完的最新红包
 
-        foreach ($jieguo->groupBy('issus_sum') as $v) {
-            $yiqianwanhonbao[] = $v->first();
+        $yiqianwanhonbao = [];
+        foreach ($indexArrSwitch as $i => $v) {
+            if ($v === true) {
+                $ooooentity = OutPacket::query()->where('status', 2)
+                    ->where('issus_sum', $i)
+                    ->orderBy('updated_at', 'desc')->first();
+                if (!empty($ooooentity)) {
+                    $yiqianwanhonbao[$indexArr[$i]] = $ooooentity;
+                }
+                //dump($ooooentity);
+            }
         }
+//        $jieguo = OutPacket::query()->where('status', 2)
+//            ->orderBy('updated_at', 'desc')->get();
+//        // 已抢完的最新红包
+//
+//        foreach ($jieguo->groupBy('issus_sum') as $v) {
+//            $yiqianwanhonbao[] = $v->first();
+//        }
         foreach ($yiqianwanhonbao as $item => $value) {
             $data[$indexArr[$value->issus_sum]][$value->id]['index'] = $indexArr[$value->issus_sum];
             $data[$indexArr[$value->issus_sum]][$value->id]['name'] = User::find($value->userid)->name;
@@ -203,9 +210,11 @@ class InfoController extends Controller
                 array_push($data_d[$i], $value);
             }
         }
+        $jieheentity = new OutPacket();
+        $jiehearr = array_combine($jieheentity->indexArr,$jieheentity->indexArrSwitch);
         foreach ($data_d as $item => $value) {
-            if (empty($data_d[$item])) {
-//                unset($data_d[$item]);
+            if ($jiehearr[$item] === false) {
+                unset($data_d[$item]);
             }
         }
         $data_dd = array_values($data_d);

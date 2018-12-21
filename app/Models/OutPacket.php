@@ -42,7 +42,7 @@ class OutPacket extends Model
         '100.0000' => 100
     ];
     public $indexArrSwitch = [
-        '0.1000' => false,
+        '0.1000' => true,
         '1.0000' => true,
         '5.0000' => true,
         '10.0000' => false,

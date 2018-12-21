@@ -66,36 +66,7 @@ class SeedWebSocket extends Command
                         // 数据样例1
                         Log::info('源数据：' . $msg);
                         $msgaa = <<<EOP
-{
-  "errno": 0,
-  "msg_type": "data",
-  "errmsg": "",
-  "data": {
-    "trx_id": "f2ed6414c1ddd2c8d96b6d500ca1890d3eee436830607233e75a72600c895737",
-    "block_num": 32691027,
-    "global_action_seq": 3010998871,
-    "trx_timestamp": "2018-12-18T05:52:48.000",
-    "actions": [
-      {
-        "account": "eosio.token",
-        "authorization": [
-          {
-            "actor": "pickowngames",
-            "permission": "active"
-          }
-        ],
-        "data": {
-          "from": "pickowngames",
-          "memo": "{\"packet_id\":\"343\",\"user\":\"shuiyuan2345\",\"own_mined\":\"3000\",\"bomb\":\"0\",\"luck\":\"0\",\"prize_amount\":\"0\",\"is_last\":\"1\",\"new_prize_pool\":\"1187\",\"packet_amount\":\"104\",\"txid\":\"800\",\"refund\":\"1104\"}",
-          "quantity": "0.1104 EOS",
-          "to": "zhouwanyuwan"
-        },
-        "hex_data": "8095346c720a91ab300dd77e1aae69fb500400000000000004454f5300000000c2017b227061636b65745f6964223a223736222c2275736572223a227a686f7577616e797577616e222c226f776e5f6d696e6564223a2233303030222c22626f6d62223a2230222c226c75636b223a2230222c227072697a655f616d6f756e74223a2230222c2269735f6c617374223a2230222c226e65775f7072697a655f706f6f6c223a2231313837222c227061636b65745f616d6f756e74223a22313034222c2274786964223a223736303030303030222c22726566756e64223a2231313034227d",
-        "name": "transfer"
-      }
-    ]
-  }
-}
+{"errno":0,"msg_type":"data","errmsg":"","data":{"trx_id":"ac6301ef4534766e184c8dcec9583bba5ca6ed129f04f69fbe6a6249371e6fc6","block_num":33209141,"global_action_seq":3120730087,"trx_timestamp":"2018-12-21T06:02:59.000","actions":[{"account":"eosio.token","authorization":[{"actor":"pickowngames","permission":"active"}],"data":{"from":"pickowngames","memo":"{\"packet_id\":\"344\",\"user\":\"brucewc12345\",\"own_mined\":\"3000\",\"bomb\":\"0\",\"luck\":\"0\",\"prize_amount\":\"0\",\"is_last\":\"0\",\"new_prize_pool\":\"2175\",\"packet_amount\":\"3\",\"txid\":\"344000000\"}","quantity":"0.1003 EOS","to":"brucewc12345"},"hex_data":"8095346c720a91ab50c810017185f43deb0300000000000004454f5300000000b2017b227061636b65745f6964223a22333434222c2275736572223a22627275636577633132333435222c226f776e5f6d696e6564223a2233303030222c22626f6d62223a2230222c226c75636b223a2230222c227072697a655f616d6f756e74223a2230222c2269735f6c617374223a2230222c226e65775f7072697a655f706f6f6c223a2232313735222c227061636b65745f616d6f756e74223a2233222c2274786964223a22333434303030303030227d","name":"transfer"}]}}
 
 EOP;
                         // 数据样例2
@@ -109,6 +80,7 @@ EOP;
 
 
                         $data = json_decode($msg, true);
+//                        dump($data);
                         if ($data['msg_type'] == 'subscribe_account') {
                             echo "账户订阅成功\n";
                         } elseif ($data['msg_type'] == 'heartbeat') {
@@ -243,7 +215,7 @@ EOP;
             $addr = $memo_arr['ref'];
         }
         $reffee = 0;
-        if (isset($memo_arr['ref'])) {
+        if (isset($memo_arr['reffee'])) {
             $reffee = $memo_arr['reffee'] / 10000;
         }
 
@@ -263,6 +235,8 @@ EOP;
                 $jiancha_in_packet->reward_sum = $prize_amount / 10000;
                 $jiancha_in_packet->own = $own_mined / 10000;
                 $jiancha_in_packet->prize_pool = $new_prize_pool / 10000;
+                $jiancha_in_packet->addr = $addr;
+                $jiancha_in_packet->reffee = $reffee;
                 $jiancha_in_packet->save();
                 $entity = $jiancha_in_packet;
                 DB::commit();
@@ -280,7 +254,8 @@ EOP;
                     'own' => $own_mined / 10000,
                     'prize_pool' => $new_prize_pool / 10000,
                     'txid' => $txid,
-                    'addr' => $addr
+                    'addr' => $addr,
+                    'reffee' => $reffee
                 ];
                 $entity = InPacket::create($inPacket);
             }

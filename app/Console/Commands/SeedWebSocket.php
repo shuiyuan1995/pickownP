@@ -65,7 +65,7 @@ class SeedWebSocket extends Command
                     $conn->on('message', function (MessageInterface $msg) use ($conn) {
                         // 数据样例1
                         Log::info('源数据：' . $msg);
-                        $msg = <<<EOP
+                        $msgaa = <<<EOP
 {
     "errno":0,
     "msg_type":"data",

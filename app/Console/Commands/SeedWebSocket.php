@@ -65,8 +65,20 @@ class SeedWebSocket extends Command
                     $conn->on('message', function (MessageInterface $msg) use ($conn) {
                         // 数据样例1
                         Log::info('源数据：' . $msg);
-                        $msgaa = <<<EOP
-{"errno":0,"msg_type":"data","errmsg":"","data":{"trx_id":"ac6301ef4534766e184c8dcec9583bba5ca6ed129f04f69fbe6a6249371e6fc6","block_num":33209141,"global_action_seq":3120730087,"trx_timestamp":"2018-12-21T06:02:59.000","actions":[{"account":"eosio.token","authorization":[{"actor":"pickowngames","permission":"active"}],"data":{"from":"pickowngames","memo":"{\"packet_id\":\"344\",\"user\":\"brucewc12345\",\"own_mined\":\"3000\",\"bomb\":\"0\",\"luck\":\"0\",\"prize_amount\":\"0\",\"is_last\":\"0\",\"new_prize_pool\":\"2175\",\"packet_amount\":\"3\",\"txid\":\"344000000\"}","quantity":"0.1003 EOS","to":"brucewc12345"},"hex_data":"8095346c720a91ab50c810017185f43deb0300000000000004454f5300000000b2017b227061636b65745f6964223a22333434222c2275736572223a22627275636577633132333435222c226f776e5f6d696e6564223a2233303030222c22626f6d62223a2230222c226c75636b223a2230222c227072697a655f616d6f756e74223a2230222c2269735f6c617374223a2230222c226e65775f7072697a655f706f6f6c223a2232313735222c227061636b65745f616d6f756e74223a2233222c2274786964223a22333434303030303030227d","name":"transfer"}]}}
+                        $msg = <<<EOP
+{
+    "errno":0,
+    "msg_type":"data",
+    "errmsg":"",
+    "data":
+        {
+            "trx_id":"ac6301ef4534766e184c8dcec9583bba5ca6ed129f04f69fbe6a6249371e6fc6",
+            "block_num":33209141,
+            "global_action_seq":3120730087,
+            "trx_timestamp":"2018-12-21T06:02:59.000",
+            "actions":
+                [
+                    {"account":"eosio.token","authorization":[{"actor":"pickowngames","permission":"active"}],"data":{"from":"pickowngames","memo":"{\"packet_id\":\"344\",\"user\":\"brucewc12345\",\"own_mined\":\"3000\",\"bomb\":\"0\",\"luck\":\"0\",\"prize_amount\":\"0\",\"is_last\":\"0\",\"new_prize_pool\":\"2175\",\"packet_amount\":\"3\",\"txid\":\"344000000\"}","quantity":"0.1003 EOS","to":"brucewc12345"},"hex_data":"8095346c720a91ab50c810017185f43deb0300000000000004454f5300000000b2017b227061636b65745f6964223a22333434222c2275736572223a22627275636577633132333435222c226f776e5f6d696e6564223a2233303030222c22626f6d62223a2230222c226c75636b223a2230222c227072697a655f616d6f756e74223a2230222c2269735f6c617374223a2230222c226e65775f7072697a655f706f6f6c223a2232313735222c227061636b65745f616d6f756e74223a2233222c2274786964223a22333434303030303030227d","name":"transfer"}]}}
 
 EOP;
                         // 数据样例2
@@ -135,6 +147,16 @@ EOP;
          * "to" => "zhouwanyuwan"
          * ]
          */
+        if (!isset($data['data']['trx_id'])){
+            Log::error('trx_id不存在：'.$msg);
+            return '';
+        }
+        if (!isset($data['data']['actions'][0]['data'])){
+            Log::error('data_actions_0_data不存在：'.$msg);
+            return '';
+        }
+        $trxid = $data['data']['trx_id'];
+//        dump($trxid);
         $dd_data = $data['data']['actions'][0]['data'];
 
         // memo信息
@@ -237,6 +259,7 @@ EOP;
                 $jiancha_in_packet->prize_pool = $new_prize_pool / 10000;
                 $jiancha_in_packet->addr = $addr;
                 $jiancha_in_packet->reffee = $reffee;
+                $jiancha_in_packet->trxid = $trxid;
                 $jiancha_in_packet->save();
                 $entity = $jiancha_in_packet;
                 DB::commit();
@@ -255,7 +278,8 @@ EOP;
                     'prize_pool' => $new_prize_pool / 10000,
                     'txid' => $txid,
                     'addr' => $addr,
-                    'reffee' => $reffee
+                    'reffee' => $reffee,
+                    'trxid' => $trxid
                 ];
                 $entity = InPacket::create($inPacket);
             }

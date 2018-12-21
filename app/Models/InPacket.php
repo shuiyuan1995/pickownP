@@ -23,7 +23,8 @@ class InPacket extends Model
         'own',
         'prize_pool',
         'txid',
-        'reffee'
+        'reffee',
+        'trxid'
     ];
 
     public $statusArr = [1 => '正常', 2 => '异常'];

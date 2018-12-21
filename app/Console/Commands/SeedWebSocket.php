@@ -177,7 +177,7 @@ EOP;
             echo '编码错误' . "\n";
             return '';
         }
-        if (!isset($memo_arr['user'])) {
+        if (!isset($memo_arr['is_last'])) {
             echo '该条不是抢红包记录';
             Log::error('该条不是抢红包记录：' . $msg);
             return '';
@@ -192,7 +192,11 @@ EOP;
         }
         $outid = $outpacketModel->id;
         // 用户名
-        $user = $memo_arr['user'];
+        if (!isset($dd_data['to'])) {
+            Log::error('未解析到用户名：' . $msg);
+            return '';
+        }
+        $user = $dd_data['to'];
         $userModel = User::query()->where('name', $user)->first();
         if (empty($userModel)) {
             echo '用户未找到';
@@ -229,11 +233,18 @@ EOP;
         // 抢红包唯一标示
         $txid = $memo_arr['txid'];
         // 退款 - 无用
-        $refund = $memo_arr['refund'];
-        // 平台利润问题
+
         $platform_reserve = 0;
         if (isset($memo_arr['platform_reserve'])) {
             $platform_reserve = $memo_arr['platform_reserve'] / 10000;
+        }
+        $addr = '';
+        if (isset($memo_arr['ref'])) {
+            $addr = $memo_arr['ref'];
+        }
+        $reffee = 0;
+        if (isset($memo_arr['ref'])) {
+            $reffee = $memo_arr['reffee'] / 10000;
         }
 
         try {
@@ -268,7 +279,8 @@ EOP;
                     'reward_sum' => $prize_amount / 10000,
                     'own' => $own_mined / 10000,
                     'prize_pool' => $new_prize_pool / 10000,
-                    'txid' => $txid
+                    'txid' => $txid,
+                    'addr' => $addr
                 ];
                 $entity = InPacket::create($inPacket);
             }

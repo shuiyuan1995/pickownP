@@ -33,6 +33,7 @@ class CreateInPacketsTable extends Migration
             $table->decimal('prize_pool',18,4)->nullable()->commene('当前奖池的数量');
             $table->string('txid',255)->nullable()->comment('抢红包的唯一标志');
             $table->decimal('reffee',18,4)->nullable()->default(0)->comment('邀请金额');
+            $table->string('trxid',255)->nullable()->comment('区块链上的交易id');
             // 创建时间用于领奖时间
             $table->timestamps();
         });

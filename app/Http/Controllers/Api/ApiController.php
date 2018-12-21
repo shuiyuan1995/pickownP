@@ -607,10 +607,11 @@ class ApiController extends Controller
             "encode_type" => "dec"
         ];
 
-        $data = request_curl($url, $array, true, false);
+        $data = request_curl($url, $array, true, true);
         $infoRes = json_decode($data);
+        dd($infoRes);
         //打印排行榜
-        $rankList = array_sort(infoRes['rows'], 'balance', 'desc');
+        $rankList = array_sort($infoRes['rows'], 'balance', 'desc');
         dd($rankList);
 
         //获取空投奖池的金额

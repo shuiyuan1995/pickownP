@@ -46,9 +46,9 @@ class OutPacket extends Model
         '1.0000' => true,
         '5.0000' => true,
         '10.0000' => false,
-        '20.0000' => true,
+        '20.0000' => false,
         '50.0000' => false,
-        '100.0000' => false
+        '100.0000' => true
     ];
     public function user()
     {

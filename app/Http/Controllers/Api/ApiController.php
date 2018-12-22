@@ -469,13 +469,15 @@ class ApiController extends Controller
         //$getRewardCount = DB::select('SELECT addr,income_userid,sum(eos) AS tixian_count FROM transaction_infos WHERE type = 5 AND income_userid = :income_userid',
         //    ['income_userid' => $userid]);
 //        dd($getRewardCount);
-        $arr = DB::select('SELECT issus_sum , count(issus_sum) AS count FROM out_packets,in_packets WHERE in_packets.outid = out_packets.id AND in_packets.addr = :addr GROUP BY issus_sum',
-            ['addr' => User::find($userid)->name]);
+//        $arr = DB::select('SELECT issus_sum , count(issus_sum) AS count FROM out_packets,in_packets WHERE in_packets.outid = out_packets.id AND in_packets.addr = :addr GROUP BY issus_sum',
+//            ['addr' => User::find($userid)->name]);
 //        dd($arr);
-        $sum = 0;
-        foreach ($arr as $item => $value) {
-            $sum += $jiangjingArr[$value->issus_sum] * $value->count;
-        }
+
+        $sum = InPacket::query()->where('addr',User::find($userid)->name)->sum('reffee');
+        //$sum = 0;
+        //foreach ($arr as $item => $value) {
+          //  $sum += $jiangjingArr[$value->issus_sum] * $value->count;
+        //}
 //        $tixian_sum = 0;
 //        foreach ($getRewardCount as $value) {
 //            if (!empty($value->tixian_count)) {

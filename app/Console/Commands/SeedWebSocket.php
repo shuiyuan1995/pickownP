@@ -160,12 +160,12 @@ EOP;
         $dd_data = $data['data']['actions'][0]['data'];
 
         // memo信息
-        $memo = $dd_data['memo'];
+
         if (!isset($dd_data['memo'])) {
             Log::error('未解析到memo：' . $msg);
             return '';
         }
-
+        $memo = $dd_data['memo'];
         $memo_arr = json_decode($memo, true);
         if (json_last_error() == JSON_ERROR_SYNTAX) {
             echo '编码错误' . "\n";

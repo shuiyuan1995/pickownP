@@ -126,7 +126,7 @@
                         <td>{{ $item->addr }}</td>
                         <td>{{ $item->reffee }}</td>
                         <td>{{ $item->txid }}</td>
-                        <td><a class="btn" href="https://eospark.com/tx/{{ $item->trxid }}">{{ $item->trxid }}</a></td>
+                        <td><a class="btn" target="_blank" href="https://eospark.com/tx/{{ $item->trxid }}">{{ $item->trxid }}</a></td>
                         {{--<td>--}}
                         {{--<a href="{{route('admin.home_user.edit', $item)}}" class="btn btn-info btn-sm">修改</a>--}}
                         {{--</td>--}}

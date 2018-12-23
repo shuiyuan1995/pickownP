@@ -21,6 +21,10 @@
                         <input type="text" class="form-control" name="name" value="{{request('name')}}"
                                placeholder="抢红包者用户名">
                     </div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" name="eosid" value="{{request('eosid')}}"
+                               placeholder="区块链ID">
+                    </div>
                 </div>
 
                 <div class="form-group">

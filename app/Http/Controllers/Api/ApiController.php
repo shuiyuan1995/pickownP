@@ -621,4 +621,13 @@ class ApiController extends Controller
 
         return $this->success();
     }
+
+    /**
+     * 新版抢红包提交方式
+     * packetId
+     * @param Request $request
+     */
+    public function post_income_packet(Request $request){
+        //
+    }
 }

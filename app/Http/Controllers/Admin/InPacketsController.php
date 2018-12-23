@@ -14,6 +14,9 @@ class InPacketsController extends Controller
         if ($request->filled('id')) {
             $query->where('outid', $request->input('id'));
         }
+        if ($request->filled('eosid')) {
+            $query->where('eosid', $request->input('eosid'));
+        }
         if ($request->filled('issus_name')) {
             $issus_name = $request->input('issus_name');
             $query->whereHas('out', function ($query) use ($issus_name) {

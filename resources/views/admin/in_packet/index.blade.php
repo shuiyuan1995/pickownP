@@ -97,6 +97,10 @@
                     <th>挖矿数</th>
                     <th>时间</th>
                     <th>奖池流水</th>
+                    <th>推荐人用户名</th>
+                    <th>推荐佣金</th>
+                    <th>txid</th>
+                    <th>trxid</th>
                     {{--<th>操作</th>--}}
                 </tr>
                 </thead>
@@ -119,6 +123,10 @@
                         <td>{{ empty($item->own)?0:$item->own }}</td>
                         <td>{{ $item->updated_at }}</td>
                         <td>{{ $item->prize_pool }}</td>
+                        <td>{{ $item->addr }}</td>
+                        <td>{{ $item->reffee }}</td>
+                        <td>{{ $item->txid }}</td>
+                        <td>{{ $item->trxid }}</td>
                         {{--<td>--}}
                         {{--<a href="{{route('admin.home_user.edit', $item)}}" class="btn btn-info btn-sm">修改</a>--}}
                         {{--</td>--}}

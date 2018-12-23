@@ -17,7 +17,8 @@
                         <select class="form-control" name="status" title="红包是否领完">
                             <option value="">是否领完</option>
                             @foreach($statusArr as $item => $value)
-                                <option value="{{$item}}" @if($item == request('status'))selected @endif>{{$value}}</option>
+                                <option value="{{$item}}"
+                                        @if($item == request('status'))selected @endif>{{$value}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -25,7 +26,8 @@
                         <select class="form-control" name="index" title="红包金额">
                             <option value="">请选择红包金额</option>
                             @foreach($indexArr as $item => $value)
-                                <option value="{{$item}}" @if($item == request('index'))selected @endif>{{$item}}</option>
+                                <option value="{{$item}}"
+                                        @if($item == request('index'))selected @endif>{{$item}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -33,7 +35,8 @@
                 <div class="form-group">
                     <div class="col-md-2 control-label">时间范围</div>
                     <div class="col-md-2">
-                        <input type="text" class="form-control datetime" name="begin_time" value="{{request('begin_time')}}"
+                        <input type="text" class="form-control datetime" name="begin_time"
+                               value="{{request('begin_time')}}"
                                placeholder="开始时间">
                     </div>
                     <div class="col-md-2">
@@ -65,6 +68,7 @@
                 </thead>
                 <tbody>
                 @foreach($list as $item)
+
                     <tr>
                         <td>{{ $item->id }}</td>
                         <td>{{ $item->user->name }}</td>
@@ -72,13 +76,15 @@
                         <td>{{ $item->issus_sum }}</td>
                         <td>{{ $item->count }}</td>
                         <td>{{ $item->eosid }}</td>
-                        <td>{{ $item->blocknumber }}</td>
+                        <td><a target="_blank" title="点击查看详情" href="https://eospark.com/tx/{{ $item->blocknumber }}" class="btn">{{ $item->blocknumber }}</a> </td>
                         <td>{{ $item->statusArr[$item->status] }}</td>
                         <td>{{ $item->updated_at }}</td>
                         <td>
                             <a href="{{route('admin.out_packet.edit', $item)}}" class="btn btn-info btn-sm">修改</a>
-                        </td>
+                            <a href="{{ route('admin.in_packet.index',['id'=>$item->id]) }}"
+                               class="btn btn-default btn-sm">查看红包领取记录</a></td>
                     </tr>
+
                 @endforeach
                 </tbody>
             </table>

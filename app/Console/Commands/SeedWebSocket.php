@@ -50,7 +50,8 @@ class SeedWebSocket extends Command
     {
         $i = 0;
         $eospark_key = config('app.eospark_key');
-        $url = 'wss://ws.eospark.com/v1/ws?apikey=' . $eospark_key;
+//        $url = 'wss://ws.eospark.com/v1/ws?apikey=' . $eospark_key;
+        $url = 'wss://ws.eospark.com/test/v1/ws?apikey=' . $eospark_key;
         while (true) {
             $loop = Factory::create();
             $reactConnector = new Connector($loop, [
@@ -147,12 +148,12 @@ EOP;
          * "to" => "zhouwanyuwan"
          * ]
          */
-        if (!isset($data['data']['trx_id'])){
-            Log::error('trx_id不存在：'.$msg);
+        if (!isset($data['data']['trx_id'])) {
+            Log::error('trx_id不存在：' . $msg);
             return '';
         }
-        if (!isset($data['data']['actions'][0]['data'])){
-            Log::error('data_actions_0_data不存在：'.$msg);
+        if (!isset($data['data']['actions'][0]['data'])) {
+            Log::error('data_actions_0_data不存在：' . $msg);
             return '';
         }
         $trxid = $data['data']['trx_id'];

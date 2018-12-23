@@ -299,7 +299,7 @@ class ApiController extends Controller
         $userid = substr($request->header('token'), strripos($request->header('token'), ':') + 1);
         $outpacketsum = OutPacket::query()->where('userid', $userid)->sum('issus_sum');
         $outpacket = OutPacket::query()->where('userid', $userid)->count();
-        $sql = 'SELECT count(DISTINCT out_packets.userid) AS count FROM out_packets,in_packets WHERE out_packets.id = in_packets.outid AND status = 2 AND out_packets.userid = :userid';
+        $sql = 'SELECT count(DISTINCT out_packets.userid) AS count FROM out_packets,in_packets WHERE out_packets.id = in_packets.outid AND out_packets.status = 2 AND out_packets.userid = :userid';
         $chailei = DB::select($sql, ['userid' => $userid]);
         $chaileicount = 0;
         foreach ($chailei as $value) {

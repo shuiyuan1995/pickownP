@@ -21,6 +21,10 @@ class OutPacketsController extends Controller
             $number = $request->input('number');
             $query->where('tail_number',$number);
         }
+        if ($request->filled('eosid')) {
+            $number = $request->input('eosid');
+            $query->where('eosid',$number);
+        }
         if ($request->filled('status')) {
             $key = $request->input('status');
             $query->where('status',$key);

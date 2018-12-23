@@ -14,6 +14,10 @@
                                placeholder="尾数">
                     </div>
                     <div class="col-md-2">
+                        <input type="text" class="form-control" name="eosid" value="{{request('eosid')}}"
+                               placeholder="eosid">
+                    </div>
+                    <div class="col-md-2">
                         <select class="form-control" name="status" title="红包是否领完">
                             <option value="">是否领完</option>
                             @foreach($statusArr as $item => $value)

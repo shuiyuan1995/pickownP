@@ -66,6 +66,7 @@
                     <th>区块链ID</th>
                     <th>blocknumber</th>
                     <th>状态</th>
+                    <th>创建时间</th>
                     <th>更新时间</th>
                     <th>操作</th>
                 </tr>
@@ -82,6 +83,7 @@
                         <td>{{ $item->eosid }}</td>
                         <td><a target="_blank" title="点击查看详情" href="https://eospark.com/tx/{{ $item->blocknumber }}" class="btn">{{ $item->blocknumber }}</a> </td>
                         <td>{{ $item->statusArr[$item->status] }}</td>
+                        <td>{{ $item->created_at }}</td>
                         <td>{{ $item->updated_at }}</td>
                         <td>
                             <a href="{{route('admin.out_packet.edit', $item)}}" class="btn btn-info btn-sm">修改</a>

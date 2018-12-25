@@ -659,6 +659,8 @@ class ApiController extends Controller
                 'income_sum' => 0,
                 'is_chailei' => 2,
                 'is_reward' => 1,
+                'reward_type'=>0,
+                'reward_sum'=>0,
                 'addr' => '',
                 'own' => 0,
                 'prize_pool' => 0,

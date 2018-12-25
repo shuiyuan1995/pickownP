@@ -273,8 +273,8 @@ EOP;
                 Log::error('红包抢失败的记录出错，msg：' . $msg);
                 return '';
             }
-            if (!isset($memo_arr['packet_id'])){
-                Log::error('红包抢失败的记录中未找到packet_id，msg：'.$msg);
+            if (!isset($memo_arr['packet_id'])) {
+                Log::error('红包抢失败的记录中未找到packet_id，msg：' . $msg);
                 return '';
             }
             // 抢红包的eosid
@@ -286,34 +286,42 @@ EOP;
                 return '';
             }
             $outid = $outpacketModel->id;
-            // 用户id $userid
-            $jiancha_in_packet_fail = InPacket::query()->where('eosid',$packet_id)
-                ->where('userid',$userid)
-                ->first();
-            $entity = null;
-            if (empty($jiancha_in_packet_fail)){
-                // 不存在的情况，直接创建一条
-                $data = [
-                    'outid'=>$outid,
-                    'userid'=>$userid,
-                    'eosid'=>$packet_id,
-                    'income_sum'=> 0,
-                    'is_chailei'=> 2,
-                    'is_reward' => 1,
-                    'reward_type' => 0,
-                    'reward_sum' => 0,
-                    'own' => 0,
-                    'prize_pool' => 0,
-                    'txid'=>'',
-                    'reffee'=>0,
-                    'trxid'=>$trxid,
-                    'status'=> 3
-                ];
-                InPacket::create($data);
-            }else{
-                // 存在的情况，修改状态为失败的情况。
-                $jiancha_in_packet_fail->status = 3;
-                $jiancha_in_packet_fail->save();
+            try {
+                \DB::beginTransaction();
+                // 用户id $userid
+                $jiancha_in_packet_fail = InPacket::query()
+                    ->where('eosid', $packet_id)
+                    ->where('userid', $userid)
+                    ->first();
+                $entity = null;
+                if (empty($jiancha_in_packet_fail)) {
+                    // 不存在的情况，直接创建一条
+                    $data = [
+                        'outid' => $outid,
+                        'userid' => $userid,
+                        'eosid' => $packet_id,
+                        'income_sum' => 0,
+                        'is_chailei' => 2,
+                        'is_reward' => 1,
+                        'reward_type' => 0,
+                        'reward_sum' => 0,
+                        'own' => 0,
+                        'prize_pool' => 0,
+                        'txid' => '',
+                        'reffee' => 0,
+                        'trxid' => $trxid,
+                        'status' => 3
+                    ];
+                    InPacket::create($data);
+                } else {
+                    // 存在的情况，修改状态为失败的情况。
+                    $jiancha_in_packet_fail->status = 3;
+                    $jiancha_in_packet_fail->save();
+                }
+                DB::commit();
+            } catch (\Exception $exception) {
+                Log::error('事务失败，错误信息为'.$exception->getMessage());
+                DB::rollBack();
             }
             return '';
         }
@@ -331,7 +339,6 @@ EOP;
             return '';
         }
         $outid = $outpacketModel->id;
-
 
 
         // 挖矿
@@ -371,8 +378,8 @@ EOP;
             // 检查此条抢红包记录是否存在
             // $jiancha_in_packet = InPacket::query()->where('txid', $txid)->first();
             $jiancha_in_packet = InPacket::query()
-                ->where('eosid',$packet_id)
-                ->where('userid',$userid)
+                ->where('eosid', $packet_id)
+                ->where('userid', $userid)
                 ->first();
             $entity = null;
             if (!empty($jiancha_in_packet)) {
@@ -449,7 +456,7 @@ EOP;
             if ($is_last > 0) {
                 // 红包被抢完后生成发红包对用的抢红包的列表
                 $out_in_packet = InPacket::query()->where('outid', $outid)
-                    ->where('status','<',3)->get();
+                    ->where('status', '<', 3)->get();
                 $outPacket_entity = OutPacket::find($outid);
                 $outPacket_entity->status = 2;
                 $outPacket_entity->surplus_sum = $platform_reserve;

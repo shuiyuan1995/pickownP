@@ -10,12 +10,10 @@ use App\Models\InPacket;
 use App\Models\OutPacket;
 use App\Models\TransactionInfo;
 use App\Models\User;
-use function GuzzleHttp\Psr7\str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Mockery\Exception;
 
 class ApiController extends Controller
 {
@@ -644,34 +642,39 @@ class ApiController extends Controller
             return $this->json(['msg' => '红包未找到']);
         }
         $outid = $out_entity->id;
-        DB::beginTransaction();
-        $in_entity = InPacket::query()->where('outid', $outid)
-            ->where('eosid', $eosid)
-            ->where('userid', $userid)
-            ->orderBy('updated_at')
-            ->lockForUpdate()->first();
-        if (empty($in_entity)) {
-            // 创建一条待处理的记录
-            $data = [
-                'outid' => $outid,
-                'userid' => $userid,
-                'eosid' => $eosid,
-                'income_sum' => 0,
-                'is_chailei' => 2,
-                'is_reward' => 1,
-                'reward_type' => 0,
-                'reward_sum' => 0,
-                'addr' => '',
-                'own' => 0,
-                'prize_pool' => 0,
-                'txid' => '',
-                'reffee' => 0,
-                // 状态为待处理
-                'status' => 4,
-                'trxid' => ''
-            ];
-            $entity = InPacket::create($data);
-            DB::commit();
+        try {
+            DB::beginTransaction();
+            $in_entity = InPacket::query()->where('outid', $outid)
+                ->where('eosid', $eosid)
+                ->where('userid', $userid)
+                ->orderBy('updated_at')
+                ->lockForUpdate()->first();
+            if (empty($in_entity)) {
+                // 创建一条待处理的记录
+                $data = [
+                    'outid' => $outid,
+                    'userid' => $userid,
+                    'eosid' => $eosid,
+                    'income_sum' => 0,
+                    'is_chailei' => 2,
+                    'is_reward' => 1,
+                    'reward_type' => 0,
+                    'reward_sum' => 0,
+                    'addr' => '',
+                    'own' => 0,
+                    'prize_pool' => 0,
+                    'txid' => '',
+                    'reffee' => 0,
+                    // 状态为待处理
+                    'status' => 4,
+                    'trxid' => ''
+                ];
+                $entity = InPacket::create($data);
+                DB::commit();
+            }
+        }catch (\Exception $exception){
+
+        }
             $last_count = InPacket::query()->where('eosid', $eosid)
                 ->where('status', '!=', 3)->count();
             $last = $last_count >= 10 ? 1 : 0;
@@ -683,11 +686,11 @@ class ApiController extends Controller
                     'is_last' => $last
                 ]
             );
-        }
+
         DB::commit();
         $last_count = InPacket::query()->where('eosid', $eosid)
             ->where('status', '!=', 3)->count();
-        $is_last = $last_count >=10 ? 1 : 0;
+        $is_last = $last_count >= 10 ? 1 : 0;
         if ($in_entity->status === 2) {
             // 返回成功的信息
             return $this->json(

@@ -688,6 +688,7 @@ class ApiController extends Controller
             }
         } catch (\Exception $exception) {
             Log::error('事务报错' . $exception->getMessage());
+            DB::rollBack();
         }
 
         DB::commit();

@@ -456,7 +456,7 @@ EOP;
             if ($is_last > 0) {
                 // 红包被抢完后生成发红包对用的抢红包的列表
                 $out_in_packet = InPacket::query()->where('outid', $outid)
-                    ->where('status', '<', 3)->get();
+                    ->where('status', '<=',2)->get();
                 $outPacket_entity = OutPacket::find($outid);
                 $outPacket_entity->status = 2;
                 $outPacket_entity->surplus_sum = $platform_reserve;
@@ -491,7 +491,7 @@ EOP;
                     [],
                     $outPacket_data,
                     [],
-                    $out_in_packet_data,
+                    count($out_in_packet_data) >= 10 ? $out_in_packet_data : [],
                     $name,
                     2,
                     $index,

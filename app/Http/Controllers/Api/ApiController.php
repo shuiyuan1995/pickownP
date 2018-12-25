@@ -659,8 +659,8 @@ class ApiController extends Controller
                 'income_sum' => 0,
                 'is_chailei' => 2,
                 'is_reward' => 1,
-                'reward_type'=>0,
-                'reward_sum'=>0,
+                'reward_type' => 0,
+                'reward_sum' => 0,
                 'addr' => '',
                 'own' => 0,
                 'prize_pool' => 0,
@@ -672,21 +672,29 @@ class ApiController extends Controller
             ];
             $entity = InPacket::create($data);
             DB::commit();
+            $last_count = InPacket::query()->where('eosid', $eosid)
+                ->where('status', '!=', 3)->count();
+            $last = $last_count >= 10 ? 1 : 0;
             // 返回待处理信息
             return $this->json(
                 [
                     'type' => $statusArr['not_received'],
-                    'in_packet' => json_decode(json_encode(InPacketResource::make($entity)))
+                    'in_packet' => json_decode(json_encode(InPacketResource::make($entity))),
+                    'is_last' => $last
                 ]
             );
         }
         DB::commit();
+        $last_count = InPacket::query()->where('eosid', $eosid)
+            ->where('status', '!=', 3)->count();
+        $is_last = $last_count >=10 ? 1 : 0;
         if ($in_entity->status === 2) {
             // 返回成功的信息
             return $this->json(
                 [
                     'type' => $statusArr['success'],
-                    'in_packet' => json_decode(json_encode(InPacketResource::make($in_entity)))
+                    'in_packet' => json_decode(json_encode(InPacketResource::make($in_entity))),
+                    'is_last' => $is_last
                 ]);
         }
 
@@ -702,7 +710,8 @@ class ApiController extends Controller
             return $this->json(
                 [
                     'type' => $statusArr['fail'],
-                    'in_packet' => json_decode(json_encode(InPacketResource::make($in_entity)))
+                    'in_packet' => json_decode(json_encode(InPacketResource::make($in_entity))),
+                    'is_last' => $is_last,
                 ]);
         }
 
@@ -711,7 +720,8 @@ class ApiController extends Controller
             return $this->json(
                 [
                     'type' => $statusArr['success'],
-                    'in_packet' => json_decode(json_encode(InPacketResource::make($in_entity)))
+                    'in_packet' => json_decode(json_encode(InPacketResource::make($in_entity))),
+                    'is_last' => $is_last
                 ]);
         }
         return $this->json(['type' => $statusArr['success'], 'eosid' => $eosid, 'userid' => $userid]);

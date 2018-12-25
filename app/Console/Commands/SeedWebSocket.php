@@ -324,7 +324,11 @@ EOP;
         try {
             \DB::beginTransaction();
             // 检查此条抢红包记录是否存在
-            $jiancha_in_packet = InPacket::query()->where('txid', $txid)->first();
+            // $jiancha_in_packet = InPacket::query()->where('txid', $txid)->first();
+            $jiancha_in_packet = InPacket::query()
+                ->where('eosid',$packet_id)
+                ->where('outid',$outid)
+                ->first();
             $entity = null;
             if (!empty($jiancha_in_packet)) {
                 $jiancha_in_packet->outid = $outid;

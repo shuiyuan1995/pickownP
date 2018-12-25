@@ -5,25 +5,26 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Log;
 
-class OneHourGetData extends Command
+class AllGetData extends Command
 {
     /**
-     * 获取一小时前的数据
+     * 获取所有的数据
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'get:one_hour';
+    protected $signature = 'get:all';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = '获取一小时前的数据';
+    protected $description = '获取所有的数据';
 
     /**
      * Create a new command instance.
+     *
      *
      */
     public function __construct()
@@ -34,12 +35,9 @@ class OneHourGetData extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
      */
     public function handle()
     {
-        date_default_timezone_set('');
-        $time = time();
         $eosparket_key = config('app.eospark_key');
         $url = "https://api.eospark.com/api?module=account&action=get_account_related_trx_info&apikey={$eosparket_key}&account=pickowngames&page=1&size=1&symbol=EOS";
         $data = request_curl($url, [], false, true);

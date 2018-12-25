@@ -10,6 +10,7 @@ use App\Models\InPacket;
 use App\Models\OutPacket;
 use App\Models\TransactionInfo;
 use App\Models\User;
+use function GuzzleHttp\Psr7\str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -191,7 +192,7 @@ class ApiController extends Controller
                 'is_reward' => 1,
                 'reward_type' => 0,
                 'reward_sum' => 0,
-                'addr' => $request->input('addr',''),
+                'addr' => $request->input('addr', ''),
                 'own' => $request->input('own') / 10000,
                 'prize_pool' => $request->input('newPrizePool') / 10000,
                 'txid' => $request->input('txid'),
@@ -473,10 +474,10 @@ class ApiController extends Controller
 //            ['addr' => User::find($userid)->name]);
 //        dd($arr);
 
-        $sum = InPacket::query()->where('addr',User::find($userid)->name)->sum('reffee');
+        $sum = InPacket::query()->where('addr', User::find($userid)->name)->sum('reffee');
         //$sum = 0;
         //foreach ($arr as $item => $value) {
-          //  $sum += $jiangjingArr[$value->issus_sum] * $value->count;
+        //  $sum += $jiangjingArr[$value->issus_sum] * $value->count;
         //}
 //        $tixian_sum = 0;
 //        foreach ($getRewardCount as $value) {
@@ -626,8 +627,91 @@ class ApiController extends Controller
      * 新版抢红包提交方式
      * packetId
      * @param Request $request
+     * @return $this
      */
-    public function post_income_packet(Request $request){
-        //
+    public function post_income_packet(Request $request)
+    {
+        $statusArr = [
+            'success' => 1,
+            'fail' => 2,
+            'not_received' => 3
+        ];
+        $eosid = $request->input('packetId');
+        $userid = substr($request->header('token'), strripos($request->header('token'), ':') + 1);
+
+        $out_entity = OutPacket::query()->where('eosid', $eosid)->first();
+        if (empty($out_entity)) {
+            return $this->json(['msg' => '红包未找到']);
+        }
+        $outid = $out_entity->id;
+        DB::beginTransaction();
+        $in_entity = InPacket::query()->where('outid', $outid)
+            ->where('eosid', $eosid)
+            ->where('userid', $userid)
+            ->orderBy('updated_at')
+            ->lockForUpdate()->first();
+        if (empty($in_entity)) {
+            // 创建一条待处理的记录
+            $data = [
+                'outid' => $outid,
+                'userid' => $userid,
+                'eosid' => $eosid,
+                'income_sum' => 0,
+                'is_chailei' => 2,
+                'is_reward' => 1,
+                'addr' => '',
+                'own' => 0,
+                'prize_pool' => 0,
+                'txid' => '',
+                'reffee' => 0,
+                // 状态为待处理
+                'status' => 4,
+                'trxid' => ''
+            ];
+            $entity = InPacket::create($data);
+            DB::commit();
+            // 返回待处理信息
+            return $this->json(
+                [
+                    'type' => $statusArr['not_received'],
+                    'in_packet' => json_decode(json_encode(InPacketResource::make($entity)))
+                ]
+            );
+        }
+        DB::commit();
+        if ($in_entity->status === 2) {
+            // 返回成功的信息
+            return $this->json(
+                [
+                    'type' => $statusArr['success'],
+                    'in_packet' => json_decode(json_encode(InPacketResource::make($in_entity)))
+                ]);
+        }
+
+        if ($in_entity->status === 3) {
+            // 获取记录的时间
+            $time = strtotime($in_entity->created_at);
+            // 当前时间
+            $current_time = time();
+            if (($current_time - $time) > 60 * 5) {
+
+            }
+            // 返回失败的状态
+            return $this->json(
+                [
+                    'type' => $statusArr['fail'],
+                    'in_packet' => json_decode(json_encode(InPacketResource::make($in_entity)))
+                ]);
+        }
+
+        if ($in_entity->status === 1) {
+            // 返回已播报的状态
+            return $this->json(
+                [
+                    'type' => $statusArr['success'],
+                    'in_packet' => json_decode(json_encode(InPacketResource::make($in_entity)))
+                ]);
+        }
+        return $this->json(['type' => $statusArr['success'], 'eosid' => $eosid, 'userid' => $userid]);
     }
 }

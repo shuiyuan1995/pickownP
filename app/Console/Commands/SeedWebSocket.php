@@ -19,6 +19,7 @@ use React\Socket\Connector;
 class SeedWebSocket extends Command
 {
     /**
+     * 此监听脚本处理抢红包记录，监听两种状态。成功或者失败。
      * The name and signature of the console command.
      *
      * @var string
@@ -71,15 +72,43 @@ class SeedWebSocket extends Command
     "errno":0,
     "msg_type":"data",
     "errmsg":"",
-    "data":
-        {
-            "trx_id":"ac6301ef4534766e184c8dcec9583bba5ca6ed129f04f69fbe6a6249371e6fc6",
-            "block_num":33209141,
-            "global_action_seq":3120730087,
-            "trx_timestamp":"2018-12-21T06:02:59.000",
-            "actions":
-                [
-                    {"account":"eosio.token","authorization":[{"actor":"pickowngames","permission":"active"}],"data":{"from":"pickowngames","memo":"{\"packet_id\":\"344\",\"user\":\"brucewc12345\",\"own_mined\":\"3000\",\"bomb\":\"0\",\"luck\":\"0\",\"prize_amount\":\"0\",\"is_last\":\"0\",\"new_prize_pool\":\"2175\",\"packet_amount\":\"3\",\"txid\":\"344000000\"}","quantity":"0.1003 EOS","to":"brucewc12345"},"hex_data":"8095346c720a91ab50c810017185f43deb0300000000000004454f5300000000b2017b227061636b65745f6964223a22333434222c2275736572223a22627275636577633132333435222c226f776e5f6d696e6564223a2233303030222c22626f6d62223a2230222c226c75636b223a2230222c227072697a655f616d6f756e74223a2230222c2269735f6c617374223a2230222c226e65775f7072697a655f706f6f6c223a2232313735222c227061636b65745f616d6f756e74223a2233222c2274786964223a22333434303030303030227d","name":"transfer"}]}}
+    "data":{
+        "trx_id":"ac6301ef4534766e184c8dcec9583bba5ca6ed129f04f69fbe6a6249371e6fc6",
+        "block_num":33209141,
+        "global_action_seq":3120730087,
+        "trx_timestamp":"2018-12-21T06:02:59.000",
+        "actions":[
+            {
+                "account":"eosio.token",
+                "authorization":[
+                    {
+                        "actor":"pickowngames",
+                        "permission":"active"
+                    }
+                ],
+                "data":{
+                    "from":"pickowngames",
+                    "memo":"{
+                        \"packet_id\":\"344\",
+                        \"user\":\"brucewc12345\",
+                        \"own_mined\":\"3000\",
+                        \"bomb\":\"0\",
+                        \"luck\":\"0\",
+                        \"prize_amount\":\"0\",
+                        \"is_last\":\"0\",
+                        \"new_prize_pool\":\"2175\",
+                        \"packet_amount\":\"3\",
+                        \"txid\":\"344000000\"
+                    }",
+                    "quantity":"0.1003 EOS",
+                    "to":"brucewc12345"
+                },
+                "hex_data":"8095346c720a91ab50c810017185f43deb0300000000000004454f5300000000b2017b227061636b65745f6964223a22333434222c2275736572223a22627275636577633132333435222c226f776e5f6d696e6564223a2233303030222c22626f6d62223a2230222c226c75636b223a2230222c227072697a655f616d6f756e74223a2230222c2269735f6c617374223a2230222c226e65775f7072697a655f706f6f6c223a2232313735222c227061636b65745f616d6f756e74223a2233222c2274786964223a22333434303030303030227d",
+                "name":"transfer"
+            }
+        ]
+    }
+}
 
 EOP;
                         // 数据样例2
@@ -89,6 +118,42 @@ EOP;
                         // 数据样例3
                         $msgbb = <<<EOP
 {"errno":0,"msg_type":"data","errmsg":"","data":{"trx_id":"576ce05a26eadbb57419130a112db9f0094949ffa1c12c89be03892039875025","block_num":32727664,"global_action_seq":3016979940,"trx_timestamp":"2018-12-18T10:59:05.500","actions":[{"account":"pickowntoken","authorization":[{"actor":"pickowngames","permission":"active"}],"data":{"from":"pickowngames","memo":"Pickown mining reward.","quantity":"0.3000 OWN","to":"dengxingchun"},"hex_data":"8095346c720a91ab3075436cbacea64ab80b000000000000044f574e00000000165069636b6f776e206d696e696e67207265776172642e","name":"transfer"}]}}
+EOP;
+                        // 退款数据样例
+                        $msgdd = <<<EOP
+{
+    "errno":0,
+    "msg_type":"data",
+    "errmsg":"",
+    "data":{
+        "trx_id":"6e61082cba758e4b667cee0ae489e2aa6381eb8de48f386f44474a21801146c4",
+        "block_num":33534317,
+        "global_action_seq":3192968313,
+        "trx_timestamp":"2018-12-23T03:20:21.000",
+        "actions":[
+            {
+                "account":"eosio.token",
+                "authorization":[
+                    {
+                        "actor":"pickowngames",
+                        "permission":"active"
+                    }
+                ],
+                "data":{
+                    "from":"pickowngames",
+                    "memo":"{
+                        \"TYPE\":\"ERROR_NO_PACKET\",
+                        \"packet_id\":\"420\"
+                    }",
+                    "quantity":"5.0000 EOS",
+                    "to":"eoseosboyboy"
+                },
+                "hex_data":"8095346c720a91abe0e9f1f460aa305550c300000000000004454f53000000002c7b2254595045223a224552524f525f4e4f5f5041434b4554222c227061636b65745f6964223a22343230227d",
+                "name":"transfer"
+            }
+        ]
+    }
+}
 EOP;
 
 
@@ -160,33 +225,6 @@ EOP;
 //        dump($trxid);
         $dd_data = $data['data']['actions'][0]['data'];
 
-        // memo信息
-
-        if (!isset($dd_data['memo'])) {
-            Log::error('未解析到memo：' . $msg);
-            return '';
-        }
-        $memo = $dd_data['memo'];
-        $memo_arr = json_decode($memo, true);
-        if (json_last_error() == JSON_ERROR_SYNTAX) {
-            echo '编码错误' . "\n";
-            return '';
-        }
-        if (!isset($memo_arr['is_last'])) {
-            echo '该条不是抢红包记录';
-            Log::error('该条不是抢红包记录：' . $msg);
-            return '';
-        }
-        // 发红包id
-        $packet_id = $memo_arr['packet_id'];
-        $outpacketModel = OutPacket::query()->where('eosid', $packet_id)->first();
-        if (empty($outpacketModel)) {
-            echo "红包未找到";
-            Log::error('红包记录未找到，信息为：' . $msg);
-            return '';
-        }
-        $outid = $outpacketModel->id;
-        // 用户名
         if (!isset($dd_data['to'])) {
             Log::error('未解析到用户名：' . $msg);
             return '';
@@ -209,6 +247,47 @@ EOP;
         } else {
             $userid = $userModel->id;
         }
+
+        // memo信息
+
+        if (!isset($dd_data['memo'])) {
+            Log::error('未解析到memo：' . $msg);
+            return '';
+        }
+        $memo = $dd_data['memo'];
+        $memo_arr = json_decode($memo, true);
+        if (json_last_error() == JSON_ERROR_SYNTAX) {
+            echo '编码错误' . "\n";
+            return '';
+        }
+        /**
+         * "memo":"{
+         * \"TYPE\":\"ERROR_NO_PACKET\",
+         * \"packet_id\":\"420\"
+         * }"
+         */
+        if (isset($memo_arr['TYPE'])) {
+            // 此处处理抢红失败的情况。
+            if ($memo_arr['TYPE'] != 'ERROR_NO_PACKET') {
+                Log::error('红包抢失败的记录出错，msg：' . $msg);
+            }
+        }
+        if (!isset($memo_arr['is_last'])) {
+            echo '该条不是抢红包记录';
+            Log::error('该条不是抢红包记录：' . $msg);
+            return '';
+        }
+        // 发红包id
+        $packet_id = $memo_arr['packet_id'];
+        $outpacketModel = OutPacket::query()->where('eosid', $packet_id)->first();
+        if (empty($outpacketModel)) {
+            echo "红包未找到";
+            Log::error('红包记录未找到，信息为：' . $msg);
+            return '';
+        }
+        $outid = $outpacketModel->id;
+        // 用户名
+
 
         // 挖矿
         $own_mined = $memo_arr['own_mined'];
@@ -318,8 +397,8 @@ EOP;
 
             if ($is_last > 0) {
                 // 红包被抢完后生成发红包对用的抢红包的列表
-                $out_in_packet = InPacket::query()->where('outid', $outid)->get();
-                $out_in_packet_sum = InPacket::query()->where('outid', $outid)->sum('income_sum');
+                $out_in_packet = InPacket::query()->where('outid', $outid)
+                    ->where('status','<',3)->get();
                 $outPacket_entity = OutPacket::find($outid);
                 $outPacket_entity->status = 2;
                 $outPacket_entity->surplus_sum = $platform_reserve;

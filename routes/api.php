@@ -45,10 +45,11 @@ Route::group(['namespace' => 'Api'], function () {
     Route::post('post_tixian',
         ['uses' => 'ApiController@postRewardMoney', 'as' => 'api.post_tixian'])->middleware('checktoken');
     Route::post('close_packet',
-        ['uses'=>'ApiController@close_packet','as'=>'api.close_packet'])->middleware('checktoken');
-
+        ['uses' => 'ApiController@close_packet', 'as' => 'api.close_packet'])->middleware('checktoken');
+    Route::post('post_income_packet',
+        ['uses' => 'ApiController@post_income_packet', 'as' => 'api.post_income_packet']);
     // Info
-    Route::get('getDayUserRankList', ['uses'=>'ApiController@getDayUserRankList', 'as'=>'api.getDayUserRankList']);
+    Route::get('getDayUserRankList', ['uses' => 'ApiController@getDayUserRankList', 'as' => 'api.getDayUserRankList']);
     Route::get('get_info', ['uses' => 'InfoController@getInfo', 'as' => 'api.get_info']);
     Route::get('money_list', ['uses' => 'InfoController@moneyList', 'as' => 'api.money_list']);
     Route::get('get_money_list', ['uses' => 'InfoController@getMoneyList', 'as' => 'api.get_money_list']);

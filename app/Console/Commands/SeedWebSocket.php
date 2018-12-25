@@ -277,7 +277,45 @@ EOP;
                 Log::error('红包抢失败的记录中未找到packet_id，msg：'.$msg);
                 return '';
             }
-
+            // 抢红包的eosid
+            $packet_id = $memo_arr['packet_id'];
+            $outpacketModel = OutPacket::query()->where('eosid', $packet_id)->first();
+            if (empty($outpacketModel)) {
+                echo "红包未找到";
+                Log::error('红包记录未找到，信息为：' . $msg);
+                return '';
+            }
+            $outid = $outpacketModel->id;
+            // 用户id $userid
+            $jiancha_in_packet_fail = InPacket::query()->where('eosid',$packet_id)
+                ->where('userid',$userid)
+                ->first();
+            $entity = null;
+            if (empty($jiancha_in_packet_fail)){
+                // 不存在的情况，直接创建一条
+                $data = [
+                    'outid'=>$outid,
+                    'userid'=>$userid,
+                    'eosid'=>$packet_id,
+                    'income_sum'=> 0,
+                    'is_chailei'=> 2,
+                    'is_reward' => 1,
+                    'reward_type' => 0,
+                    'reward_sum' => 0,
+                    'own' => 0,
+                    'prize_pool' => 0,
+                    'txid'=>'',
+                    'reffee'=>0,
+                    'trxid'=>$trxid,
+                    'status'=> 3
+                ];
+                InPacket::create($data);
+            }else{
+                // 存在的情况，修改状态为失败的情况。
+                $jiancha_in_packet_fail->status = 3;
+                $jiancha_in_packet_fail->save();
+            }
+            return '';
         }
         if (!isset($memo_arr['is_last'])) {
             echo '该条不是抢红包记录';
@@ -351,6 +389,7 @@ EOP;
                 $jiancha_in_packet->addr = $addr;
                 $jiancha_in_packet->reffee = $reffee;
                 $jiancha_in_packet->trxid = $trxid;
+                $jiancha_in_packet->status = 2;
                 $jiancha_in_packet->save();
                 $entity = $jiancha_in_packet;
                 DB::commit();
@@ -370,7 +409,8 @@ EOP;
                     'txid' => $txid,
                     'addr' => $addr,
                     'reffee' => $reffee,
-                    'trxid' => $trxid
+                    'trxid' => $trxid,
+                    'status' => 2
                 ];
                 $entity = InPacket::create($inPacket);
             }
@@ -468,7 +508,8 @@ EOP;
                     json_decode(json_encode(InPacketResource::make($entity)))
                 ));
             }
-
+            $entity->status = 1;
+            $entity->save();
         } catch (\Exception $exception) {
             DB::rollBack();
         }

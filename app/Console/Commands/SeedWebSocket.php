@@ -51,8 +51,8 @@ class SeedWebSocket extends Command
     {
         $i = 0;
         $eospark_key = config('app.eospark_key');
-        $url = 'wss://ws.eospark.com/v1/ws?apikey=' . $eospark_key;
-//        $url = 'wss://ws.eospark.com/test/v1/ws?apikey=' . $eospark_key;
+//        $url = 'wss://ws.eospark.com/v1/ws?apikey=' . $eospark_key;
+        $url = 'wss://ws.eospark.com/test/v1/ws?apikey=' . $eospark_key;
         while (true) {
             $loop = Factory::create();
             $reactConnector = new Connector($loop, [

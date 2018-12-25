@@ -320,7 +320,7 @@ EOP;
                 }
                 DB::commit();
             } catch (\Exception $exception) {
-                Log::error('事务失败，错误信息为'.$exception->getMessage());
+                Log::error('事务失败，错误信息为' . $exception->getMessage());
                 DB::rollBack();
             }
             return '';

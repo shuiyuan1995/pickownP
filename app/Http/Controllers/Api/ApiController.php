@@ -671,21 +671,24 @@ class ApiController extends Controller
                 ];
                 $entity = InPacket::create($data);
                 DB::commit();
-            }
-        }catch (\Exception $exception){
 
+
+                $last_count = InPacket::query()->where('eosid', $eosid)
+                    ->where('status', '!=', 3)->count();
+                $last = $last_count >= 10 ? 1 : 0;
+                // 返回待处理信息
+                return $this->json(
+                    [
+                        'type' => $statusArr['not_received'],
+                        'in_packet' => json_decode(json_encode(InPacketResource::make($entity))),
+                        'is_last' => $last
+                    ]
+                );
+
+            }
+        } catch (\Exception $exception) {
+            Log::error('事务报错' . $exception->getMessage());
         }
-            $last_count = InPacket::query()->where('eosid', $eosid)
-                ->where('status', '!=', 3)->count();
-            $last = $last_count >= 10 ? 1 : 0;
-            // 返回待处理信息
-            return $this->json(
-                [
-                    'type' => $statusArr['not_received'],
-                    'in_packet' => json_decode(json_encode(InPacketResource::make($entity))),
-                    'is_last' => $last
-                ]
-            );
 
         DB::commit();
         $last_count = InPacket::query()->where('eosid', $eosid)

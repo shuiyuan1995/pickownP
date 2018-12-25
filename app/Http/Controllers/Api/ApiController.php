@@ -686,50 +686,51 @@ class ApiController extends Controller
                 );
 
             }
+
+
+            DB::commit();
+            $last_count = InPacket::query()->where('eosid', $eosid)
+                ->where('status', '!=', 3)->count();
+            $is_last = $last_count >= 10 ? 1 : 0;
+            if ($in_entity->status === 2) {
+                // 返回成功的信息
+                return $this->json(
+                    [
+                        'type' => $statusArr['success'],
+                        'in_packet' => json_decode(json_encode(InPacketResource::make($in_entity))),
+                        'is_last' => $is_last
+                    ]);
+            }
+
+            if ($in_entity->status === 3) {
+                // 获取记录的时间
+                $time = strtotime($in_entity->created_at);
+                // 当前时间
+                $current_time = time();
+                if (($current_time - $time) > 60 * 5) {
+
+                }
+                // 返回失败的状态
+                return $this->json(
+                    [
+                        'type' => $statusArr['fail'],
+                        'in_packet' => json_decode(json_encode(InPacketResource::make($in_entity))),
+                        'is_last' => $is_last,
+                    ]);
+            }
+
+            if ($in_entity->status === 1) {
+                // 返回已播报的状态
+                return $this->json(
+                    [
+                        'type' => $statusArr['success'],
+                        'in_packet' => json_decode(json_encode(InPacketResource::make($in_entity))),
+                        'is_last' => $is_last
+                    ]);
+            }
         } catch (\Exception $exception) {
             Log::error('事务报错' . $exception->getMessage());
             DB::rollBack();
-        }
-
-        DB::commit();
-        $last_count = InPacket::query()->where('eosid', $eosid)
-            ->where('status', '!=', 3)->count();
-        $is_last = $last_count >= 10 ? 1 : 0;
-        if ($in_entity->status === 2) {
-            // 返回成功的信息
-            return $this->json(
-                [
-                    'type' => $statusArr['success'],
-                    'in_packet' => json_decode(json_encode(InPacketResource::make($in_entity))),
-                    'is_last' => $is_last
-                ]);
-        }
-
-        if ($in_entity->status === 3) {
-            // 获取记录的时间
-            $time = strtotime($in_entity->created_at);
-            // 当前时间
-            $current_time = time();
-            if (($current_time - $time) > 60 * 5) {
-
-            }
-            // 返回失败的状态
-            return $this->json(
-                [
-                    'type' => $statusArr['fail'],
-                    'in_packet' => json_decode(json_encode(InPacketResource::make($in_entity))),
-                    'is_last' => $is_last,
-                ]);
-        }
-
-        if ($in_entity->status === 1) {
-            // 返回已播报的状态
-            return $this->json(
-                [
-                    'type' => $statusArr['success'],
-                    'in_packet' => json_decode(json_encode(InPacketResource::make($in_entity))),
-                    'is_last' => $is_last
-                ]);
         }
         return $this->json(['type' => $statusArr['success'], 'eosid' => $eosid, 'userid' => $userid]);
     }

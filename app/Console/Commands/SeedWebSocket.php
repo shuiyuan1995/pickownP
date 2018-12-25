@@ -229,6 +229,7 @@ EOP;
             Log::error('未解析到用户名：' . $msg);
             return '';
         }
+        // 用户名
         $user = $dd_data['to'];
         $userModel = User::query()->where('name', $user)->first();
         if (empty($userModel)) {
@@ -270,7 +271,13 @@ EOP;
             // 此处处理抢红失败的情况。
             if ($memo_arr['TYPE'] != 'ERROR_NO_PACKET') {
                 Log::error('红包抢失败的记录出错，msg：' . $msg);
+                return '';
             }
+            if (!isset($memo_arr['packet_id'])){
+                Log::error('红包抢失败的记录中未找到packet_id，msg：'.$msg);
+                return '';
+            }
+
         }
         if (!isset($memo_arr['is_last'])) {
             echo '该条不是抢红包记录';
@@ -286,7 +293,7 @@ EOP;
             return '';
         }
         $outid = $outpacketModel->id;
-        // 用户名
+
 
 
         // 挖矿
@@ -327,7 +334,7 @@ EOP;
             // $jiancha_in_packet = InPacket::query()->where('txid', $txid)->first();
             $jiancha_in_packet = InPacket::query()
                 ->where('eosid',$packet_id)
-                ->where('outid',$outid)
+                ->where('userid',$userid)
                 ->first();
             $entity = null;
             if (!empty($jiancha_in_packet)) {

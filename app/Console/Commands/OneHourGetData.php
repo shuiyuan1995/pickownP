@@ -58,7 +58,7 @@ class OneHourGetData extends Command
         // 单页条数 20
         $page_count = 20;
         $count = intval($trace_count / $page_count);
-        for ($i = 1; $i <= 1; $i++) {
+        for ($i = 1; $i <= $count; $i++) {
             $page = $i;
             $url = "https://api.eospark.com/api?module=account&action=get_account_related_trx_info&apikey={$eosparket_key}&account=pickowngames&page={$page}&size={$page_count}&symbol=EOS";
             $data = request_curl($url, [], false, true);
@@ -83,18 +83,33 @@ class OneHourGetData extends Command
                 $ttime = strtotime($value['timestamp']);
                 // 转换时区后的时间戳
                 $tr_time = $ttime + (8 * 60 * 60);
+                if ($tr_time < ($time - (60 * 60 * 24))){
+                    break 2;
+                }
                 echo '转换时区后的时间：'.date('Y-m-d H:i:s',$tr_time)."\n";
                 echo $value['receiver']."\n";
                 echo $value['memo']."\n";
+                $memo_arr = json_decode($value['memo'],true);
+                if (json_last_error() == JSON_ERROR_SYNTAX) {
+                    echo '编码错误' . "\n";
+//                    continue;
+                }
+
+                if (isset($memo_arr['packet_id'])){
+                    echo $memo_arr['packet_id']."\n";
+                }elseif (isset($memo_arr['TYPE'])){
+                    echo $memo_arr['TYPE']."\n";
+                }
+
             }
             echo "第{$i}次请求\n";
             //dump($dataArr);
             $start = time();
-            //Log::info("第{$i}次请求，请求开始时间：" . date('Y-m-d H:i:s', $start));
-            //Log::info($dataArr);
+            Log::info("第{$i}次请求，请求开始时间：" . date('Y-m-d H:i:s', $start));
+            Log::info($dataArr);
             $end = time();
-            //Log::info("第{$i}次请求，请求结束时间：". date('Y-m-d H:i:s', $end));
-            //Log::info("第{$i}次请求，时间长度" . ($end - $start));
+            Log::info("第{$i}次请求，请求结束时间：". date('Y-m-d H:i:s', $end));
+            Log::info("第{$i}次请求，时间长度" . ($end - $start));
         }
     }
 }

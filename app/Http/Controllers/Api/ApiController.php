@@ -692,7 +692,7 @@ class ApiController extends Controller
             $last_count = InPacket::query()->where('eosid', $eosid)
                 ->where('status', '!=', 3)->count();
             $is_last = $last_count >= 10 ? 1 : 0;
-            if ($in_entity->status === 2) {
+            if ($in_entity->status == 2) {
                 // 返回成功的信息
                 return $this->json(
                     [
@@ -702,7 +702,7 @@ class ApiController extends Controller
                     ]);
             }
 
-            if ($in_entity->status === 3) {
+            if ($in_entity->status == 3) {
                 // 获取记录的时间
                 $time = strtotime($in_entity->created_at);
                 // 当前时间
@@ -719,7 +719,7 @@ class ApiController extends Controller
                     ]);
             }
 
-            if ($in_entity->status === 1) {
+            if ($in_entity->status == 1) {
                 // 返回已播报的状态
                 return $this->json(
                     [
@@ -732,6 +732,5 @@ class ApiController extends Controller
             Log::error('事务报错' . $exception->getMessage());
             DB::rollBack();
         }
-        return $this->json(['type' => $statusArr['success'], 'eosid' => $eosid, 'userid' => $userid]);
     }
 }

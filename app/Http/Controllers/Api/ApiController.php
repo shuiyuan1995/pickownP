@@ -71,22 +71,12 @@ class ApiController extends Controller
         if (!$request->filled('blocknumber')) {
             return $this->json(['code' => 2004, 'message' => 'blocknumber不存在'], 2004, 'blocknumber不存在');
         }
-        $issus_sum_arr = [
-            0 => -1,
-            '0.1' => 0,
-            1 => 1,
-            5 => 2,
-            10 => 3,
-            20 => 4,
-            50 => 5,
-            100 => 6
-        ];
         $userid = substr($request->header('token'), strripos($request->header('token'), ':') + 1);
         $entity_data = [
             'userid' => $userid,
             'issus_sum' => $request->input('issus_sum', 0),
             'tail_number' => $request->input('tail_number'),
-            'count' => $request->input('count'),
+            'count' => 10,
             'eosid' => $request->input('eosid'),
             'blocknumber' => $request->input('blocknumber'),
             'addr' => $request->input('addr'),

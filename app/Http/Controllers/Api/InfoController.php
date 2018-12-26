@@ -174,7 +174,8 @@ class InfoController extends Controller
             $data[$indexArr[$value->issus_sum]][$value->id]['time'] = strtotime($value->updated_at);
             $data[$indexArr[$value->issus_sum]][$value->id]['num'] = $value->tail_number;
             $data[$indexArr[$value->issus_sum]][$value->id]['in_packet_data'] = InPacketResource::collection(
-                InPacket::query()->where('outid', $value->id)->get()
+                InPacket::query()->where('outid', $value->id)
+                    ->where('status','<=',2)->get()
             );
             $data[$indexArr[$value->issus_sum]][$value->id]['type'] = 2;
             $data[$indexArr[$value->issus_sum]][$value->id]['isgo'] = 1;

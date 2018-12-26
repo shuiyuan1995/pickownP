@@ -55,6 +55,7 @@ class AllGetData extends Command
             $url = "https://api.eospark.com/api?module=account&action=get_account_related_trx_info&apikey={$eosparket_key}&account=pickowngames&page={$page}&size={$page_count}&symbol=EOS";
             $data = request_curl($url, [], false, true);
             $dataArr = json_decode($data, true);
+
             echo "第{$i}次请求\n";
 //            dump($dataArr);
             $start = time();
@@ -64,5 +65,6 @@ class AllGetData extends Command
             Log::info("第{$i}次请求，请求结束时间：". date('Y-m-d H:i:s', $end));
             Log::info("第{$i}次请求，时间长度" . ($end - $start));
         }
+        return '';
     }
 }

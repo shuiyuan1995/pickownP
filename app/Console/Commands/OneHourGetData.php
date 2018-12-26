@@ -38,33 +38,63 @@ class OneHourGetData extends Command
      */
     public function handle()
     {
-        date_default_timezone_set('');
         $time = time();
         $eosparket_key = config('app.eospark_key');
         $url = "https://api.eospark.com/api?module=account&action=get_account_related_trx_info&apikey={$eosparket_key}&account=pickowngames&page=1&size=1&symbol=EOS";
         $data = request_curl($url, [], false, true);
         $dataArr = json_decode($data, true);
         if (!isset($dataArr['errno'])) {
-            Log::error('返回数据错误');
+            Log::error('返回数据错误，数据为：'.$data);
             return '';
+        }
+        if (!isset($dataArr['data'])){
+            Log::error('data字段不存在，数据为：'.$data);
+        }
+        if (!isset($dataArr['data']['trace_count'])){
+            Log::error('trace_count字段不存在，数据为：'.$data);
         }
         // 获取总的条数
         $trace_count = $dataArr['data']['trace_count'];
         // 单页条数 20
         $page_count = 20;
-        for ($i = 1; $i <= intval($trace_count / $page_count); $i++) {
+        $count = intval($trace_count / $page_count);
+        for ($i = 1; $i <= 1; $i++) {
             $page = $i;
             $url = "https://api.eospark.com/api?module=account&action=get_account_related_trx_info&apikey={$eosparket_key}&account=pickowngames&page={$page}&size={$page_count}&symbol=EOS";
             $data = request_curl($url, [], false, true);
             $dataArr = json_decode($data, true);
+            if (!isset($dataArr['errno'])) {
+                Log::error('返回数据错误，数据为：'.$data);
+                return '';
+            }
+            if (!isset($dataArr['data'])){
+                Log::error('data字段不存在，数据为：'.$data);
+            }
+            if (!isset($dataArr['data']['trace_count'])){
+                Log::error('trace_count字段不存在，数据为：'.$data);
+            }
+            if (!isset($dataArr['data']['trace_list'])){
+                Log::error('trace_list字段不存在，数据为：'.$data);
+            }
+            foreach ($dataArr['data']['trace_list'] as $item => $value){
+//                echo json_encode($value)."\n";
+                echo $value['trx_id']."\n";
+                echo $value['timestamp']."\n";
+                $ttime = strtotime($value['timestamp']);
+                // 转换时区后的时间戳
+                $tr_time = $ttime + (8 * 60 * 60);
+                echo '转换时区后的时间：'.date('Y-m-d H:i:s',$tr_time)."\n";
+                echo $value['receiver']."\n";
+                echo $value['memo']."\n";
+            }
             echo "第{$i}次请求\n";
-//            dump($dataArr);
+            //dump($dataArr);
             $start = time();
-            Log::info("第{$i}次请求，请求开始时间：" . date('Y-m-d H:i:s', $start));
-            Log::info($dataArr);
+            //Log::info("第{$i}次请求，请求开始时间：" . date('Y-m-d H:i:s', $start));
+            //Log::info($dataArr);
             $end = time();
-            Log::info("第{$i}次请求，请求结束时间：". date('Y-m-d H:i:s', $end));
-            Log::info("第{$i}次请求，时间长度" . ($end - $start));
+            //Log::info("第{$i}次请求，请求结束时间：". date('Y-m-d H:i:s', $end));
+            //Log::info("第{$i}次请求，时间长度" . ($end - $start));
         }
     }
 }

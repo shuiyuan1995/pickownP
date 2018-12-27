@@ -249,7 +249,10 @@ class OneHourGetData extends Command
         if (isset($memo_arr['new_prize_pool'])) {
             $new_prize_pool = $memo_arr['new_prize_pool'];
         }
-        $txid = $memo_arr['txid'];
+        $txid = '';
+        if (isset($memo_arr['txid'])) {
+            $txid = $memo_arr['txid'];
+        }
         $addr = '';
         if (isset($memo_arr['ref'])) {
             $addr = $memo_arr['ref'];

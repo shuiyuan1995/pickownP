@@ -175,8 +175,14 @@ class AllGetData extends Command
         $bomb = $memo_arr['bomb'];
         $prize_amount = $memo_arr['prize_amount'];
         $own_mined = $memo_arr['own_mined'];
-        $new_prize_pool = $memo_arr['new_prize_pool'];
-        $txid = $memo_arr['txid'];
+        $new_prize_pool = 0;
+        if (isset($memo_arr['new_prize_pool'])) {
+            $new_prize_pool = $memo_arr['new_prize_pool'];
+        }
+        $txid = '';
+        if (isset($memo_arr['txid'])) {
+            $txid = $memo_arr['txid'];
+        }
         $addr = '';
         if (isset($memo_arr['ref'])) {
             $addr = $memo_arr['ref'];
@@ -220,7 +226,7 @@ class AllGetData extends Command
                 'addr' => $addr,
                 'reffee' => $reffee,
                 'trxid' => $trxid,
-                'created_at'=> date('Y-m-d H:i:s',$tr_time),
+                'created_at' => date('Y-m-d H:i:s', $tr_time),
                 'status' => 1
             ];
             InPacket::create($in_packet_data);
@@ -279,7 +285,7 @@ class AllGetData extends Command
                 'txid' => '',
                 'addr' => '',
                 'reffee' => 0,
-                'created_at'=> date('Y-m-d H:i:s',$tr_time),
+                'created_at' => date('Y-m-d H:i:s', $tr_time),
                 'trxid' => $trx_id,
                 'status' => 3
             ];

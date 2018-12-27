@@ -74,8 +74,11 @@ class ApiController extends Controller
         }
         $eosparket_key = config('app.eospark_key');
         $url = "https://api.eospark.com/api?module=transaction&action=get_transaction_detail_info&apikey={$eosparket_key}&trx_id=".$request->input('blocknumber');
+        $request_data = request_curl($url,[],false,true);
+        $request_data_arr = json_decode($request_data,true);
+        if ($request_data_arr['errno'] === 0){
 
-
+        }
         $userid = substr($request->header('token'), strripos($request->header('token'), ':') + 1);
         $entity_data = [
             'userid' => $userid,
@@ -450,35 +453,8 @@ class ApiController extends Controller
 
     public function getRewardMoney(Request $request)
     {
-        $jiangjingArr = [
-            '0.1000' => 0.0001,
-            '1.0000' => 0.0009,
-            '5.0000' => 0.0045,
-            '10.0000' => 0.009,
-            '20.0000' => 0.018,
-            '50.0000' => 0.045,
-            '100.0000' => 0.09,
-        ];
         $userid = substr($request->header('token'), strripos($request->header('token'), ':') + 1);
-        //$getRewardCount = DB::select('SELECT addr,income_userid,sum(eos) AS tixian_count FROM transaction_infos WHERE type = 5 AND income_userid = :income_userid',
-        //    ['income_userid' => $userid]);
-//        dd($getRewardCount);
-//        $arr = DB::select('SELECT issus_sum , count(issus_sum) AS count FROM out_packets,in_packets WHERE in_packets.outid = out_packets.id AND in_packets.addr = :addr GROUP BY issus_sum',
-//            ['addr' => User::find($userid)->name]);
-//        dd($arr);
-
         $sum = InPacket::query()->where('addr', User::find($userid)->name)->sum('reffee');
-        //$sum = 0;
-        //foreach ($arr as $item => $value) {
-        //  $sum += $jiangjingArr[$value->issus_sum] * $value->count;
-        //}
-//        $tixian_sum = 0;
-//        foreach ($getRewardCount as $value) {
-//            if (!empty($value->tixian_count)) {
-//                $tixian_sum = $value->tixian_count;
-//            }
-//        }
-        //$sum = TransactionInfo::where('type',6)->where('income_userid',$userid)->sum('eos');
         $tixian_sum = TransactionInfo::query()->where('type', 5)->where('income_userid', $userid)->sum('eos');
         $shengyu_sum = $sum - $tixian_sum;
         $out_pakcet_count = OutPacket::query()->where('addr', User::find($userid)->name)->get();
@@ -486,7 +462,6 @@ class ApiController extends Controller
         foreach ($out_pakcet_count as $value) {
             $out_pakcet_count_data[] = $value->userid;
         }
-//        dd($out_pakcet_count_data);
         $in_pakcet_count = InPacket::query()->where('addr', User::find($userid)->name)->get();
         $in_pakcet_count_data = [];
         foreach ($in_pakcet_count as $value) {

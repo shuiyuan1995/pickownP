@@ -209,6 +209,7 @@ class AllGetData extends Command
             $in_packet_entity->txid = $txid;
             $in_packet_entity->trxid = $trxid;
             $in_packet_entity->reffee = $reffee;
+            $in_packet_entity->status = 1;
             $in_packet_entity->save();
         } else {
             $in_packet_data = [

@@ -2,10 +2,15 @@
 
 namespace App\Console\Commands;
 
+use App\Events\InPacketEvent;
+use App\Http\Controllers\Api\ApiController;
+use App\Http\Resources\InPacketResource;
 use App\Models\InPacket;
 use App\Models\OutPacket;
+use App\Models\TransactionInfo;
 use App\Models\User;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Log;
 
 class OneHourGetData extends Command
@@ -42,6 +47,7 @@ class OneHourGetData extends Command
     public function handle()
     {
         $time = time();
+        $honbao_arr = [];
         $eosparket_key = config('app.eospark_key');
         $url = "https://api.eospark.com/api?module=account&action=get_account_related_trx_info&apikey={$eosparket_key}&account=pickowngames&page=1&size=1&symbol=EOS";
         $data = request_curl($url, [], false, true);
@@ -93,10 +99,10 @@ class OneHourGetData extends Command
                 $ttime = strtotime($value['timestamp']);
                 // 转换时区后的时间戳
                 $tr_time = $ttime + (8 * 60 * 60);
-//                if ($tr_time < ($time - (60 * 60 * 24 * 4))) {
-//                    echo "时间到\n";
-//                    break 2;
-//                }
+                if ($tr_time < ($time - (60 * 10))) {
+                    echo "时间到\n";
+                    break 2;
+                }
                 if (!isset($value['memo'])) {
                     echo 'memo未解析到.' . $data;
                     continue;
@@ -109,7 +115,11 @@ class OneHourGetData extends Command
                 if (isset($memo_arr['total_remaining'])) {
                     continue;
                 } elseif (isset($memo_arr['is_last'])) {
-                    $this->successData($value, $tr_time);
+                    $id = $this->successData($value, $tr_time);
+                    if ($id !== false) {
+                        // 当前抢红包对应的发红包的id
+                        $honbao_arr[] = $id;
+                    }
                 } elseif (isset($memo_arr['TYPE'])) {
                     $this->failData($value, $tr_time);
                 }
@@ -121,7 +131,67 @@ class OneHourGetData extends Command
             echo "第{$i}次请求结束\n";
             sleep(1);
         }
-        return '';
+        // 处理发红包的播报问题
+        $honbao_arr_unique = array_unique($honbao_arr);
+        foreach ($honbao_arr_unique as $uvalue) {
+            $count = InPacket::query()->where('outid', $uvalue)
+                ->where('status', 2)
+                ->count();
+            // 如果当前发红包对应的抢红包的条数大于10，
+            if ($count >= 10) {
+                $value_InPacket_data = InPacket::query()->where('outid', $uvalue)
+                    ->where('status', 2)->get();
+                $outPacket = OutPacket::find($uvalue);
+                $out_in_packet_data = array();
+                foreach ($value_InPacket_data as $item => $value) {
+                    $out_in_packet_data[$item]['id'] = $value['id'];
+                    $out_in_packet_data[$item]['name'] = User::find($value['userid'])->name;
+                    $out_in_packet_data[$item]['income_sum'] = $value['income_sum'];
+                    $out_in_packet_data[$item]['own'] = $value['own'];
+                    $out_in_packet_data[$item]['is_chailei'] = $value['is_chailei'];
+                    $out_in_packet_data[$item]['is_reward'] = $value['is_reward'];
+                    $out_in_packet_data[$item]['reward_type'] = $value['reward_type'];
+                    $out_in_packet_data[$item]['txid'] = $value['txid'];
+                    $out_in_packet_data[$item]['reward_sum'] = $value['reward_sum'];
+                }
+
+                $name = User::find($outPacket->userid)->name;
+                $issus_sum_arr = (new OutPacket())->iidexArr;
+                $index = $issus_sum_arr[$outPacket->issus_sum];
+                $outPacket_data['id'] = $outPacket->id;
+                $outPacket_data['userid'] = $outPacket->id;
+                $outPacket_data['issus_sum'] = $outPacket->issus_sum;
+                $outPacket_data['tail_number'] = $outPacket->tail_number;
+                $outPacket_data['eosid'] = $outPacket->eosid;
+                $outPacket_data['blocknumber'] = $outPacket->blocknumber;
+                $outPacket_data['status'] = $outPacket->status;
+                $outPacket_data['created_at'] = strtotime($outPacket->created_at);
+                $outPacket_data['updated_at'] = strtotime($outPacket->updated_at);
+                event(new InPacketEvent(
+                    [],
+                    $outPacket_data,
+                    [],
+                    $out_in_packet_data,
+                    $name,
+                    2,
+                    $index,
+                    (new ApiController())->getinfo(),
+                    []
+                ));
+
+                foreach ($out_in_packet_data as $k => $v) {
+                    $entity = InPacket::find($v['id']);
+                    $entity->status = 1;
+                    $entity->save();
+                }
+                $out = OutPacket::find($uvalue);
+                $out->is_guangbo = 1;
+                $out->save();
+            }
+        }
+        echo "处理完毕";
+        Log::info('处理完毕');
+        return true;
     }
 
     /** 抢成功那一条数据的处理方法
@@ -191,6 +261,7 @@ class OneHourGetData extends Command
             ->where('eosid', $eosid)
             ->where('userid', $userid)
             ->first();
+        $entity = null;
         if (!empty($in_packet_entity)) {
             $in_packet_entity->income_sum = $packet_amount / 10000;
             $in_packet_entity->is_chailei = $bomb > 0 ? 1 : 2;
@@ -204,6 +275,7 @@ class OneHourGetData extends Command
             $in_packet_entity->trxid = $trxid;
             $in_packet_entity->reffee = $reffee;
             $in_packet_entity->save();
+            $entity = $in_packet_entity;
         } else {
             $in_packet_data = [
                 'outid' => $outid,
@@ -220,10 +292,10 @@ class OneHourGetData extends Command
                 'addr' => $addr,
                 'reffee' => $reffee,
                 'trxid' => $trxid,
-                'created_at'=> date('Y-m-d H:i:s',$tr_time),
+                'created_at' => date('Y-m-d H:i:s', $tr_time),
                 'status' => 2
             ];
-            InPacket::create($in_packet_data);
+            $entity = InPacket::create($in_packet_data);
         }
 
         echo 'packet_id:' . $memo_arr['packet_id'] . "\n";
@@ -233,7 +305,7 @@ class OneHourGetData extends Command
         echo '转换时区后的时间：' . date('Y-m-d H:i:s', $tr_time) . "\n";
         echo $data['receiver'] . "\n";
         Log::info($data);
-        return true;
+        return $entity->outid;
     }
 
     /**
@@ -280,7 +352,7 @@ class OneHourGetData extends Command
                 'txid' => '',
                 'addr' => '',
                 'reffee' => 0,
-                'created_at'=> date('Y-m-d H:i:s',$tr_time),
+                'created_at' => date('Y-m-d H:i:s', $tr_time),
                 'trxid' => $trx_id,
                 'status' => 3
             ];

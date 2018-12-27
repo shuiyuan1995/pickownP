@@ -24,8 +24,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+         $schedule->command('get:one_hour')
+             ->everyTenMinutes(); //每十分钟运行一次任务
     }
 
     /**

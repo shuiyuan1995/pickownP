@@ -221,7 +221,7 @@ class AllGetData extends Command
                 'reffee' => $reffee,
                 'trxid' => $trxid,
                 'created_at'=> date('Y-m-d H:i:s',$tr_time),
-                'status' => 2
+                'status' => 1
             ];
             InPacket::create($in_packet_data);
         }
@@ -263,7 +263,6 @@ class AllGetData extends Command
         if (!empty($in_packet_entity)) {
             $in_packet_entity->trxid = $trx_id;
             $in_packet_entity->status = 3;
-
             $in_packet_entity->save();
         } else {
             $in_packet_data = [

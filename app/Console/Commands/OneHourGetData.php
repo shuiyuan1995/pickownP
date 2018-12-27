@@ -23,7 +23,7 @@ class OneHourGetData extends Command
      *
      * @var string
      */
-    protected $description = '获取一小时前的数据';
+    protected $description = '获取半个小时前的数据';
 
     /**
      * Create a new command instance.
@@ -225,6 +225,7 @@ class OneHourGetData extends Command
             ];
             InPacket::create($in_packet_data);
         }
+
         echo 'packet_id:' . $memo_arr['packet_id'] . "\n";
         echo $data['memo'] . "\n";
         echo $data['trx_id'] . "\n";
@@ -262,7 +263,7 @@ class OneHourGetData extends Command
         if (!empty($in_packet_entity)) {
             $in_packet_entity->trxid = $trx_id;
             $in_packet_entity->status = 3;
-//            $in_packet_entity->created_at = date('Y-m-d H:i:s',$tr_time);
+
             $in_packet_entity->save();
         } else {
             $in_packet_data = [

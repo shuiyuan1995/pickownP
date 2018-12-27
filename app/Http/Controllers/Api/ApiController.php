@@ -68,9 +68,14 @@ class ApiController extends Controller
      */
     public function issus_packet(Request $request)
     {
+
         if (!$request->filled('blocknumber')) {
             return $this->json(['code' => 2004, 'message' => 'blocknumber不存在'], 2004, 'blocknumber不存在');
         }
+        $eosparket_key = config('app.eospark_key');
+        $url = "https://api.eospark.com/api?module=transaction&action=get_transaction_detail_info&apikey={$eosparket_key}&trx_id=".$request->input('blocknumber');
+
+
         $userid = substr($request->header('token'), strripos($request->header('token'), ':') + 1);
         $entity_data = [
             'userid' => $userid,

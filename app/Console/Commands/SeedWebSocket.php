@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Events\InPacketEvent;
 use App\Http\Resources\InPacketResource;
+use App\Http\Resources\OutPacketResource;
 use App\Models\InPacket;
 use App\Models\OutPacket;
 use App\Models\TransactionInfo;
@@ -51,8 +52,8 @@ class SeedWebSocket extends Command
     {
         $i = 0;
         $eospark_key = config('app.eospark_key');
-        $url = 'wss://ws.eospark.com/v1/ws?apikey=' . $eospark_key;
-//        $url = 'wss://ws.eospark.com/test/v1/ws?apikey=' . $eospark_key;
+//        $url = 'wss://ws.eospark.com/v1/ws?apikey=' . $eospark_key;
+        $url = 'wss://ws.eospark.com/test/v1/ws?apikey=' . $eospark_key;
         while (true) {
             $loop = Factory::create();
             $reactConnector = new Connector($loop, [
@@ -456,7 +457,7 @@ EOP;
             if ($is_last > 0) {
                 // 红包被抢完后生成发红包对用的抢红包的列表
                 $out_in_packet = InPacket::query()->where('outid', $outid)
-                    ->where('status', '<=',2)->get();
+                    ->where('status', '<=', 2)->get();
                 $outPacket_entity = OutPacket::find($outid);
                 $outPacket_entity->status = 2;
                 $outPacket_entity->surplus_sum = $platform_reserve;
@@ -464,6 +465,7 @@ EOP;
                 $outPacket = $outPacket_entity;
                 $out_in_packet_data = array();
                 foreach ($out_in_packet as $item => $value) {
+                    $out_in_packet_data[$item]['id'] = $value['id'];
                     $out_in_packet_data[$item]['name'] = User::find($value['userid'])->name;
                     $out_in_packet_data[$item]['income_sum'] = $value['income_sum'];
                     $out_in_packet_data[$item]['own'] = $value['own'];
@@ -486,7 +488,6 @@ EOP;
                 $outPacket_data['status'] = $outPacket->status;
                 $outPacket_data['created_at'] = strtotime($outPacket->created_at);
                 $outPacket_data['updated_at'] = strtotime($outPacket->updated_at);
-                //if (OutPacket::find($outid)->is_guangbo < 1){
                 event(new InPacketEvent(
                     [],
                     $outPacket_data,
@@ -498,25 +499,31 @@ EOP;
                     $this->getinfo(),
                     json_decode(json_encode(InPacketResource::make($entity)))
                 ));
-                $out = OutPacket::find($outid);
-                $out->is_guangbo = 1;
-                $out->save();
-                //}
+                if (count($out_in_packet_data) >= 10) {
+                    foreach ($out_in_packet_data as $k => $v){
+                        $entity = InPacket::find($v['id']);
+                        $entity->status = 1;
+                        $entity->save();
+                    }
+                    $out = OutPacket::find($outid);
+                    $out->is_guangbo = 1;
+                    $out->save();
+                }
             } else {
+                $outPacket_entity = OutPacket::find($outid);
+                $name = User::find($outPacket_entity->userid)->name;
                 event(new InPacketEvent(
                     [],
+                    json_decode(json_encode(OutPacketResource::make($outPacket_entity))),
                     [],
                     [],
-                    [],
-                    [],
+                    $name,
                     3,
                     [],
                     $this->getinfo(),
                     json_decode(json_encode(InPacketResource::make($entity)))
                 ));
             }
-            $entity->status = 1;
-            $entity->save();
         } catch (\Exception $exception) {
             DB::rollBack();
         }

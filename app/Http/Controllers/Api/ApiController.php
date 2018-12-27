@@ -140,7 +140,7 @@ class ApiController extends Controller
      * addr 平台
      * 抢红包记录接口
      *
-     *  "packetId": JSON.parse(consoleString).packet_id,
+     * "packetId": JSON.parse(consoleString).packet_id,
      * "block_num": result.processed.action_traces[0].block_num,
      * "packetAmount": JSON.parse(consoleString).packet_amount,
      * "isBomb": JSON.parse(consoleString).bomb,
@@ -302,7 +302,6 @@ class ApiController extends Controller
         foreach ($chailei as $value) {
             $chaileicount = $value->count;
         }
-//        $chaileicount = TransactionInfo::where('income_userid', $userid)->where('type', 3)->count();
         $query = OutPacket::query()->where('userid', $userid);
         if ($request->filled('time')) {
             $begin_time = date('Y-m-d 0:0:0', $request->input('time'));

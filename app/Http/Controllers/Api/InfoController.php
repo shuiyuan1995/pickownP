@@ -33,14 +33,14 @@ class InfoController extends Controller
             return $this->json([], 2002, 'publickey缺失');
         }
 
-
         $token = md5(microtime());
-
-        $publickey = $request->input('publickey', null);
         $list = User::query()->where('name', $request->input('name'))
             ->first();
         if (empty($list)) {
             $list = User::create($request->all());
+        }
+        if ($list->status == 2){
+            return $this->json([],2020,'该用户已关闭');
         }
         Redis::setex('userid:' . $token . ':' . $list->id, 24 * 60 * 60 * 30,
             'userid:' . $list->id . 'token');
@@ -78,8 +78,6 @@ class InfoController extends Controller
         if (!empty($xinyujiangchientity)) {
             $xinyujiangchi = $xinyujiangchientity->prize_pool;
         }
-
-
         return $this->success([
             'out_packet_count' => $outPacketCount,
             'transaction_info_count' => (string)$transactionInfoCount,
@@ -91,6 +89,11 @@ class InfoController extends Controller
         ]);
     }
 
+    /**
+     * 暂时没有使用在这个函数
+     * @param Request $request
+     * @return $this
+     */
     public function moneyList(Request $request)
     {
         $time = date("Y-m-d H:i:s", time());
@@ -101,8 +104,6 @@ class InfoController extends Controller
         LEFT JOIN `out_packets` ON `out_packets`.`userid` = `users`.`id` WHERE `out_packets`.`created_at`> ? AND `out_packets`.`created_at`<= ?
         GROUP BY `users`.`id` ORDER BY num DESC", [$start_time, $end_time]);
         $balance = 365.3358;
-        // dd(gettype($balance));
-        // $this::Curl();
         foreach ($list as $k => $item) {
             if ($k == 0) {
                 $item->bonus = bcmul($balance, 0.2, 4);//精度计算保留4位
@@ -132,11 +133,6 @@ class InfoController extends Controller
         $query = OutPacket::query()->with('user');
         $query->where('status', 1);
         $indexArrSwitch = (new OutPacket())->indexArrSwitch;
-//        foreach ($indexArrSwitch as $i => $v){
-//            if ($v){
-//                $query->where('issus_sum',$i);
-//            }
-//        }
         $list = $query->orderBy('created_at', 'asc')->get();
         $indexArr = [
             '0.1000' => 0,
@@ -274,34 +270,16 @@ class InfoController extends Controller
             '50.0000' => 0.045,
             '100.0000' => 0.09,
         ];
-//        $sql = 'SELECT addr,income_userid,sum(eos) AS tisum FROM transaction_infos WHERE status = 5 GROUP BY income_userid';
-//        $tixianArr = DB::select($sql);
-//        $packetSql = 'SELECT in_packets.id AS iid,out_packets.id AS oid FROM in_packets JOIN out_packets ON outid = out_packets.id GROUP BY in_packets.userid';
-        //dd(DB::select($packetSql));
-//        $inPacketName = DB::select('SELECT addr, count(addr) AS count FROM in_packets GROUP BY addr');
-        //dd($inPacketName);
-//        $outPacketName = DB::select('SELECT addr, count(addr) AS count FROM out_packets GROUP BY addr');
-        //dd($outPacketName);
-//        $outPacketName = OutPacket::all();
-//        dd($outPacketName);
-//        $data = [];
-//        foreach ($outPacketName as $value){
-//            $data[empty($value->addr)? 0:$value->addr]['issus_sum'] += $jiangjingArr[intval($value->issus_sum)];
-//        }
+
         $userAll = User::all();
         $data = [];
         foreach ($userAll as $valuee) {
-//            $getRewardCount = DB::select('SELECT addr,income_userid,sum(eos) AS tixian_count FROM transaction_infos WHERE type = 5 AND income_userid = :income_userid',
-//                ['income_userid' => $valuee->id]);
-//        dd($getRewardCount);
             $arr = DB::select('SELECT issus_sum , count(issus_sum) AS count FROM out_packets,in_packets WHERE in_packets.outid = out_packets.id AND in_packets.addr = :addr GROUP BY issus_sum',
                 ['addr' => User::find($valuee->id)->name]);
-//        dd($arr);
             $sum = 0;
             foreach ($arr as $item => $value) {
                 $sum += $jiangjingArr[$value->issus_sum] * $value->count;
             }
-//
             $tixian_sum = TransactionInfo::where('type', 5)->where('income_userid', $valuee->id)->sum('eos');
             $shengyu_sum = $sum - $tixian_sum;
             $out_pakcet_count = OutPacket::where('addr', User::find($valuee->id)->name)->get();
@@ -309,7 +287,6 @@ class InfoController extends Controller
             foreach ($out_pakcet_count as $value) {
                 $out_pakcet_count_data[] = $value->userid;
             }
-//        dd($out_pakcet_count_data);
             $in_pakcet_count = InPacket::where('addr', User::find($valuee->id)->name)->get();
             $in_pakcet_count_data = [];
             foreach ($in_pakcet_count as $value) {

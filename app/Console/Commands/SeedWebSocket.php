@@ -512,6 +512,8 @@ EOP;
             } else {
                 $outPacket_entity = OutPacket::find($outid);
                 $name = User::find($outPacket_entity->userid)->name;
+                $issus_sum_arr = (new OutPacket())->iidexArr;
+                $index = $issus_sum_arr[$outPacket_entity->issus_sum];
                 event(new InPacketEvent(
                     [],
                     json_decode(json_encode(OutPacketResource::make($outPacket_entity))),
@@ -519,7 +521,7 @@ EOP;
                     [],
                     $name,
                     3,
-                    [],
+                    $index,
                     $this->getinfo(),
                     json_decode(json_encode(InPacketResource::make($entity)))
                 ));

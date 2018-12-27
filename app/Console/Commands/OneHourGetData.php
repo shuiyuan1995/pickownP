@@ -245,7 +245,10 @@ class OneHourGetData extends Command
         $bomb = $memo_arr['bomb'];
         $prize_amount = $memo_arr['prize_amount'];
         $own_mined = $memo_arr['own_mined'];
-        $new_prize_pool = $memo_arr['new_prize_pool'];
+        $new_prize_pool = 0;
+        if (isset($memo_arr['new_prize_pool'])) {
+            $new_prize_pool = $memo_arr['new_prize_pool'];
+        }
         $txid = $memo_arr['txid'];
         $addr = '';
         if (isset($memo_arr['ref'])) {
@@ -274,6 +277,7 @@ class OneHourGetData extends Command
             $in_packet_entity->txid = $txid;
             $in_packet_entity->trxid = $trxid;
             $in_packet_entity->reffee = $reffee;
+            $in_packet_entity->status = 2;
             $in_packet_entity->save();
             $entity = $in_packet_entity;
         } else {

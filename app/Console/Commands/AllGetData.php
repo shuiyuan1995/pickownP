@@ -208,7 +208,7 @@ class AllGetData extends Command
             $in_packet_entity->prize_pool = $new_prize_pool / 10000;
             $in_packet_entity->txid = $txid;
             $in_packet_entity->trxid = $trxid;
-            $in_packet_entity->reffee = $reffee;
+            $in_packet_entity->reffee = $reffee / 10000;
             if ($in_packet_entity->status == 4) {
                 $in_packet_entity->status = 1;
             }
@@ -227,7 +227,7 @@ class AllGetData extends Command
                 'prize_pool' => $new_prize_pool / 10000,
                 'txid' => $txid,
                 'addr' => $addr,
-                'reffee' => $reffee,
+                'reffee' => $reffee / 10000,
                 'trxid' => $trxid,
                 'created_at' => date('Y-m-d H:i:s', $tr_time),
                 'status' => 1

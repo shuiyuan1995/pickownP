@@ -206,8 +206,6 @@ class ApiController extends Controller
                 $outPacket_entity->save();
                 $outPacket = $outPacket_entity;
                 $out_in_packet_data = array();
-                $reward_data__ = array();
-                $chailei_data__ = array();
                 foreach ($out_in_packet as $item => $value) {
                     $out_in_packet_data[$item]['name'] = User::find($value['userid'])->name;
                     $out_in_packet_data[$item]['income_sum'] = $value['income_sum'];
@@ -217,20 +215,7 @@ class ApiController extends Controller
                     $out_in_packet_data[$item]['reward_type'] = $value['reward_type'];
                     $out_in_packet_data[$item]['txid'] = $value['txid'];
                     $out_in_packet_data[$item]['reward_sum'] = $value['reward_sum'];
-                    if ($value['is_chailei'] == 1) {
-                        $chailei_data__[$item]['name'] = User::find($value['userid'])->name;
-                        $chailei_data__[$item]['chailai_sum'] = $outPacket->issus_sum;
-                    }
-                    if ($value['is_reward'] == 2) {
-                        $reward_data__[$item]['name'] = User::find($value['userid'])->name;
-                        $reward_data__[$item]['reward_type'] = $value['reward_type'];
-                        $reward_data__[$item]['reward_sum'] = $value['reward_sum'];
-                    }
-
                 }
-
-                $reward_data = array_values($reward_data__);
-                $chailei_data = array_values($chailei_data__);
 
                 $name = User::find($outPacket->userid)->name;
                 $issus_sum_arr = (new OutPacket())->iidexArr;
@@ -438,6 +423,7 @@ class ApiController extends Controller
     {
         $userid = substr($request->header('token'), strripos($request->header('token'), ':') + 1);
         $money = $request->input('money');
+
         $data = [
             'issus_userid' => 0,
             'income_userid' => $userid,
@@ -467,7 +453,7 @@ class ApiController extends Controller
             $in_pakcet_count_data[] = $value->userid;
         }
         $cc = array_keys(array_flip($out_pakcet_count_data) + array_flip($in_pakcet_count_data));
-        //dd($in_pakcet_count_data);
+
 
         return $this->success([
             'sum' => (string)count($cc),
@@ -503,8 +489,6 @@ class ApiController extends Controller
         $outPacket_entity->save();
         $outPacket = $outPacket_entity;
         $out_in_packet_data = array();
-        $reward_data__ = array();
-        $chailei_data__ = array();
         foreach ($out_in_packet as $item => $value) {
             $out_in_packet_data[$item]['name'] = User::find($value['userid'])->name;
             $out_in_packet_data[$item]['income_sum'] = $value['income_sum'];
@@ -513,20 +497,7 @@ class ApiController extends Controller
             $out_in_packet_data[$item]['is_reward'] = $value['is_reward'];
             $out_in_packet_data[$item]['reward_type'] = $value['reward_type'];
             $out_in_packet_data[$item]['reward_sum'] = $value['reward_sum'];
-            if ($value['is_chailei'] == 1) {
-                $chailei_data__[$item]['name'] = User::find($value['userid'])->name;
-                $chailei_data__[$item]['chailai_sum'] = $outPacket->issus_sum;
-            }
-            if ($value['is_reward'] == 2) {
-                $reward_data__[$item]['name'] = User::find($value['userid'])->name;
-                $reward_data__[$item]['reward_type'] = $value['reward_type'];
-                $reward_data__[$item]['reward_sum'] = $value['reward_sum'];
-            }
-
         }
-
-        $reward_data = array_values($reward_data__);
-        $chailei_data = array_values($chailei_data__);
 
         $name = User::find($outPacket->userid)->name;
         $issus_sum_arr = (new OutPacket())->iidexArr;
@@ -542,9 +513,9 @@ class ApiController extends Controller
         $outPacket_data['updated_at'] = strtotime($outPacket->updated_at);
 
         event(new InPacketEvent(
-            $reward_data,
+            [],
             $outPacket_data,
-            $chailei_data,
+            [],
             $out_in_packet_data,
             $name,
             2,

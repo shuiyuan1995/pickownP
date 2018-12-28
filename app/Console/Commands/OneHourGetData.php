@@ -99,7 +99,7 @@ class OneHourGetData extends Command
                 $ttime = strtotime($value['timestamp']);
                 // 转换时区后的时间戳
                 $tr_time = $ttime + (8 * 60 * 60);
-                if ($tr_time < ($time - (60 * 10))) {
+                if ($tr_time < ($time - (60 * 11))) {
                     echo "时间到\n";
                     break 2;
                 }

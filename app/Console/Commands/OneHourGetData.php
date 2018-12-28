@@ -100,7 +100,7 @@ class OneHourGetData extends Command
                 // 转换时区后的时间戳
                 $tr_time = $ttime + (8 * 60 * 60);
                 // 判断是否是时间范围.
-                if ($tr_time < ($time - (60 * 12))) {
+                if ($tr_time < ($time - (60 * 15))) {
                     echo "时间到\n";
                     break 2;
                 }
@@ -281,7 +281,9 @@ class OneHourGetData extends Command
             $in_packet_entity->txid = $txid;
             $in_packet_entity->trxid = $trxid;
             $in_packet_entity->reffee = $reffee / 10000;
-            $in_packet_entity->status = 2;
+            if ($in_packet_entity->status == 4) {
+                $in_packet_entity->status = 2;
+            }
             $in_packet_entity->save();
             $entity = $in_packet_entity;
         } else {

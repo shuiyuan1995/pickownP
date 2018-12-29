@@ -155,7 +155,7 @@ class InfoController extends Controller
         $yiqianwanhonbao = [];
         foreach ($indexArrSwitch as $i => $v) {
             if ($v === true) {
-                $ooooentity = OutPacket::query()->where('status', 2)
+                $ooooentity = OutPacket::query()->where('is_guangbo', 1)
                     ->where('issus_sum', $i)
                     ->orderBy('updated_at', 'desc')->first();
                 if (!empty($ooooentity)) {

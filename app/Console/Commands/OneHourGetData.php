@@ -155,7 +155,11 @@ class OneHourGetData extends Command
                     $out_in_packet_data[$item]['txid'] = $value['txid'];
                     $out_in_packet_data[$item]['reward_sum'] = $value['reward_sum'];
                 }
-
+                $tail_data = InPacket::query()
+                    ->where('outid', $uvalue)
+                    ->where('status', 2)
+                    ->orderBy('updated_at','desc')
+                    ->first();
                 $name = User::find($outPacket->userid)->name;
                 $issus_sum_arr = (new OutPacket())->iidexArr;
                 $index = $issus_sum_arr[$outPacket->issus_sum];
@@ -177,7 +181,7 @@ class OneHourGetData extends Command
                     2,
                     $index,
                     (new ApiController())->getinfo(),
-                    []
+                    json_decode(json_encode(InPacketResource::make($tail_data)))
                 ));
 
                 foreach ($out_in_packet_data as $k => $v) {
@@ -189,6 +193,7 @@ class OneHourGetData extends Command
                 $out->is_guangbo = 1;
                 $out->save();
             }
+            sleep(10);
         }
         echo "处理完毕";
         Log::info('处理完毕');

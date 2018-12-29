@@ -161,16 +161,8 @@ class InfoController extends Controller
                 if (!empty($ooooentity)) {
                     $yiqianwanhonbao[$indexArr[$i]] = $ooooentity;
                 }
-                //dump($ooooentity);
             }
         }
-//        $jieguo = OutPacket::query()->where('status', 2)
-//            ->orderBy('updated_at', 'desc')->get();
-//        // 已抢完的最新红包
-//
-//        foreach ($jieguo->groupBy('issus_sum') as $v) {
-//            $yiqianwanhonbao[] = $v->first();
-//        }
         foreach ($yiqianwanhonbao as $item => $value) {
             $data[$indexArr[$value->issus_sum]][$value->id]['index'] = $indexArr[$value->issus_sum];
             $data[$indexArr[$value->issus_sum]][$value->id]['name'] = User::find($value->userid)->name;

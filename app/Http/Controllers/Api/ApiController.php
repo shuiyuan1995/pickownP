@@ -32,7 +32,9 @@ class ApiController extends Controller
         $inPacketCount = InPacket::count();
         $transactionInfoCount = TransactionInfo::where('type', '<', 5)->sum('eos') + $ddiya_jsum;
         $userCount = User::count();
-        $xinyujiangchientity = InPacket::orderBy('created_at', 'desc')->first();
+        $xinyujiangchientity = InPacket::query()
+            ->where('prize_pool', '<>', 0)
+            ->orderBy('created_at', 'desc')->first();
         $xinyujiangchi = 0;
         if (!empty($xinyujiangchientity)) {
             $xinyujiangchi = $xinyujiangchientity->prize_pool;
@@ -73,10 +75,10 @@ class ApiController extends Controller
             return $this->json(['code' => 2004, 'message' => 'blocknumber不存在'], 2004, 'blocknumber不存在');
         }
         $eosparket_key = config('app.eospark_key');
-        $url = "https://api.eospark.com/api?module=transaction&action=get_transaction_detail_info&apikey={$eosparket_key}&trx_id=".$request->input('blocknumber');
-        $request_data = request_curl($url,[],false,true);
-        $request_data_arr = json_decode($request_data,true);
-        if ($request_data_arr['errno'] === 0){
+        $url = "https://api.eospark.com/api?module=transaction&action=get_transaction_detail_info&apikey={$eosparket_key}&trx_id=" . $request->input('blocknumber');
+        $request_data = request_curl($url, [], false, true);
+        $request_data_arr = json_decode($request_data, true);
+        if ($request_data_arr['errno'] === 0) {
 
         }
         $userid = substr($request->header('token'), strripos($request->header('token'), ':') + 1);
@@ -483,7 +485,7 @@ class ApiController extends Controller
         // 红包被抢完后生成发红包对用的抢红包的列表
         $out_in_packet = InPacket::query()
             ->where('outid', $outpacket->id)
-            ->where('status',2)->get();
+            ->where('status', 2)->get();
         $out_in_packet_sum = InPacket::query()->where('outid', $outpacket->id)->sum('income_sum');
         $outPacket_entity = OutPacket::query()->find($outpacket->id);
         $outPacket_entity->status = 2;

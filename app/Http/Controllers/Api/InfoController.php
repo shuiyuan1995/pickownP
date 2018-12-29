@@ -78,7 +78,9 @@ class InfoController extends Controller
         }
         $transactionInfoCount = TransactionInfo::where('type', '<', 5)->sum('eos') + $ddiya_jsum;
         $userCount = User::count();
-        $xinyujiangchientity = InPacket::orderBy('created_at', 'desc')->first();
+        $xinyujiangchientity = InPacket::query()
+            ->where('prize_pool','<>',0)
+            ->orderBy('created_at', 'desc')->first();
         $xinyujiangchi = 0;
         if (!empty($xinyujiangchientity)) {
             $xinyujiangchi = $xinyujiangchientity->prize_pool;

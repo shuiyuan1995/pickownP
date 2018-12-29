@@ -15,6 +15,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 
+/**
+ * 类说明。该类中的方法均为未使用token的方法，可以直接调用。
+ * Class InfoController
+ * @package App\Http\Controllers\Api
+ */
 
 class InfoController extends Controller
 {

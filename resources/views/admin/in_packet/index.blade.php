@@ -95,7 +95,8 @@
                     <th>中奖类型</th>
                     <th>中奖金额</th>
                     <th>挖矿数</th>
-                    <th>时间</th>
+                    <th>创建时间</th>
+                    <th>更新时间</th>
                     <th>奖池流水</th>
                     <th>推荐人用户名</th>
                     <th>推荐佣金</th>
@@ -122,6 +123,7 @@
                         <td>{{ $item->rewardTypeArr[$item->reward_type] }}</td>
                         <td>{{ $item->reward_sum }}</td>
                         <td>{{ empty($item->own)?0:$item->own }}</td>
+                        <td>{{ $item->created_at }}</td>
                         <td>{{ $item->updated_at }}</td>
                         <td>{{ $item->prize_pool }}</td>
                         <td>{{ $item->addr }}</td>

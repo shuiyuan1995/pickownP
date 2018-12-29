@@ -481,7 +481,9 @@ class ApiController extends Controller
             $this->json(['code' => 2005, 'message' => 'blocknumber对应的红包不存在'], 2005, 'blocknumber对应的红包不存在');
         }
         // 红包被抢完后生成发红包对用的抢红包的列表
-        $out_in_packet = InPacket::query()->where('outid', $outpacket->id)->get();
+        $out_in_packet = InPacket::query()
+            ->where('outid', $outpacket->id)
+            ->where('status',2)->get();
         $out_in_packet_sum = InPacket::query()->where('outid', $outpacket->id)->sum('income_sum');
         $outPacket_entity = OutPacket::query()->find($outpacket->id);
         $outPacket_entity->status = 2;
@@ -512,17 +514,17 @@ class ApiController extends Controller
         $outPacket_data['created_at'] = strtotime($outPacket->created_at);
         $outPacket_data['updated_at'] = strtotime($outPacket->updated_at);
 
-        event(new InPacketEvent(
-            [],
-            $outPacket_data,
-            [],
-            $out_in_packet_data,
-            $name,
-            2,
-            $index,
-            $this->getinfo(),
-            []
-        ));
+//        event(new InPacketEvent(
+//            [],
+//            $outPacket_data,
+//            [],
+//            count($out_in_packet_data),
+//            $name,
+//            2,
+//            $index,
+//            $this->getinfo(),
+//            []
+//        ));
         return $this->success(['code' => 200, 'message' => '红包关闭成功'], '红包关闭成功');
     }
 

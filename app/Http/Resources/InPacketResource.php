@@ -4,6 +4,26 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @property mixed rewardTypeArr
+ * @property mixed is_chailei_arr
+ * @property mixed id
+ * @property mixed outid
+ * @property mixed userid
+ * @property mixed out
+ * @property mixed eosid
+ * @property mixed blocknumber
+ * @property mixed income_sum
+ * @property mixed is_chailei
+ * @property mixed is_reward
+ * @property mixed reward_type
+ * @property mixed reward_sum
+ * @property mixed addr
+ * @property mixed created_at
+ * @property mixed updated_at
+ * @property mixed own
+ * @property mixed txid
+ */
 class InPacketResource extends JsonResource
 {
     /**
@@ -20,8 +40,8 @@ class InPacketResource extends JsonResource
             'id' => $this->id,
             'outid' => $this->outid,
             'userid' => $this->userid,
-            'user' => $this->user->name,
-            'name' => $this->user->name,
+            'user' => data_get($this,'user.name','未知用户'),
+            'name' => data_get($this,'user.name','未知用户'),
             'tail_number'=>$this->out->tail_number,
             'eosid' => $this->eosid,
             'blocknumber' => $this->blocknumber,

@@ -296,7 +296,9 @@ class ApiController extends Controller
             $query->where('created_at', '>', $begin_time)->where('created_at', '<', $end_time);
         }
         return OutPacketResource::collection(
-            $query->where('status', 2)->orderBy('created_at', 'desc')->paginate()
+            $query
+                // ->where('status', 2)
+                ->orderBy('created_at', 'desc')->paginate()
         )->additional([
             'code' => 200,
             'outpacketcount' => $outpacket,

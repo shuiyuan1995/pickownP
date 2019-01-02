@@ -296,7 +296,7 @@ class ApiController extends Controller
             $query->where('created_at', '>', $begin_time)->where('created_at', '<', $end_time);
         }
         return OutPacketResource::collection(
-            $query->where('status', '<>', 1)->orderBy('created_at', 'desc')->paginate()
+            $query->where('status', 2)->orderBy('created_at', 'desc')->paginate()
         )->additional([
             'code' => 200,
             'outpacketcount' => $outpacket,
@@ -344,9 +344,12 @@ class ApiController extends Controller
         })->where('userid', $userid)->where('is_chailei', 1)->count();
 
 
-        $query = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
+        $query = InPacket::query()
+//            ->with(['out'])->whereHas('out', function ($q) {
             //$q->where('status', '=', 2);
-        })->where('userid', $userid);
+//        })
+            ->where('status','<=',2)
+            ->where('userid', $userid);
         if ($request->filled('time')) {
             $begin_time = date('Y-m-d 0:0:0', $request->input('time'));
             $end_time = date('Y-m-d 59:59:59', $request->input('time'));
@@ -405,6 +408,7 @@ class ApiController extends Controller
             return response()->json([
                 'data' => [],
                 'outpacketname' => User::find($outuserid)->name,
+
                 'outpacketsum' => $outpacketentity->issus_sum,
                 'outpackettailnumber' => $outpacketentity->tail_number,
                 'code' => 200,

@@ -65,7 +65,10 @@ class SeedWebSocket extends Command
             $connector($url, [],
                 ['Origin' => 'http://localhost'])
                 ->then(function (WebSocket $conn) {
-                    $conn->on('message', function (MessageInterface $msg) use ($conn) {
+                    $conn->on(/**
+                     * @param MessageInterface $msg
+                     */
+                        'message', function (MessageInterface $msg) use ($conn) {
                         // 数据样例1
                         Log::info('源数据：' . $msg);
                         $msgaa = <<<EOP

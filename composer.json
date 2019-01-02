@@ -13,7 +13,8 @@
         "laravel/tinker": "^1.0",
         "predis/predis": "^1.1",
         "ratchet/pawl": "^0.3.2",
-        "spatie/laravel-permission": "^2.19"
+        "spatie/laravel-permission": "^2.19",
+      "ext-json": "*"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.1",

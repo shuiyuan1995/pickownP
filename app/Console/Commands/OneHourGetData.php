@@ -143,6 +143,8 @@ class OneHourGetData extends Command
                 $value_InPacket_data = InPacket::query()->where('outid', $uvalue)
                     ->where('status', 2)->get();
                 $outPacket = OutPacket::find($uvalue);
+                $outPacket->status = 2;
+                $outPacket->save();
                 $out_in_packet_data = array();
                 foreach ($value_InPacket_data as $item => $value) {
                     $out_in_packet_data[$item]['id'] = $value['id'];

@@ -388,7 +388,9 @@ class ApiController extends Controller
     public function red_packet(Request $request)
     {
         $blocknumber = $request->input('outid');
-        $outpacketentity = OutPacket::query()->where('blocknumber', $blocknumber)->first();
+        $outpacketentity = OutPacket::query()
+            ->where('blocknumber', $blocknumber)
+            ->first();
         if (empty($outpacketentity)) {
             return response()->json([
                 'data' => [],
@@ -399,7 +401,7 @@ class ApiController extends Controller
 
         $outid = $outpacketentity->id;
         $outuserid = $outpacketentity->userid;
-        if ($outpacketentity->status == 1) {
+        if ($outpacketentity->status === 1) {
             return response()->json([
                 'data' => [],
                 'outpacketname' => User::find($outuserid)->name,
@@ -441,20 +443,31 @@ class ApiController extends Controller
     public function getRewardMoney(Request $request)
     {
         $userid = substr($request->header('token'), strripos($request->header('token'), ':') + 1);
-        $sum = InPacket::query()->where('addr', User::find($userid)->name)->sum('reffee');
-        $tixian_sum = TransactionInfo::query()->where('type', 5)->where('income_userid', $userid)->sum('eos');
+        $sum = InPacket::query()
+            ->where('addr', User::find($userid)->name)->sum('reffee');
+        $tixian_sum = TransactionInfo::query()
+            ->where('type', 5)
+            ->where('income_userid', $userid)
+            ->sum('eos');
         $shengyu_sum = $sum - $tixian_sum;
-        $out_pakcet_count = OutPacket::query()->where('addr', User::find($userid)->name)->get();
+        $out_pakcet_count = OutPacket::query()
+            ->where('addr', User::find($userid)->name)
+            ->get();
         $out_pakcet_count_data = [];
         foreach ($out_pakcet_count as $value) {
             $out_pakcet_count_data[] = $value->userid;
         }
-        $in_pakcet_count = InPacket::query()->where('addr', User::find($userid)->name)->get();
+        $in_pakcet_count = InPacket::query()
+            ->where('addr', User::find($userid)->name)
+            ->get();
         $in_pakcet_count_data = [];
         foreach ($in_pakcet_count as $value) {
             $in_pakcet_count_data[] = $value->userid;
         }
-        $cc = array_keys(array_flip($out_pakcet_count_data) + array_flip($in_pakcet_count_data));
+        $cc = array_keys(
+            array_flip($out_pakcet_count_data)
+            +
+            array_flip($in_pakcet_count_data));
 
 
         return $this->success([

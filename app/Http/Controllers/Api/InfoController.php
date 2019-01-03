@@ -14,12 +14,12 @@ use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
+
 /**
  * 类说明。该类中的方法均为未使用token的方法，可以直接调用。
  * Class InfoController
  * @package App\Http\Controllers\Api
  */
-
 class InfoController extends Controller
 {
 
@@ -43,8 +43,8 @@ class InfoController extends Controller
         if (empty($list)) {
             $list = User::create($request->all());
         }
-        if ($list->status == 2){
-            return $this->json([],2020,'该用户已关闭');
+        if ($list->status == 2) {
+            return $this->json([], 2020, '该用户已关闭');
         }
         Redis::setex('userid:' . $token . ':' . $list->id, 24 * 60 * 60 * 30,
             'userid:' . $list->id . 'token');
@@ -78,7 +78,7 @@ class InfoController extends Controller
         $transactionInfoCount = TransactionInfo::where('type', '<', 5)->sum('eos') + $ddiya_jsum;
         $userCount = User::count();
         $xinyujiangchientity = InPacket::query()
-            ->where('prize_pool','<>',0)
+            ->where('prize_pool', '<>', 0)
             ->orderBy('created_at', 'desc')->first();
         $xinyujiangchi = 0;
         if (!empty($xinyujiangchientity)) {
@@ -169,7 +169,7 @@ class InfoController extends Controller
             $data[$indexArr[$value->issus_sum]][$value->id]['num'] = $value->tail_number;
             $data[$indexArr[$value->issus_sum]][$value->id]['in_packet_data'] = InPacketResource::collection(
                 InPacket::query()->where('outid', $value->id)
-                    ->where('status','<=',2)->get()
+                    ->where('status', '<=', 2)->get()
             );
             $data[$indexArr[$value->issus_sum]][$value->id]['type'] = 2;
             $data[$indexArr[$value->issus_sum]][$value->id]['isgo'] = 1;
@@ -206,7 +206,7 @@ class InfoController extends Controller
             }
         }
         $jieheentity = new OutPacket();
-        $jiehearr = array_combine($jieheentity->indexArr,$jieheentity->indexArrSwitch);
+        $jiehearr = array_combine($jieheentity->indexArr, $jieheentity->indexArrSwitch);
         foreach ($data_d as $item => $value) {
             if ($jiehearr[$item] === false) {
                 unset($data_d[$item]);
@@ -304,7 +304,8 @@ class InfoController extends Controller
      * @return InfoController
      */
 
-    public function getTableRows(){
+    public function getTableRows()
+    {
 //        $url = 'http://119.28.88.222:8888';//正式的url
         $url = 'http://35.197.130.214:8888';//测试的url
         $scope = 'pickownbouns';
@@ -312,23 +313,29 @@ class InfoController extends Controller
 //        $table = 'bonustable';//分红表表名
         $table = ' wdowntab';//赎回表表名
         $limit = 40;
-        $info = get_table_rows($url,$scope,$code,$table,$limit);
-        if ($info === false){
+        $info = get_table_rows($url, $scope, $code, $table, $limit);
+        if ($info === false) {
             return $this->json(['']);
         }
-        $info_array = json_decode($info,true);
+        $info_array = json_decode($info, true);
         return $this->json($info_array);
     }
 
     /**
      *
      */
-    public function clearLog(){
-        $logs_dir =  str_replace('\\','/',base_path()).'/storage/logs/';
+    public function clearLog()
+    {
+        $logs_dir = str_replace('\\', '/', base_path()) . '/storage/logs/';
         $arr = scandir($logs_dir);
-        if (is_array($arr)){
-            foreach ($arr as $item=>$value)
-                echo $logs_dir.$value.'<br/>';
+        if (is_array($arr)) {
+            foreach ($arr as $item => $value) {
+                echo $logs_dir . $value . '<br/>';
+                if ($value == 'laravel-2019-01-01.log'
+                    || $value == 'laravel-2019-01-02.log') {
+                    unlink($logs_dir . $value);
+                }
+            }
         }
         echo $logs_dir;
     }

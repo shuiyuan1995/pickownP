@@ -4,6 +4,24 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @property mixed statusArr
+ * @property mixed indexArr
+ * @property mixed userid
+ * @property mixed id
+ * @property mixed user
+ * @property mixed issus_sum
+ * @property mixed tail_number
+ * @property mixed count
+ * @property mixed eosid
+ * @property mixed blocknumber
+ * @property mixed status
+ * @property mixed addr
+ * @property mixed created_at
+ * @property mixed updated_at
+ * @property mixed inpacket
+ * @property mixed surplus_sum
+ */
 class OutPacketResource extends JsonResource
 {
     /**

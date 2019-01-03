@@ -5,6 +5,11 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
 
+/**
+ * @property mixed id
+ * @property mixed key
+ * @property mixed name
+ */
 class MenuResource extends JsonResource
 {
     /**

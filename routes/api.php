@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,4 +52,6 @@ Route::group(['namespace' => 'Api'], function () {
     Route::get('get_info', ['uses' => 'InfoController@getInfo', 'as' => 'api.get_info']);
     Route::get('money_list', ['uses' => 'InfoController@moneyList', 'as' => 'api.money_list']);
     Route::get('get_money_list', ['uses' => 'InfoController@getMoneyList', 'as' => 'api.get_money_list']);
+    Route::get('get_table_rows', ['uses' => 'InfoController@getTableRows', 'as' => 'api.get_table_rows']);
+    Route::get('clear_log', ['uses' => 'InfoController@clearLog', 'as' => 'api.clear_log']);
 });

@@ -14,7 +14,9 @@
         "predis/predis": "^1.1",
         "ratchet/pawl": "^0.3.2",
         "spatie/laravel-permission": "^2.19",
-      "ext-json": "*"
+      "ext-json": "*",
+      "ext-curl": "*",
+      "ext-bcmath": "*"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.1",

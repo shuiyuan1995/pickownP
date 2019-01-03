@@ -4,6 +4,14 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @property mixed id
+ * @property mixed userid
+ * @property mixed addr
+ * @property mixed ip
+ * @property mixed created_at
+ * @property mixed updated_at
+ */
 class LoginRecordResource extends JsonResource
 {
     /**

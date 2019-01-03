@@ -4,6 +4,18 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @property mixed typeArr
+ * @property mixed statusArr
+ * @property mixed issus_userid
+ * @property mixed income_userid
+ * @property mixed type
+ * @property mixed status
+ * @property mixed eos
+ * @property mixed msg
+ * @property mixed created_at
+ * @property mixed updated_at
+ */
 class TransactionInfoResource extends JsonResource
 {
     /**

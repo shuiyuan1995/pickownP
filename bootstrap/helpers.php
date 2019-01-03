@@ -17,12 +17,11 @@ if (!function_exists('request_curl')) {
      * @param bool $https https协议
      * @return String
      */
-    function request_curl( $url, array $params = [],  $ispost = false,  $https = false)
+    function request_curl($url, array $params = [], $ispost = false, $https = false)
     {
-            $USERAGENT=
+        $USERAGENT =
             'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/' .
-            '537.36 (KHTML, like Gecko) Chrome/41.0.2272.118 Safari/537.36'
-        ;
+            '537.36 (KHTML, like Gecko) Chrome/41.0.2272.118 Safari/537.36';
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
         curl_setopt(
@@ -71,20 +70,58 @@ if (!function_exists('request_curl')) {
     }
 }
 if (!function_exists('array_sort')) {
-    function array_sort($arr, $keys, $type='asc'){ 
+    function array_sort($arr, $keys, $type = 'asc')
+    {
         $keysvalue = $new_array = array();
-        foreach ($arr as $k=>$v){
+        foreach ($arr as $k => $v) {
             $keysvalue[$k] = $v[$keys];
         }
-        if($type == 'asc'){
+        if ($type == 'asc') {
             asort($keysvalue);
-        }else{
+        } else {
             arsort($keysvalue);
         }
         reset($keysvalue);
-        foreach ($keysvalue as $k=>$v){
+        foreach ($keysvalue as $k => $v) {
             $new_array[$k] = $arr[$k];
         }
-        return $new_array; 
-    } 
+        return $new_array;
+    }
+}
+
+
+if (!function_exists('get_table_rows')) {
+    /**
+     * @param string $url 地址
+     * @param string $scope 存储数据的账户名称
+     * @param string $code 提供该表的智能合约名称
+     * @param string $table 要查询的表名
+     * @param int $limit 限制返回的结果数(可选)
+     * @return bool|string
+     */
+    function get_table_rows($url,$scope, $code, $table, $limit)
+    {
+        if ($url == null || $scope == null || $code == null || $table == null) {
+            return false;
+        }
+        $paramArr = ["scope" => $scope, "code" => $code, "table" => $table, "json" => true];
+        if ($limit != null) {
+            $paramArr['limit'] = $limit;
+        }
+        $post_str = json_encode($paramArr);
+        $init = curl_init();
+        curl_setopt($init, CURLOPT_URL, $url . '/v1/chain/get_table_rows');//set url
+        curl_setopt($init, CURLOPT_HTTPHEADER, [0 => 'Content-Type: application/json']);
+        curl_setopt($init, CURLOPT_USERAGENT,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36");
+        curl_setopt($init, CURLOPT_POSTFIELDS, $post_str);
+        curl_setopt($init, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($init, CURLOPT_ENCODING, "");
+        curl_setopt($init, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($init, CURLOPT_AUTOREFERER, true);
+        curl_setopt($init, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($init, CURLOPT_MAXREDIRS, 10);
+        $output = curl_exec($init);
+        return $output;
+    }
 }

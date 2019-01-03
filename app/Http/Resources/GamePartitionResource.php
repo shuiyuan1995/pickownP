@@ -4,6 +4,17 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @property mixed id
+ * @property mixed name
+ * @property mixed sum
+ * @property mixed up
+ * @property mixed down
+ * @property mixed number
+ * @property mixed status
+ * @property mixed created_at
+ * @property mixed updated_at
+ */
 class GamePartitionResource extends JsonResource
 {
     /**

@@ -4,6 +4,11 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @property mixed id
+ * @property mixed name
+ * @property mixed key
+ */
 class RoleResource extends JsonResource
 {
     /**

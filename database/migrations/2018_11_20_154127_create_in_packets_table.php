@@ -34,6 +34,7 @@ class CreateInPacketsTable extends Migration
             $table->string('txid',255)->nullable()->comment('抢红包的唯一标志');
             $table->decimal('reffee',18,4)->nullable()->default(0)->comment('邀请金额');
             $table->string('trxid',255)->nullable()->comment('区块链上的交易id');
+//            $table->string('coin_type',10)->nullable()->default('EOS')->comment('用于区分币的种类-EOS,OWN,EUSD');
             // 创建时间用于领奖时间
             $table->timestamps();
         });

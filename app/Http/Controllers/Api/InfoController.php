@@ -14,7 +14,6 @@ use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
-
 /**
  * 类说明。该类中的方法均为未使用token的方法，可以直接调用。
  * Class InfoController
@@ -298,5 +297,39 @@ class InfoController extends Controller
             $data[$valuee->name]['shengyu_sum'] = $shengyu_sum < 0 ? 0 : $shengyu_sum;
         }
         return $this->success($data);
+    }
+
+    /**
+     * 分红测试接口
+     * @return InfoController
+     */
+
+    public function getTableRows(){
+//        $url = 'http://119.28.88.222:8888';//正式的url
+        $url = 'http://35.197.130.214:8888';//测试的url
+        $scope = 'pickownbouns';
+        $code = 'pickownbonus';
+//        $table = 'bonustable';//分红表表名
+        $table = ' wdowntab';//赎回表表名
+        $limit = 40;
+        $info = get_table_rows($url,$scope,$code,$table,$limit);
+        if ($info === false){
+            return $this->json(['']);
+        }
+        $info_array = json_decode($info,true);
+        return $this->json($info_array);
+    }
+
+    /**
+     *
+     */
+    public function clearLog(){
+        $logs_dir =  str_replace('\\','/',base_path()).'/storage/logs/';
+        $arr = scandir($logs_dir);
+        if (is_array($arr)){
+            foreach ($arr as $item=>$value)
+                echo $logs_dir.$value.'<br/>';
+        }
+        echo $logs_dir;
     }
 }

@@ -4,6 +4,17 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @property mixed id
+ * @property mixed name
+ * @property mixed status
+ * @property mixed publickey
+ * @property mixed created_at
+ * @property mixed updated_at
+ * @property mixed invite
+ * @property mixed addr
+ * @property mixed walletid
+ */
 class UserResource extends JsonResource
 {
     /**

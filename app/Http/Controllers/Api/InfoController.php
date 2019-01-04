@@ -300,7 +300,7 @@ class InfoController extends Controller
     }
 
     /**
-     * 分红测试接口
+     * 赎回测试接口
      * @return InfoController
      */
 
@@ -327,14 +327,16 @@ class InfoController extends Controller
     public function clearLog()
     {
         $logs_dir = str_replace('\\', '/', base_path()) . '/storage/logs/';
-        \Log::info('logs_dir:'.$logs_dir);
+
         $arr = scandir($logs_dir);
         if (is_array($arr)) {
             foreach ($arr as $item => $value) {
                 echo $logs_dir . $value . '<br/>';
-                if ($value == 'laravel-2019-01-01.log'
-                    || $value == 'laravel-2019-01-02.log') {
-//                    unlink($logs_dir . $value);
+                if ($value == '.' || $value == '..' || $value == '.gitignore') {
+
+                } else {
+                    return response()->download($logs_dir . $value,
+                        config('app.env') . '-' . $value);
                 }
             }
         }

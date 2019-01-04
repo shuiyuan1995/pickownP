@@ -350,7 +350,7 @@ class ApiController extends Controller
 //            ->with(['out'])->whereHas('out', function ($q) {
             //$q->where('status', '=', 2);
 //        })
-            ->where('status','<=',2)
+            ->where('status', '<=', 2)
             ->where('userid', $userid);
         if ($request->filled('time')) {
             $begin_time = date('Y-m-d 0:0:0', $request->input('time'));
@@ -451,22 +451,24 @@ class ApiController extends Controller
     public function getRewardMoney(Request $request)
     {
         $userid = substr($request->header('token'), strripos($request->header('token'), ':') + 1);
+        $userEntity = User::find($userid);
         $sum = InPacket::query()
-            ->where('addr', User::find($userid)->name)->sum('reffee');
+            ->where('addr', $userEntity->name)->sum('reffee');
         $tixian_sum = TransactionInfo::query()
             ->where('type', 5)
             ->where('income_userid', $userid)
             ->sum('eos');
         $shengyu_sum = $sum - $tixian_sum;
         $out_pakcet_count = OutPacket::query()
-            ->where('addr', User::find($userid)->name)
+            ->where('addr', $userEntity->name)
             ->get();
         $out_pakcet_count_data = [];
         foreach ($out_pakcet_count as $value) {
             $out_pakcet_count_data[] = $value->userid;
         }
         $in_pakcet_count = InPacket::query()
-            ->where('addr', User::find($userid)->name)
+            ->where('addr', $userEntity->name)
+            ->where('status', '<=', 2)
             ->get();
         $in_pakcet_count_data = [];
         foreach ($in_pakcet_count as $value) {
@@ -476,12 +478,28 @@ class ApiController extends Controller
             array_flip($out_pakcet_count_data)
             +
             array_flip($in_pakcet_count_data));
-
-
+        $list = InPacket::query()
+            ->where('addr', $userEntity->name)
+            ->where('status', '<=', 2)
+            ->orderBy('created_at', 'desc')
+            ->limit(50)
+            ->get();
+        $invitationList_data = [];
+        foreach ($list as $item => $value) {
+            $entity = User::find($value->userid);
+            if (empty($entity)) {
+                continue;
+            }
+            $invitationList_data[$item]['name'] = $entity->name;
+            $invitationList_data[$item]['time'] = strtotime($value->created_at);
+            $invitationList_data[$item]['reffee'] = (string)$value->reffee;
+        }
+        $invitationList = array_values($invitationList_data);
         return $this->success([
             'sum' => (string)count($cc),
             'shengyu_sum' => (string)($shengyu_sum < 0 ? 0 : $shengyu_sum),
-            'tixian_sum' => (string)$tixian_sum
+            'tixian_sum' => (string)$tixian_sum,
+            'list' => $invitationList
         ], '');
     }
 

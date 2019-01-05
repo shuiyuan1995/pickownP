@@ -311,7 +311,7 @@ class InfoController extends Controller
         $scope = 'pickownbouns';
         $code = 'pickownbonus';
 //        $table = 'bonustable';//分红表表名
-        $table = ' wdowntab';//赎回表表名
+        $table = 'wdowntab';//赎回表表名
         $limit = 40;
         $info = get_table_rows($url, $scope, $code, $table, $limit);
         if ($info === false) {

@@ -97,16 +97,25 @@ if (!function_exists('get_table_rows')) {
      * @param string $code 提供该表的智能合约名称
      * @param string $table 要查询的表名
      * @param int $limit 限制返回的结果数(可选)
+     * @param string $lower_bound
      * @return bool|string
      */
-    function get_table_rows($url,$scope, $code, $table, $limit)
+    function get_table_rows($url,$scope, $code, $table, $limit,$lower_bound)
     {
         if ($url == null || $scope == null || $code == null || $table == null) {
             return false;
         }
-        $paramArr = ["scope" => $scope, "code" => $code, "table" => $table, "json" => true];
+        $paramArr = [
+            "scope" => $scope,
+            "code" => $code,
+            "table" => $table,
+            "json" => true
+        ];
         if ($limit != null) {
             $paramArr['limit'] = $limit;
+        }
+        if ($lower_bound != null){
+            $paramArr['lower_bound'] = $lower_bound;
         }
         $post_str = json_encode($paramArr);
         $init = curl_init();

@@ -312,10 +312,11 @@ class InfoController extends Controller
         $code = 'pickownbonus';
 //        $table = 'bonustable';//分红表表名
         $table = 'wdowntab';//赎回表表名
-        $limit = 40;
-        $info = get_table_rows($url, $scope, $code, $table, $limit);
+        $limit = null;
+        $info = get_table_rows($url, $scope, $code, $table, $limit, null);
+        dd($info);
         if ($info === false) {
-            return $this->json(['']);
+            return $this->json([$info]);
         }
         $info_array = json_decode($info, true);
         return $this->json($info_array);

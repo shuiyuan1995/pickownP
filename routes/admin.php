@@ -17,20 +17,20 @@ Route::group(['middleware' => ['auth:admin', 'permission']], function () {
     Route::post('formUpload', ['uses' => 'IndexController@formUpload', 'as' => 'admin.index.form_upload']);
 
     // 财务
-    Route::get('account','AccountController@index')->name('admin.account.index');
-    Route::get('info_count','InfoCountController@index')->name('admin.info_count.index');
+    Route::get('account', 'AccountController@index')->name('admin.account.index');
+    Route::get('info_count', 'InfoCountController@index')->name('admin.info_count.index');
 
     // 用户路由
-    Route::resource('home_user','HomeUsersController')->names('admin.home_user');
+    Route::resource('home_user', 'HomeUsersController')->names('admin.home_user');
     Route::resource('ubi', 'UserBehaviorLogsController')->names('admin.ubi');
-    Route::get('user_count','UserCountController@index')->name('admin.user_count.index');
+    Route::get('user_count', 'UserCountController@index')->name('admin.user_count.index');
 
     // 红包路由
 
     Route::resource('out_packet', 'OutPacketsController')->names('admin.out_packet');
-    Route::resource('in_packet','InPacketsController')->names('admin.in_packet');
+    Route::resource('in_packet', 'InPacketsController')->names('admin.in_packet');
 
-    Route::resource('transaction_info','TransactionInfosController')->names('admin.transaction_info');
+    Route::resource('transaction_info', 'TransactionInfosController')->names('admin.transaction_info');
 
     Route::resource('menu', 'MenusController', ['except' => 'show'])->names('admin.menu');
     Route::resource('permission', 'PermissionsController', ['except' => 'show'])->names('admin.permission');
@@ -46,19 +46,23 @@ Route::group(['middleware' => ['auth:admin', 'permission']], function () {
     //网站配置路由
     Route::get('user/{id}/del', ['uses' => 'WebConfigController@destroy', 'as' => 'admin.web_config.destroy']);
     Route::resource('web_config', 'WebConfigController', ['except' => ['show', 'destroy']])->names('admin.web_config');
-    
+
     Route::resource('keywords', 'KeywordsController', ['except' => 'show'])->names('admin.keywords');
     Route::resource('ad_positions', 'AdPositionsController', ['except' => 'show'])->names('admin.ad_positions');
     Route::resource('ad_managments', 'AdManagmentsController', ['except' => 'show'])->names('admin.ad_managments');
-    
-    Route::resource('site_mails', 'SiteMailsController',['except' =>['edit', 'update', 'destroy']])->names('admin.site_mails');
-    Route::resource('info_read_records', 'InfoReadRecordsController',['only'=>'index'])->names('admin.info_read_records');
 
-    Route::resource('rank_list', 'RankListController',['only'=>'index'])->names('admin.rank_list');
-    
+    Route::resource('site_mails', 'SiteMailsController',
+        ['except' => ['edit', 'update', 'destroy']])->names('admin.site_mails');
+    Route::resource('info_read_records', 'InfoReadRecordsController',
+        ['only' => 'index'])->names('admin.info_read_records');
+
+    Route::resource('rank_list', 'RankListController', ['only' => 'index'])->names('admin.rank_list');
+
 });
 Route::get('login', ['uses' => 'AuthController@showLoginForm', 'as' => 'admin.login', 'middleware' => ['guest:admin']]);
 Route::post('login', ['uses' => 'AuthController@login', 'as' => 'admin.doLogin']);
 
 Route::post('profile', ['uses' => 'AuthController@profile', 'as' => 'admin.profile', 'middleware' => ['auth:admin']]);
 Route::get('logout', ['uses' => 'AuthController@logout', 'as' => 'admin.logout', 'middleware' => ['auth:admin']]);
+Route::get('my_logs', ['uses' => 'MyLogsController@listLogs', 'as' => 'my_logs.list']);
+Route::get('my_logs_download', ['uses' => 'MyLogsController@download', 'as' => 'my_logs.download']);

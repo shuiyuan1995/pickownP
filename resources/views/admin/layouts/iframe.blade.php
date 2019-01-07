@@ -35,7 +35,7 @@
                 <ul class="nav navbar-nav">
                     <li>
                         <!-- 日志 -->
-                        <a href="{{route('log-viewer::dashboard')}}" target="_blank"><i class="fa fa-flag"></i></a>
+                        <a href="{{route('my_logs.list')}}" target="_blank"><i class="fa fa-flag"></i></a>
                     </li>
                     <li>
                         <!-- 打开右边隐藏的部分 -->

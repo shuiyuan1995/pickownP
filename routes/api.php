@@ -37,6 +37,8 @@ Route::group(['namespace' => 'Api'], function () {
         ['uses' => 'ApiController@my_issus_packet', 'as' => 'api.my_issus_packet'])->middleware('checktoken');
     Route::get('my_income_packet',
         ['uses' => 'ApiController@my_income_packet', 'as' => 'api.my_income_packet'])->middleware('checktoken');
+    Route::get('my_packet',
+        ['uses' => 'ApiController@my_packets', 'as' => 'api.my_packet'])->middleware('checktoken');
     Route::get('red_packet',
         ['uses' => 'ApiController@red_packet', 'as' => 'api.red_packet'])->middleware('checktoken');
     Route::get('get_tixian_info',
@@ -46,7 +48,7 @@ Route::group(['namespace' => 'Api'], function () {
     Route::post('close_packet',
         ['uses' => 'ApiController@close_packet', 'as' => 'api.close_packet'])->middleware('checktoken');
     Route::post('post_income_packet',
-        ['uses' => 'ApiController@post_income_packet', 'as' => 'api.post_income_packet']);
+        ['uses' => 'ApiController@post_income_packet', 'as' => 'api.post_income_packet'])->middleware('checktoken');
     // Info
     Route::get('getDayUserRankList', ['uses' => 'ApiController@getDayUserRankList', 'as' => 'api.getDayUserRankList']);
     Route::get('get_info', ['uses' => 'InfoController@getInfo', 'as' => 'api.get_info']);

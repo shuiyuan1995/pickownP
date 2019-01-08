@@ -283,7 +283,11 @@ class ApiController extends Controller
         $userid = substr($request->header('token'), strripos($request->header('token'), ':') + 1);
         $outpacketsum = OutPacket::query()->where('userid', $userid)->sum('issus_sum');
         $outpacket = OutPacket::query()->where('userid', $userid)->count();
-        $sql = 'SELECT count(DISTINCT out_packets.userid) AS count FROM out_packets,in_packets WHERE out_packets.id = in_packets.outid AND out_packets.status = 2 AND out_packets.userid = :userid';
+        $sql = 'SELECT count(out_packets.userid) AS count FROM out_packets,in_packets 
+                WHERE out_packets.id = in_packets.outid 
+                  AND out_packets.status = 2 
+                  AND out_packets.userid = :userid 
+                  and in_packets.is_chailei = 1';
         $chailei = DB::select($sql, ['userid' => $userid]);
         $chaileicount = 0;
         foreach ($chailei as $value) {
@@ -503,12 +507,6 @@ class ApiController extends Controller
         ], '');
     }
 
-    public function chaxunhongbaozhuangtai(Request $request)
-    {
-
-
-    }
-
     /**
      * 关闭红包接口
      * @param Request $request
@@ -715,5 +713,122 @@ class ApiController extends Controller
             Log::error('事务报错' . $exception->getMessage());
             DB::rollBack();
         }
+    }
+
+    /**
+     * 由原来的my_income_packet和my_income_packet合并而来，返回当前用户的发红包数量和抢红包列表
+     * @param Request $request
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function my_packets(Request $request){
+        $userid = substr(
+            $request->header('token'),
+            strripos($request->header('token'), ':') + 1
+        );
+        $userEntity = User::find($userid);
+        if (empty($userEntity)){
+            return $this->error('用户不存在');
+        }
+        $outpacketsum = OutPacket::query()->where('userid', $userid)->sum('issus_sum');
+        $outpacket = OutPacket::query()->where('userid', $userid)->count();
+        $sql = <<<EOP
+          SELECT count(out_packets.userid) AS count FROM out_packets,in_packets 
+          WHERE out_packets.id = in_packets.outid 
+          AND out_packets.status = 2 
+          AND out_packets.userid = :userid 
+          and in_packets.is_chailei = 1
+EOP;
+        $chailei = DB::select($sql, ['userid' => $userid]);
+        $chaileicount = 0;
+        foreach ($chailei as $value) {
+            $chaileicount = $value->count;
+        }
+        $query = OutPacket::query()->where('userid', $userid);
+//        if ($request->filled('time')) {
+//            $begin_time = date('Y-m-d 0:0:0', $request->input('time'));
+//            $end_time = date('Y-m-d 23:59:59', $request->input('time'));
+//            $query->where('created_at', '>', $begin_time)
+//                ->where('created_at', '<', $end_time);
+//        }
+        $out_packet_list = OutPacketResource::collection(
+            $query
+                // ->where('status', 2)
+                ->orderBy('created_at', 'desc')->paginate(20)
+        )->additional([
+            'code' => 200,
+            'outpacketcount' => $outpacket,
+            'chaileicount' => $chaileicount,
+            'outpacketsum' => empty($outpacketsum) ? 0 : $outpacketsum,
+            'name' => $userEntity->name,
+//            'last_time' => strtotime(OutPacket::query()->where('userid', $userid)->min('updated_at')),
+//            'max_time' => strtotime(OutPacket::query()->where('userid', $userid)->max('updated_at')),
+            'message' => '发红包列表'
+        ]);
+//        $pairs = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
+//            //$q->where('status', 2);
+//        })->where('userid', $userid)->where('reward_type', 1)->count();
+//        $three = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
+//            //$q->where('status', 2);
+//        })->where('userid', $userid)->where('reward_type', 2)->count();
+//
+//        $int = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
+//            //$q->where('status', 2);
+//        })->where('userid', $userid)->where('reward_type', 3)->count();
+//        $shunzi = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
+//            //$q->where('status', 2);
+//        })->where('userid', $userid)->where('reward_type', 4)->count();
+//        $bomb = InPacket::query()->with(['out'])->whereHas('out', function ($q) {
+//            //$q->where('status', 2);
+//        })->where('userid', $userid)->where('reward_type', 5)->count();
+
+        $chailei = InPacket::query()->with(['out'])
+            ->whereHas('out', function ($q) {
+            //$q->where('status', 2);
+        })
+            ->where('userid', $userid)
+            ->where('is_chailei', 1)
+            ->count();
+
+
+        $query = InPacket::query()
+//            ->with(['out'])->whereHas('out', function ($q) {
+            //$q->where('status', '=', 2);
+//        })
+            ->where('status', '<=', 2)
+            ->where('userid', $userid);
+//        if ($request->filled('time')) {
+//            $begin_time = date('Y-m-d 0:0:0', $request->input('time'));
+//            $end_time = date('Y-m-d 59:59:59', $request->input('time'));
+//            $query->where('created_at', '>', $begin_time)
+//                ->where('created_at', '<', $end_time);
+//        }
+
+        $reward_sum_count = InPacket::query()
+            ->where('userid', $userid)
+            ->sum('reward_sum');
+
+        $in_packet_list = InPacketResource::collection(
+            $query->orderBy('created_at', 'desc')->paginate(20)
+        )->additional([
+            'code' => 200,
+//            'paris' => $pairs,
+//            'three' => $three,
+//            'int' => $int,
+//            'shunzi' => $shunzi,
+//            'bomb' => $bomb,
+            'chailei' => $chailei,
+            'name' => $userEntity->name,
+            'packetcount' => InPacket::query()->where('userid', $userid)->count(),
+            'packetsum' => (string)(InPacket::query()->with(['out'])->whereHas('out', function ($q) {
+//                $q->where('status', 2);
+                })->where('userid', $userid)->sum('income_sum') + $reward_sum_count),
+//            'last_time' => strtotime(InPacket::query()->where('userid', $userid)->min('created_at')),
+//            'max_time' => strtotime(InPacket::query()->where('userid', $userid)->max('created_at')),
+            'message' => '抢红包列表'
+        ]);
+        return $this->json([
+            'out_list'=>json_encode(json_decode($out_packet_list)),
+            'in_list'=>json_encode(json_decode($in_packet_list))
+        ]);
     }
 }

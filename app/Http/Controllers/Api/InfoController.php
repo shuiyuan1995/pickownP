@@ -335,7 +335,7 @@ class InfoController extends Controller
         $table = 'pending';//抢红包表表名
         $limit = 100;
         $info = get_table_rows($url, $scope, $code, $table, $limit, null);
-        dd($info);
+        dump($info);
         if ($info === false) {
             return $this->json([$info]);
         }

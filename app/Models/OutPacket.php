@@ -63,14 +63,8 @@ class OutPacket extends Model
         return $this->hasMany(InPacket::class, 'outid', 'id');
     }
     public function get_cailei_count(){
-         $outid = $this->id;
-         $cailei_count = InPacket::query()
-             ->where('outid',$outid)
-             ->where('is_chailei',1)
-             ->count();
-//        Model::query()->with(['relation' => function ($q) {
-//            $q->where('');
-//        }]);
-         return $cailei_count;
+        return Model::query()->with(['inpacket' => function ($q) {
+            $q->where('is_chailei',1);
+        }]);
     }
 }

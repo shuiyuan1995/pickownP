@@ -827,8 +827,8 @@ EOP;
             'message' => '抢红包列表'
         ]);
         return $this->json([
-            'out_list'=>json_encode(json_decode($out_packet_list)),
-            'in_list'=>json_encode(json_decode($in_packet_list))
+            'out_list'=>json_decode(json_encode($out_packet_list)),
+            'in_list'=>json_decode(json_encode($in_packet_list))
         ]);
     }
 }

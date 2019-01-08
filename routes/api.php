@@ -55,5 +55,6 @@ Route::group(['namespace' => 'Api'], function () {
     Route::get('money_list', ['uses' => 'InfoController@moneyList', 'as' => 'api.money_list']);
     Route::get('get_money_list', ['uses' => 'InfoController@getMoneyList', 'as' => 'api.get_money_list']);
     Route::get('get_table_rows', ['uses' => 'InfoController@getTableRows', 'as' => 'api.get_table_rows']);
+    Route::get('get_pending', ['uses' => 'InfoController@getPending', 'as' => 'api.pending']);
     Route::get('clear_log', ['uses' => 'InfoController@clearLog', 'as' => 'api.clear_log']);
 });

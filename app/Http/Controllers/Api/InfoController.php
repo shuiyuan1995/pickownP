@@ -321,7 +321,27 @@ class InfoController extends Controller
         $info_array = json_decode($info, true);
         return $this->json($info_array);
     }
+    /**
+     * 抢红包数据表
+     * @return InfoController
+     */
 
+    public function getPending()
+    {
+//        $url = 'http://119.28.88.222:8888';//正式的url
+        $url = 'http://35.197.130.214:8888';//测试的url
+        $scope = 'pickowngames';
+        $code = 'pickowngames';
+        $table = 'pending';//抢红包表表名
+        $limit = 100;
+        $info = get_table_rows($url, $scope, $code, $table, $limit, null);
+        dd($info);
+        if ($info === false) {
+            return $this->json([$info]);
+        }
+        $info_array = json_decode($info, true);
+        return $this->json($info_array);
+    }
     /**
      *
      */

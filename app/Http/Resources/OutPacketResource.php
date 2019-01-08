@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\InPacket;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
@@ -52,9 +53,11 @@ class OutPacketResource extends JsonResource
             'updated_at' => strtotime($this->updated_at),
             'inpacket_sum' => count($this->inpacket),
             'surplus_sum'=> $this->surplus_sum,
-            'chailei_count' => count($this->query()->with(['inpacket' => function ($q) {
-                $q->where('is_chailei',1);
-            }]))
+            'chailei_count' => InPacket::query()
+                ->where('outid',$this->id)
+                ->with(['inpacket' => function ($q) {
+                    $q->where('is_chailei',1);
+            }])->count()
         ];
     }
 }

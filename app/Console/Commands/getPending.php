@@ -58,6 +58,7 @@ class getPending extends Command
     "more":false
 }
 EOP;
+
         return true;
     }
 }

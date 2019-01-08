@@ -55,9 +55,8 @@ class OutPacketResource extends JsonResource
             'surplus_sum'=> $this->surplus_sum,
             'chailei_count' => InPacket::query()
                 ->where('outid',$this->id)
-                ->with(['inpacket' => function ($q) {
-                    $q->where('is_chailei',1);
-            }])->count()
+                ->where('is_chailei',1)
+                ->count()
         ];
     }
 }

@@ -821,17 +821,28 @@ EOP;
             'message' => '抢红包列表'
         ]);
         return $this->json([
+            // 发红包列表
             'out_list'=>json_decode(json_encode($out_packet_list)),
+            // 抢红包列表
             'in_list'=>json_decode(json_encode($in_packet_list)),
             'code'=>200,
+            // 发红包数
             'out_packet_count' => $outpacket,
+            // 发红包收获的抢红包数
             'out_chailei_count' => $chaileicount,
+            // 发红包的总金额数
             'out_packet_sum' => empty($outpacketsum) ? 0 : $outpacketsum,
+            // 抢红包踩雷数
             'in_chailei_count' => $chailei,
+            // 抢红包数
             'in_packet_count' => InPacket::query()->where('userid', $userid)->count(),
-            'in_packet_sum' => (string)(InPacket::query()->with(['out'])->whereHas('out', function ($q) {
+            // 抢红包总金额
+            'in_packet_sum' => (string)(InPacket::query()->with(['out'])
+//                    ->whereHas('out', function ($q) {
 //                $q->where('status', 2);
-                })->where('userid', $userid)->sum('income_sum') + $reward_sum_count),
+//                })
+                    ->where('userid', $userid)
+                    ->sum('income_sum') + $reward_sum_count),
         ]);
     }
 }

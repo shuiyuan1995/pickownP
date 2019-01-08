@@ -21,6 +21,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property mixed updated_at
  * @property mixed inpacket
  * @property mixed surplus_sum
+ * @property mixed get_cailei_count
  */
 class OutPacketResource extends JsonResource
 {
@@ -51,6 +52,7 @@ class OutPacketResource extends JsonResource
             'updated_at' => strtotime($this->updated_at),
             'inpacket_sum' => count($this->inpacket),
             'surplus_sum'=> $this->surplus_sum,
+            'chailei_count' => $this->get_cailei_count
         ];
     }
 }

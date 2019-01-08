@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property mixed id
+ */
 class OutPacket extends Model
 {
     protected $fillable = [
@@ -59,5 +62,12 @@ class OutPacket extends Model
     {
         return $this->hasMany(InPacket::class, 'outid', 'id');
     }
-
+    public function get_cailei_count(){
+         $outid = $this->id;
+         $cailei_count = InPacket::query()
+             ->where('outid',$outid)
+             ->where('is_chailei',1)
+             ->count('id');
+         return $cailei_count;
+    }
 }

@@ -52,7 +52,9 @@ class OutPacketResource extends JsonResource
             'updated_at' => strtotime($this->updated_at),
             'inpacket_sum' => count($this->inpacket),
             'surplus_sum'=> $this->surplus_sum,
-            'chailei_count' => count($this->get_cailei_count)
+            'chailei_count' => count($this->query()->with(['inpacket' => function ($q) {
+                $q->where('is_chailei',1);
+            }]))
         ];
     }
 }

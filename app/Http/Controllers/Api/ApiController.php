@@ -725,10 +725,6 @@ class ApiController extends Controller
             $request->header('token'),
             strripos($request->header('token'), ':') + 1
         );
-        $userEntity = User::find($userid);
-        if (empty($userEntity)){
-            return $this->error('用户不存在');
-        }
         $outpacketsum = OutPacket::query()->where('userid', $userid)->sum('issus_sum');
         $outpacket = OutPacket::query()->where('userid', $userid)->count();
         $sql = <<<EOP
@@ -759,7 +755,6 @@ EOP;
             'outpacketcount' => $outpacket,
             'chaileicount' => $chaileicount,
             'outpacketsum' => empty($outpacketsum) ? 0 : $outpacketsum,
-            'name' => $userEntity->name,
 //            'last_time' => strtotime(OutPacket::query()->where('userid', $userid)->min('updated_at')),
 //            'max_time' => strtotime(OutPacket::query()->where('userid', $userid)->max('updated_at')),
             'message' => '发红包列表'
@@ -817,7 +812,6 @@ EOP;
 //            'shunzi' => $shunzi,
 //            'bomb' => $bomb,
             'chailei' => $chailei,
-            'name' => $userEntity->name,
             'packetcount' => InPacket::query()->where('userid', $userid)->count(),
             'packetsum' => (string)(InPacket::query()->with(['out'])->whereHas('out', function ($q) {
 //                $q->where('status', 2);
@@ -828,7 +822,16 @@ EOP;
         ]);
         return $this->json([
             'out_list'=>json_decode(json_encode($out_packet_list)),
-            'in_list'=>json_decode(json_encode($in_packet_list))
+            'in_list'=>json_decode(json_encode($in_packet_list)),
+            'code'=>200,
+            'out_packet_count' => $outpacket,
+            'out_chailei_count' => $chaileicount,
+            'out_packet_sum' => empty($outpacketsum) ? 0 : $outpacketsum,
+            'in_chailei_count' => $chailei,
+            'in_packet_count' => InPacket::query()->where('userid', $userid)->count(),
+            'in_packet_sum' => (string)(InPacket::query()->with(['out'])->whereHas('out', function ($q) {
+//                $q->where('status', 2);
+                })->where('userid', $userid)->sum('income_sum') + $reward_sum_count),
         ]);
     }
 }

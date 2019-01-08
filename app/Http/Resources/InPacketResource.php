@@ -39,6 +39,7 @@ class InPacketResource extends JsonResource
         return [
             'id' => $this->id,
             'outid' => $this->outid,
+            'fa_name'=> data_get($this,'out.user.name','未知用户'),
             'userid' => $this->userid,
             'user' => data_get($this,'user.name','未知用户'),
             'name' => data_get($this,'user.name','未知用户'),

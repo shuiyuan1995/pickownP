@@ -429,6 +429,7 @@ class ApiController extends Controller
                 'outpacketname' => User::find($outuserid)->name,
                 'outpacketsum' => $outpacketentity->issus_sum,
                 'outpackettailnumber' => $outpacketentity->tail_number,
+                'outpackettime' => strtotime($outpacketentity->created_at),
                 'code' => 200,
                 'message' => '发送成功'
             ]);
@@ -720,7 +721,8 @@ class ApiController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function my_packets(Request $request){
+    public function my_packets(Request $request)
+    {
         $userid = substr(
             $request->header('token'),
             strripos($request->header('token'), ':') + 1
@@ -778,8 +780,8 @@ EOP;
 
         $chailei = InPacket::query()->with(['out'])
             ->whereHas('out', function ($q) {
-            //$q->where('status', 2);
-        })
+                //$q->where('status', 2);
+            })
             ->where('userid', $userid)
             ->where('is_chailei', 1)
             ->count();
@@ -822,10 +824,10 @@ EOP;
         ]);
         return $this->json([
             // 发红包列表
-            'out_list'=>json_decode(json_encode($out_packet_list)),
+            'out_list' => json_decode(json_encode($out_packet_list)),
             // 抢红包列表
-            'in_list'=>json_decode(json_encode($in_packet_list)),
-            'code'=>200,
+            'in_list' => json_decode(json_encode($in_packet_list)),
+            'code' => 200,
             // 发红包数
             'out_packet_count' => $outpacket,
             // 发红包收获的抢红包数

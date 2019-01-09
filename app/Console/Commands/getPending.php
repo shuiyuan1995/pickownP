@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 class getPending extends Command
 {
     /**
+     * 定时跑的退币脚本
      * The name and signature of the console command.
      *
      * @var string
@@ -58,6 +59,8 @@ class getPending extends Command
     "more":false
 }
 EOP;
+
+        $url = 'http://35.197.130.214/eosapi/refundpl.php?user=tester';
 
         return true;
     }

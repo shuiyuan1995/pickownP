@@ -332,7 +332,8 @@ class InfoController extends Controller
         $url = 'http://35.197.130.214:8888';//测试的url
         $scope = 'pickowngames';
         $code = 'pickowngames';
-        $table = 'pending';//抢红包表表名
+        $table = 'pending';// 抢红包表表名
+        $table = 'userboard';// 排行榜表
         $limit = 100;
         $info = get_table_rows($url, $scope, $code, $table, $limit, null);
         dump($info);

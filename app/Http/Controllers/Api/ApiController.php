@@ -414,7 +414,7 @@ class ApiController extends Controller
             return response()->json([
                 'data' => [],
                 'outpacketname' => User::find($outuserid)->name,
-
+                'outpackettime' => strtotime($outpacketentity->created_at),
                 'outpacketsum' => $outpacketentity->issus_sum,
                 'outpackettailnumber' => $outpacketentity->tail_number,
                 'code' => 200,

@@ -387,7 +387,8 @@ class InfoController extends Controller
     public function getPaihangbang(){
         $info = request_curl('http://35.197.130.214/eosapi/printboard.php',[],false,false);
         $info = trim(trim($info,'<br>'));
-        return $this->json($info);
+        $entity = json_decode($info);
+        return $this->json($entity->data);
 
     }
 }

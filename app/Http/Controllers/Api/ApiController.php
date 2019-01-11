@@ -15,6 +15,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * 此控制器中的方法均要通过token验证才能调用 -- getinfo除外
+ * Class ApiController
+ * @package App\Http\Controllers\Api
+ */
 class ApiController extends Controller
 {
     public function getinfo()
@@ -53,7 +58,7 @@ class ApiController extends Controller
     }
 
     /**
-     * 参数值
+     * 发红包
      * token
      * userid 用户id
      * issus_sum 金额
@@ -61,10 +66,7 @@ class ApiController extends Controller
      * count 个数
      * eosid 区块链id
      * blocknumber 块号
-     *
      * addr 平台
-     *
-     * 发红包接口
      * @param Request $request
      * @return $this
      */
@@ -128,6 +130,7 @@ class ApiController extends Controller
     }
 
     /**
+     * 抢红包 -- 已废弃
      * outid 发出的红包id
      * userid 用户id
      * eosid 区块链id
@@ -271,10 +274,10 @@ class ApiController extends Controller
     }
 
     /**
+     * 当前用户发红包的情况
      * 参数值
      * token
      * 用户id userid
-     * 当前用户发红包的情况
      * @param Request $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
@@ -316,10 +319,10 @@ class ApiController extends Controller
     }
 
     /**
+     * 当前用户抢红包的情况
      * 参数值
      * token
      * 用户id userid
-     * 当前用户抢红包的情况
      * @param Request $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
@@ -386,14 +389,13 @@ class ApiController extends Controller
     }
 
     /**
+     * 发出红包领取的情况
      * 参数值
      * token
      * 发出红包id  outid
-     * 发出红包领取的情况
      * @param Request $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-
     public function red_packet(Request $request)
     {
         $blocknumber = $request->input('outid');
@@ -436,6 +438,11 @@ class ApiController extends Controller
         }
     }
 
+    /**
+     * 用户提取分佣奖励
+     * @param Request $request
+     * @return ApiController
+     */
     public function postRewardMoney(Request $request)
     {
         $userid = substr($request->header('token'), strripos($request->header('token'), ':') + 1);
@@ -453,6 +460,11 @@ class ApiController extends Controller
         return $this->getRewardMoney($request);
     }
 
+    /**
+     * 获得用户分佣奖励的信息
+     * @param Request $request
+     * @return ApiController
+     */
     public function getRewardMoney(Request $request)
     {
         $userid = substr($request->header('token'), strripos($request->header('token'), ':') + 1);
@@ -568,7 +580,10 @@ class ApiController extends Controller
         return $this->success(['code' => 200, 'message' => '红包关闭成功'], '红包关闭成功');
     }
 
-    //获取当天的排行榜
+    /**
+     * 当天排行榜的情况 -- 未使用
+     * @return ApiController
+     */
     public function getDayUserRankList()
     {
         //获取当天活跃用户总数
@@ -604,7 +619,7 @@ class ApiController extends Controller
     }
 
     /**
-     * 新版抢红包提交方式
+     * 新版抢红包
      * packetId
      * @param Request $request
      * @return $this

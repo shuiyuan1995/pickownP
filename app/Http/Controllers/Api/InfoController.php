@@ -216,7 +216,14 @@ class InfoController extends Controller
         return $this->json($data_dd);
     }
 
-
+    /**
+     * 此方法没有使用但是不知在何处使用过 --- 不要动
+     * @param $url
+     * @param array $data
+     * @param string $status
+     * @param int $second
+     * @return array|bool|false|int|string|string[]|null
+     */
     public static function Curl($url, $data = [], $status = 'GTE', $second = 30)
     {
         $post_data = array();
@@ -303,16 +310,44 @@ class InfoController extends Controller
      * 赎回测试接口
      * @return InfoController
      */
-
     public function getTableRows()
     {
 //        $url = 'http://119.28.88.222:8888';//正式的url
         $url = 'http://35.197.130.214:8888';//测试的url
-        $scope = 'pickownbouns';
+        $scope = 'pickownbonus';
         $code = 'pickownbonus';
-//        $table = 'bonustable';//分红表表名
         $table = 'wdowntab';//赎回表表名
-        $limit = null;
+        $limit = 40;
+        $info = get_table_rows($url, $scope, $code, $table, $limit, null);
+//        $paramArr = [
+//            "scope" => $scope,
+//            "code" => $code,
+//            "table" => $table,
+//            "json" => true
+//        ];
+//        $paramArr['limit'] = $limit;
+//        $info = request_curl($url,$paramArr,true,false);
+        dd($info);
+        if ($info === false) {
+            return $this->json([$info]);
+        }
+        $info_array = json_decode($info, true);
+        return $this->json($info_array);
+    }
+
+    /**
+     * 抢红包数据表
+     * @return InfoController
+     */
+    public function getPending()
+    {
+//        $url = 'http://119.28.88.222:8888';//正式的url
+        $url = 'http://35.197.130.214:8888';//测试的url
+        $scope = 'pickowngames';
+        $code = 'pickowngames';
+        $table = 'pending';// 抢红包表表名
+//        $table = 'userboard';// 排行榜表
+        $limit = 100;
         $info = get_table_rows($url, $scope, $code, $table, $limit, null);
         dd($info);
         if ($info === false) {
@@ -321,30 +356,10 @@ class InfoController extends Controller
         $info_array = json_decode($info, true);
         return $this->json($info_array);
     }
-    /**
-     * 抢红包数据表
-     * @return InfoController
-     */
 
-    public function getPending()
-    {
-//        $url = 'http://119.28.88.222:8888';//正式的url
-        $url = 'http://35.197.130.214:8888';//测试的url
-        $scope = 'pickowngames';
-        $code = 'pickowngames';
-        $table = 'pending';// 抢红包表表名
-        $table = 'userboard';// 排行榜表
-        $limit = 100;
-        $info = get_table_rows($url, $scope, $code, $table, $limit, null);
-        dump($info);
-        if ($info === false) {
-            return $this->json([$info]);
-        }
-        $info_array = json_decode($info, true);
-        return $this->json($info_array);
-    }
     /**
-     *
+     * 清除日志 -- 已废弃
+     * @return mixed
      */
     public function clearLog()
     {
@@ -363,5 +378,16 @@ class InfoController extends Controller
             }
         }
         echo $logs_dir;
+        return true;
+    }
+
+    /**
+     * 获取排行榜奖池的接口
+     */
+    public function getPaihangbang(){
+        $info = request_curl('http://35.197.130.214/eosapi/printboard.php',[],false,false);
+        $info = trim(trim($info,'<br>'));
+        return $this->json($info);
+
     }
 }

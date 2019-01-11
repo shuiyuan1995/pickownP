@@ -57,36 +57,35 @@ class getRedemption extends Command
     {
 //        $url = 'http://119.28.88.222:8888';//正式的url
         $url = 'http://35.197.130.214:8888';//测试的url
-        $scope = 'pickownbouns';
+        $scope = 'pickownbonus';
         $code = 'pickownbonus';
-//        $table = 'bonustable';//分红表表名
         $table = 'wdowntab';//赎回表表名
         $limit = null;
-//        $info = get_table_rows($url, $scope, $code, $table, $limit, null);
+        $info = get_table_rows($url, $scope, $code, $table, $limit, null);
 
         // 返回上的数据样例
-        $info = <<<EOF
-{
-  "rows": [{
-      "request_id": 0,
-      "username": "shuiyuan2345",
-      "balown": 10000,
-      "request_time": "1546696108000000"
-    },{
-      "request_id": 1,
-      "username": "shuiyuan2345",
-      "balown": 10000,
-      "request_time": "1546696146000000"
-    },{
-      "request_id": 2,
-      "username": "shuiyuan2345",
-      "balown": 10000,
-      "request_time": "1546696457500000"
-    }
-  ],
-  "more": false
-}
-EOF;
+//        $info = <<<EOF
+//{
+//  "rows": [{
+//      "request_id": 0,
+//      "username": "shuiyuan2345",
+//      "balown": 10000,
+//      "request_time": "1546696108000000"
+//    },{
+//      "request_id": 1,
+//      "username": "shuiyuan2345",
+//      "balown": 10000,
+//      "request_time": "1546696146000000"
+//    },{
+//      "request_id": 2,
+//      "username": "shuiyuan2345",
+//      "balown": 10000,
+//      "request_time": "1546696457500000"
+//    }
+//  ],
+//  "more": false
+//}
+//EOF;
         if ($info === false) {
             return false;
         }

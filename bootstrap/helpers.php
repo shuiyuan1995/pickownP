@@ -130,6 +130,40 @@ if (!function_exists('get_table_rows')) {
         curl_setopt($init, CURLOPT_AUTOREFERER, true);
         curl_setopt($init, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($init, CURLOPT_MAXREDIRS, 10);
+        if (empty(curl_errno($init))){
+            echo curl_errno($init);
+        }
+        $output = curl_exec($init);
+        return $output;
+    }
+}
+
+
+if (!function_exists('get_account_signature')) {
+    /**
+     * post方法请求账户签名
+     * @param string $url 地址
+     * @param array $header 请求头
+     * @param array $paramArr 请求参数
+     * @return bool|string
+     */
+    function get_account_signature($url,$header,$paramArr)
+    {
+        if ($url == null) {
+            return false;
+        }
+        $init = curl_init();
+        curl_setopt($init, CURLOPT_URL, $url);
+        curl_setopt($init, CURLOPT_HTTPHEADER, $header);
+        curl_setopt($init, CURLOPT_USERAGENT,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36");
+        curl_setopt($init, CURLOPT_POSTFIELDS, $paramArr);
+        curl_setopt($init, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($init, CURLOPT_ENCODING, "");
+        curl_setopt($init, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($init, CURLOPT_AUTOREFERER, true);
+        curl_setopt($init, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($init, CURLOPT_MAXREDIRS, 10);
         $output = curl_exec($init);
         return $output;
     }

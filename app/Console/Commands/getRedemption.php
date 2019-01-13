@@ -150,6 +150,7 @@ class getRedemption extends Command
             $request_time = $entity->request_time;
             echo $request_time . "\n";
             if ((time() - (60 * 60 * 0)) >= $request_time) {
+                $id = $entity->id;
                 $request_id = $entity->request_id;
                 $username = $entity->userid;
                 $paramArr = [
@@ -160,6 +161,9 @@ class getRedemption extends Command
                 $info = request_curl($url, $paramArr, true, false);
                 $info = trim(trim($info, '<br>'));
                 dump(json_decode($info, true));
+                $update = Redemption::find($id);
+                $update->status = 2;
+                $update->save();
             }
         }
         return true;

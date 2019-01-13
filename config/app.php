@@ -110,6 +110,7 @@ return [
 
     'eospark_key' => env('EOSPARK_KEY','43222c2a30238d8ed72d60c033a7a7e0'),
 
+    'eos_interface_addr' => env('EOS_INTERFACE_ADDR','http://35.197.130.214'),
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers

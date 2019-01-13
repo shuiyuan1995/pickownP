@@ -59,4 +59,5 @@ Route::group(['namespace' => 'Api'], function () {
     Route::get('clear_log', ['uses' => 'InfoController@clearLog', 'as' => 'api.clear_log']);
     Route::get('get_paihangbang',
         ['uses'=>'InfoController@getPaihangbang','api.get_paihangbang']);
+    Route::get('ownseed',['uses'=>'InfoController@ownseed','as'=>'api.ownseed']);
 });

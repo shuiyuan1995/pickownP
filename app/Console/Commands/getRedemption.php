@@ -41,10 +41,10 @@ class getRedemption extends Command
     public function handle()
     {
         if ($this->getTableRows()) {
-            echo "获取赎回信息成功了耶！\n";
+            echo "获取赎回信息成功\n";
         }
         if ($this->execRedemption()) {
-            echo "执行赎回动作成功了耶！\n";
+            echo "执行赎回动作成功\n";
         }
         return true;
     }
@@ -55,8 +55,7 @@ class getRedemption extends Command
      */
     public function getTableRows()
     {
-//        $url = 'http://119.28.88.222:8888';//正式的url
-        $url = 'http://35.197.130.214:8888';//测试的url
+        $url = config('app.eos_interface_addr') . ':8888';
         $scope = 'pickownbonus';
         $code = 'pickownbonus';
         $table = 'wdowntab';//赎回表表名
@@ -101,13 +100,12 @@ class getRedemption extends Command
         $rows = $info_array['rows'];
         $more = $info_array['more'];
         foreach ($rows as $row) {
-//            dump($row);
             echo "request_id:{$row['request_id']}\n";
             echo "{$row['username']}\n";
             echo "balown:" . ($row['balown'] / 10000) . "\n";
             $request_time = (int)substr($row['request_time'], 0, -6);
-            echo $row['request_time'] . '转换后的时间：' .
-                date('Y-m-d H:i:s', $request_time) . "\n";
+//            echo $row['request_time'] . '转换后的时间：' .
+//                date('Y-m-d H:i:s', $request_time) . "\n";
             $userEntity = User::query()->where('name', $row['username'])->first();
             if (empty($userEntity)) {
                 $userData = [
@@ -121,7 +119,7 @@ class getRedemption extends Command
                 $userEntity = User::create($userData);
             }
             $entity = Redemption::query()
-                ->where('request_id', $row['request_id'])
+                ->where('request_time', $request_time)
                 ->first();
             if (empty($entity)) {
                 $data = [
@@ -144,16 +142,25 @@ class getRedemption extends Command
      */
     public function execRedemption()
     {
+        $url = config('app.eos_interface_addr') . '/eosapi/contractabi.php';
         $redemption_list = Redemption::query()
             ->where('status', 1)
             ->get();
         foreach ($redemption_list as $entity) {
             $request_time = $entity->request_time;
             echo $request_time . "\n";
-//            if ((time() - (60 * 60 * 24)) >= $request_time) {
-//                $request_id = $entity->request_id;
-//                $username = $entity->userid;
-//            }
+            if ((time() - (60 * 60 * 0)) >= $request_time) {
+                $request_id = $entity->request_id;
+                $username = $entity->userid;
+                $paramArr = [
+                    "contractName" => "pickownbonus",
+                    "action" => "ownsend",
+                    "params" => [$entity->request_id]
+                ];
+                $info = request_curl($url, $paramArr, true, false);
+                $info = trim(trim($info, '<br>'));
+                dump(json_decode($info, true));
+            }
         }
         return true;
     }

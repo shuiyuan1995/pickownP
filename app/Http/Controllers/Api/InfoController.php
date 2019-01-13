@@ -342,7 +342,7 @@ class InfoController extends Controller
     public function getPending()
     {
 //        $url = 'http://119.28.88.222:8888';//正式的url
-        $url = 'http://35.197.130.214:8888';//测试的url
+        $url = config('app.eos_interface_addr').':8888';//测试的url
         $scope = 'pickowngames';
         $code = 'pickowngames';
         $table = 'pending';// 抢红包表表名
@@ -383,12 +383,45 @@ class InfoController extends Controller
 
     /**
      * 获取排行榜奖池的接口
+     * @return $this
      */
-    public function getPaihangbang(){
-        $info = request_curl('http://35.197.130.214/eosapi/printboard.php',[],false,false);
-        $info = trim(trim($info,'<br>'));
-        $entity = json_decode($info);
-        return $this->json($entity->data);
+    public function getPaihangbang()
+    {
+        $addr = config('app.eos_interface_addr');
+        $paramArr = [
+            "contractName" => "pickowngames",
+            "action" => "printboard",
+            "params" => []
+        ];
+        $info = request_curl($addr . '/eosapi/contractabi.php', $paramArr, true, false);
+        $info = trim(trim($info, '<br>'));
+        $entity = json_decode($info,true);
+        if (isset($entity['data'])){
+            return $this->json($entity['data']);
+        }
+        if (!isset($entity['processed']['action_traces'][0]['console'])){
+            return $this->json([],200,'procssed_actions_0_console,不存在');
+        }
+        $console = json_decode($entity['processed']['action_traces'][0]['console'],true);
+        if (!isset($console['data'])){
+            return $this->json([]);
+        }
+        return $this->json($console['data']);
 
+    }
+
+
+    public function ownseed()
+    {
+        $url = config('app.eos_interface_addr') . '/eosapi/contractabi.php';
+        $paramArr = [
+            "contractName" => "pickownbonus",
+            "action" => "ownsend",
+            "params" => [0]
+        ];
+        $info = request_curl($url, $paramArr, true, false);
+        $info = trim(trim($info, '<br>'));
+        dump(json_decode($info));
+//        dd($info);
     }
 }

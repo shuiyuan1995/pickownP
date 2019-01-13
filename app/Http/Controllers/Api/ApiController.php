@@ -6,8 +6,10 @@ use App\Events\InPacketEvent;
 use App\Events\OutPacketEvent;
 use App\Http\Resources\InPacketResource;
 use App\Http\Resources\OutPacketResource;
+use App\Http\Resources\RankingListResource;
 use App\Models\InPacket;
 use App\Models\OutPacket;
+use App\Models\RankingList;
 use App\Models\TransactionInfo;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -861,5 +863,19 @@ EOP;
                     ->where('userid', $userid)
                     ->sum('income_sum') + $reward_sum_count),
         ]);
+    }
+
+    /**
+     * 获取当前用户的历史记录
+     * @param Request $request
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function getHistoryRankingList(Request $request){
+        $userid = substr(
+            $request->header('token'),
+            strripos($request->header('token'), ':') + 1
+        );
+        $query = RankingList::query()->where('userid',$userid);
+        return RankingListResource::collection($query->paginate());
     }
 }

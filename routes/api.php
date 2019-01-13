@@ -49,6 +49,8 @@ Route::group(['namespace' => 'Api'], function () {
         ['uses' => 'ApiController@close_packet', 'as' => 'api.close_packet'])->middleware('checktoken');
     Route::post('post_income_packet',
         ['uses' => 'ApiController@post_income_packet', 'as' => 'api.post_income_packet'])->middleware('checktoken');
+    Route::get('get_my_history_paihangbang',
+        ['uses'=>'ApiController@getMyHistoryRankingList','as'=> 'api.get_my_history_paihangbang']);
     // Info
     Route::get('getDayUserRankList', ['uses' => 'ApiController@getDayUserRankList', 'as' => 'api.getDayUserRankList']);
     Route::get('get_info', ['uses' => 'InfoController@getInfo', 'as' => 'api.get_info']);

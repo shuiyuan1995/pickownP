@@ -160,6 +160,206 @@ class getRedemption extends Command
                 ];
                 $info = request_curl($url, $paramArr, true, false);
                 $info = trim(trim($info, '<br>'));
+                $msg = <<<EOF
+array:2 [
+  "transaction_id" => "521a0b62f069336fb9e11c0046a1cd31a65de77f6b31ffe9c3d3db0359dcd7ef"
+  "processed" => array:10 [
+    "id" => "521a0b62f069336fb9e11c0046a1cd31a65de77f6b31ffe9c3d3db0359dcd7ef"
+    "block_num" => 532857
+    "block_time" => "2019-01-13T14:32:30.000"
+    "producer_block_id" => null
+    "receipt" => array:3 [
+      "status" => "executed"
+      "cpu_usage_us" => 660
+      "net_usage_words" => 13
+    ]
+    "elapsed" => 660
+    "net_usage" => 104
+    "scheduled" => false
+    "action_traces" => array:1 [
+      0 => array:12 [
+        "receipt" => array:7 [
+          "receiver" => "pickownbonus"
+          "act_digest" => "aa67c95923ea01d93983a4c265fd76b8ca525d0debb6a46490b7670d76a58563"
+          "global_sequence" => 533404
+          "recv_sequence" => 67
+          "auth_sequence" => array:1 [
+            0 => array:2 [
+              0 => "tester"
+              1 => 153
+            ]
+          ]
+          "code_sequence" => 9
+          "abi_sequence" => 7
+        ]
+        "act" => array:5 [
+          "account" => "pickownbonus"
+          "name" => "ownsend"
+          "authorization" => array:1 [
+            0 => array:2 [
+              "actor" => "tester"
+              "permission" => "active"
+            ]
+          ]
+          "data" => array:1 [
+            "id" => 0
+          ]
+          "hex_data" => "0000000000000000"
+        ]
+        "context_free" => false
+        "elapsed" => 209
+        "console" => ""
+        "trx_id" => "521a0b62f069336fb9e11c0046a1cd31a65de77f6b31ffe9c3d3db0359dcd7ef"
+        "block_num" => 532857
+        "block_time" => "2019-01-13T14:32:30.000"
+        "producer_block_id" => null
+        "account_ram_deltas" => array:1 [
+          0 => array:2 [
+            "account" => "pickownbonus"
+            "delta" => -256
+          ]
+        ]
+        "except" => null
+        "inline_traces" => array:1 [
+          0 => array:12 [
+            "receipt" => array:7 [
+              "receiver" => "pickowntoken"
+              "act_digest" => "ba4b990e298a75e64144fb114b3b8d2b6bcdcac08b94264c00e3850a48cd994e"
+              "global_sequence" => 533405
+              "recv_sequence" => 28
+              "auth_sequence" => array:1 [
+                0 => array:2 [
+                  0 => "pickownbonus"
+                  1 => 51
+                ]
+              ]
+              "code_sequence" => 1
+              "abi_sequence" => 1
+            ]
+            "act" => array:5 [
+              "account" => "pickowntoken"
+              "name" => "transfer"
+              "authorization" => array:1 [
+                0 => array:2 [
+                  "actor" => "pickownbonus"
+                  "permission" => "active"
+                ]
+              ]
+              "data" => array:4 [
+                "from" => "pickownbonus"
+                "to" => "shuiyuan2345"
+                "quantity" => "33.0000 OWN"
+                "memo" => "OWN withdrawal."
+              ]
+              "hex_data" => "80f5a467720a91ab50c810d368ef74c31009050000000000044f574e000000000f4f574e207769746864726177616c2e"
+            ]
+            "context_free" => false
+            "elapsed" => 113
+            "console" => ""
+            "trx_id" => "521a0b62f069336fb9e11c0046a1cd31a65de77f6b31ffe9c3d3db0359dcd7ef"
+            "block_num" => 532857
+            "block_time" => "2019-01-13T14:32:30.000"
+            "producer_block_id" => null
+            "account_ram_deltas" => []
+            "except" => null
+            "inline_traces" => array:2 [
+              0 => array:12 [
+                "receipt" => array:7 [
+                  "receiver" => "pickownbonus"
+                  "act_digest" => "ba4b990e298a75e64144fb114b3b8d2b6bcdcac08b94264c00e3850a48cd994e"
+                  "global_sequence" => 533406
+                  "recv_sequence" => 68
+                  "auth_sequence" => array:1 [
+                    0 => array:2 [
+                      0 => "pickownbonus"
+                      1 => 52
+                    ]
+                  ]
+                  "code_sequence" => 1
+                  "abi_sequence" => 1
+                ]
+                "act" => array:5 [
+                  "account" => "pickowntoken"
+                  "name" => "transfer"
+                  "authorization" => array:1 [
+                    0 => array:2 [
+                      "actor" => "pickownbonus"
+                      "permission" => "active"
+                    ]
+                  ]
+                  "data" => array:4 [
+                    "from" => "pickownbonus"
+                    "to" => "shuiyuan2345"
+                    "quantity" => "33.0000 OWN"
+                    "memo" => "OWN withdrawal."
+                  ]
+                  "hex_data" => "80f5a467720a91ab50c810d368ef74c31009050000000000044f574e000000000f4f574e207769746864726177616c2e"
+                ]
+                "context_free" => false
+                "elapsed" => 64
+                "console" => ""
+                "trx_id" => "521a0b62f069336fb9e11c0046a1cd31a65de77f6b31ffe9c3d3db0359dcd7ef"
+                "block_num" => 532857
+                "block_time" => "2019-01-13T14:32:30.000"
+                "producer_block_id" => null
+                "account_ram_deltas" => []
+                "except" => null
+                "inline_traces" => []
+              ]
+              1 => array:12 [
+                "receipt" => array:7 [
+                  "receiver" => "shuiyuan2345"
+                  "act_digest" => "ba4b990e298a75e64144fb114b3b8d2b6bcdcac08b94264c00e3850a48cd994e"
+                  "global_sequence" => 533407
+                  "recv_sequence" => 15
+                  "auth_sequence" => array:1 [
+                    0 => array:2 [
+                      0 => "pickownbonus"
+                      1 => 53
+                    ]
+                  ]
+                  "code_sequence" => 1
+                  "abi_sequence" => 1
+                ]
+                "act" => array:5 [
+                  "account" => "pickowntoken"
+                  "name" => "transfer"
+                  "authorization" => array:1 [
+                    0 => array:2 [
+                      "actor" => "pickownbonus"
+                      "permission" => "active"
+                    ]
+                  ]
+                  "data" => array:4 [
+                    "from" => "pickownbonus"
+                    "to" => "shuiyuan2345"
+                    "quantity" => "33.0000 OWN"
+                    "memo" => "OWN withdrawal."
+                  ]
+                  "hex_data" => "80f5a467720a91ab50c810d368ef74c31009050000000000044f574e000000000f4f574e207769746864726177616c2e"
+                ]
+                "context_free" => false
+                "elapsed" => 4
+                "console" => ""
+                "trx_id" => "521a0b62f069336fb9e11c0046a1cd31a65de77f6b31ffe9c3d3db0359dcd7ef"
+                "block_num" => 532857
+                "block_time" => "2019-01-13T14:32:30.000"
+                "producer_block_id" => null
+                "account_ram_deltas" => []
+                "except" => null
+                "inline_traces" => []
+              ]
+            ]
+          ]
+        ]
+      ]
+    ]
+    "except" => null
+  ]
+]
+
+EOF;
+
                 dump(json_decode($info, true));
                 $update = Redemption::find($id);
                 $update->status = 2;

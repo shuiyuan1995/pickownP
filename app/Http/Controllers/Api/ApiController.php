@@ -870,12 +870,18 @@ EOP;
      * @param Request $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function getHistoryRankingList(Request $request){
+    public function getMyHistoryRankingList(Request $request){
         $userid = substr(
             $request->header('token'),
             strripos($request->header('token'), ':') + 1
         );
+//        $userid = 22;
         $query = RankingList::query()->where('userid',$userid);
-        return RankingListResource::collection($query->paginate());
+        $month = $request->input('month',date('m',time()));
+        $start_time = date('Y',time()).'-'.$month.'-0 0:0:0';
+        $end_time = date('Y',time()).'-'.$month.'-31 23:59:59';
+        $query->where('created_at','<',$end_time)
+            ->where('created_at','>',$start_time);
+        return RankingListResource::collection($query->get());
     }
 }

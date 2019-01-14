@@ -312,21 +312,12 @@ class InfoController extends Controller
      */
     public function getTableRows()
     {
-//        $url = 'http://119.28.88.222:8888';//正式的url
         $url = 'http://35.197.130.214:8888';//测试的url
         $scope = 'pickownbonus';
         $code = 'pickownbonus';
         $table = 'wdowntab';//赎回表表名
         $limit = 40;
         $info = get_table_rows($url, $scope, $code, $table, $limit, null);
-//        $paramArr = [
-//            "scope" => $scope,
-//            "code" => $code,
-//            "table" => $table,
-//            "json" => true
-//        ];
-//        $paramArr['limit'] = $limit;
-//        $info = request_curl($url,$paramArr,true,false);
         dd($info);
         if ($info === false) {
             return $this->json([$info]);
@@ -341,12 +332,10 @@ class InfoController extends Controller
      */
     public function getPending()
     {
-//        $url = 'http://119.28.88.222:8888';//正式的url
-        $url = config('app.eos_interface_addr').':8888';//测试的url
+        $url = config('app.eos_interface_addr').':8888';
         $scope = 'pickowngames';
         $code = 'pickowngames';
         $table = 'pending';// 抢红包表表名
-//        $table = 'userboard';// 排行榜表
         $limit = 100;
         $info = get_table_rows($url, $scope, $code, $table, $limit, null);
         dd($info);
@@ -387,13 +376,18 @@ class InfoController extends Controller
      */
     public function getPaihangbang()
     {
+        if (config('app.env') == 'production'){
+            $contractabi = 'mcontractabi.php';
+        }else{
+            $contractabi = 'contractabi.php';
+        }
         $addr = config('app.eos_interface_addr');
         $paramArr = [
             "contractName" => "pickowngames",
             "action" => "printboard",
             "params" => []
         ];
-        $info = request_curl($addr . '/eosapi/contractabi.php', $paramArr, true, false);
+        $info = request_curl($addr . '/eosapi/'.$contractabi, $paramArr, true, false);
         $info = trim(trim($info, '<br>'));
         $entity = json_decode($info,true);
         if (isset($entity['data'])){
@@ -413,7 +407,12 @@ class InfoController extends Controller
 
     public function ownseed()
     {
-        $url = config('app.eos_interface_addr') . '/eosapi/contractabi.php';
+        if (config('app.env') == 'production'){
+            $contractabi = 'mcontractabi.php';
+        }else{
+            $contractabi = 'contractabi.php';
+        }
+        $url = config('app.eos_interface_addr') . '/eosapi/'.$contractabi;
         $paramArr = [
             "contractName" => "pickownbonus",
             "action" => "ownsend",

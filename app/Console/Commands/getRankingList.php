@@ -45,7 +45,13 @@ class getRankingList extends Command
             "action" => "printboard",
             "params" => []
         ];
-        $info = request_curl($addr . '/eosapi/contractabi.php', $paramArr, true, false);
+
+        if (config('app.env') == 'production'){
+            $contractabi = 'mcontractabi.php';
+        }else{
+            $contractabi = 'contractabi.php';
+        }
+        $info = request_curl($addr . '/eosapi/'.$contractabi, $paramArr, true, false);
         $info = trim(trim($info, '<br>'));
         $entity = json_decode($info, true);
         if (isset($entity['data'])) {

@@ -142,7 +142,12 @@ class getRedemption extends Command
      */
     public function execRedemption()
     {
-        $url = config('app.eos_interface_addr') . '/eosapi/contractabi.php';
+        if (config('app.env') == 'production'){
+            $contractabi = 'mcontractabi.php';
+        }else{
+            $contractabi = 'contractabi.php';
+        }
+        $url = config('app.eos_interface_addr') . '/eosapi/'.$contractabi;
         $redemption_list = Redemption::query()
             ->where('status', 1)
             ->get();

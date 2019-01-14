@@ -26,6 +26,8 @@ class Kernel extends ConsoleKernel
     {
          $schedule->command('get:one_hour')
              ->everyTenMinutes(); //每十分钟运行一次任务
+        $schedule->command('get:ranking_list')
+            ->dailyAt('23:40'); //每天23:40运行任务
     }
 
     /**

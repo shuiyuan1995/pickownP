@@ -882,6 +882,9 @@ EOP;
         $end_time = date('Y',time()).'-'.$month.'-31 23:59:59';
         $query->where('created_at','<',$end_time)
             ->where('created_at','>',$start_time);
-        return RankingListResource::collection($query->get());
+        return RankingListResource::collection($query->get())
+            ->additional([
+                'code'=>200
+            ]);
     }
 }

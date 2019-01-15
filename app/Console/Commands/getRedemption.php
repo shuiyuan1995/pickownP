@@ -155,6 +155,7 @@ class getRedemption extends Command
             $request_time = $entity->request_time;
             echo $request_time . "\n";
             // 执行赎回操作的时间限制，60 * 60 * 24，指24小时后执行赎回这个操作
+            // 60 * 60 * 0 是指马上执行，现在是还没有在正式的上面测试，到时候测过了，就改成上面的。
             if ((time() - (60 * 60 * 0)) >= $request_time) {
                 $id = $entity->id;
                 $request_id = $entity->request_id;

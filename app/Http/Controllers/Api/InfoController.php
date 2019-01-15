@@ -324,8 +324,6 @@ class InfoController extends Controller
         $limit = 40;
         $info = get_table_rows($url, $scope, $code, $table, $limit, null);
 //        dd($info);
-        echo '123';
-        die();
         if ($info === false) {
             return $this->json([$info]);
         }

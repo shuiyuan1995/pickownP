@@ -28,8 +28,8 @@ class Kernel extends ConsoleKernel
              ->everyTenMinutes(); //每十分钟运行一次任务，定时获取抢红包信息
         $schedule->command('get:ranking_list')
             ->dailyAt('23:40'); //每天23:40运行任务
-//        $schedule->command('get:redemption')
-//            ->everyTenMinutes(); //每十分钟运行一次任务，执行赎回操作的任务
+        $schedule->command('get:redemption')
+            ->everyTenMinutes(); //每十分钟运行一次任务，执行赎回操作的任务
     }
 
     /**

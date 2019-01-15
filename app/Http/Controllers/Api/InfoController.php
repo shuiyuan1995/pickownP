@@ -315,7 +315,8 @@ class InfoController extends Controller
         if (config('app.env') == 'production'){
             $url = '';
         }else{
-            $url = 'http://35.197.130.214:8888';//测试的url
+//            $url = 'http://35.197.130.214:8888';//测试的url
+            $url = 'https://eospro.pickown.com:8888';//测试的url
         }
 
         $scope = 'pickownbonus';

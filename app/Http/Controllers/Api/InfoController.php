@@ -327,8 +327,7 @@ class InfoController extends Controller
         if ($info === false) {
             return $this->json([$info]);
         }
-        $this->ownseed();
-        $info_array = json_decode($info, true);
+            $info_array = json_decode($info, true);
         return $this->json($info_array);
     }
 

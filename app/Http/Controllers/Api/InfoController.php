@@ -312,7 +312,12 @@ class InfoController extends Controller
      */
     public function getTableRows()
     {
-        $url = 'http://35.197.130.214:8888';//测试的url
+        if (config('app.env') == 'production'){
+            $url = '';
+        }else{
+            $url = 'http://35.197.130.214:8888';//测试的url
+        }
+
         $scope = 'pickownbonus';
         $code = 'pickownbonus';
         $table = 'wdowntab';//赎回表表名

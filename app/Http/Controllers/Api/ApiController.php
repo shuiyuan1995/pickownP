@@ -414,7 +414,7 @@ class ApiController extends Controller
 
         $outid = $outpacketentity->id;
         $outuserid = $outpacketentity->userid;
-        if ($outpacketentity->status === 1) {
+        if (1 == $outpacketentity->status) {
             return response()->json([
                 'data' => [],
                 'outpacketname' => User::find($outuserid)->name,

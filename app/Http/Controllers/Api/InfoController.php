@@ -315,7 +315,8 @@ class InfoController extends Controller
         if (config('app.env') == 'production'){
             $url = '';
         }else{
-            $url = 'http://35.197.130.214:8888';//测试的url
+//            $url = 'http://35.197.130.214:8888';//测试的url
+            $url = 'https://eospro.pickown.com:8888';//测试的url
         }
 
         $scope = 'pickownbonus';
@@ -323,7 +324,6 @@ class InfoController extends Controller
         $table = 'wdowntab';//赎回表表名
         $limit = 40;
         $info = get_table_rows($url, $scope, $code, $table, $limit, null);
-        dd($info);
         if ($info === false) {
             return $this->json([$info]);
         }

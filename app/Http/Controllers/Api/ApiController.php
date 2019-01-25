@@ -74,7 +74,6 @@ class ApiController extends Controller
      */
     public function issus_packet(Request $request)
     {
-        dd($request->all());
         if (!$request->filled('blocknumber')) {
             return $this->json(['code' => 2004, 'message' => 'blocknumber不存在'], 2004, 'blocknumber不存在');
         }

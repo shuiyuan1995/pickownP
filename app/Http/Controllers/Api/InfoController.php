@@ -139,7 +139,6 @@ class InfoController extends Controller
         $query = OutPacket::query()->with('user');
         $query->where('status', 1);
         $indexArrSwitch = (new OutPacket())->indexArrSwitch;
-        echo '<pre>';print_r($indexArrSwitch);die;
         $list = $query->orderBy('created_at', 'asc')->get();
         $indexArr = [
             '0.1000' => 0,
